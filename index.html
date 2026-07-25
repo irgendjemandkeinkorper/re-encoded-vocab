@@ -596,6 +596,110 @@
   @media (prefers-reduced-motion: reduce){
     .card-inner{ transition: none; }
   }
+
+  /* ---- Code Lab ---- */
+  .code-wrap{
+    max-width: 1080px;
+    margin: 28px auto 0 auto;
+    padding: 0 20px;
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .code-wrap.active{ display: flex; }
+  .code-lab-intro{
+    text-align: center;
+    color: #5a655c;
+    font-size: 13.5px;
+    line-height: 1.55;
+    max-width: 660px;
+    margin: 0 auto;
+  }
+  .code-walk-tabs{ justify-content: center; }
+  .code-lens-row{ justify-content: center; }
+  .code-walk-meta{ text-align: center; }
+  .code-walk-title{
+    font-family: var(--mono);
+    font-size: 17px;
+    color: var(--forest);
+    font-weight: 600;
+  }
+  .code-walk-summary{
+    font-size: 13px;
+    color: #5a655c;
+    margin-top: 3px;
+    font-style: italic;
+  }
+  .code-lab-layout{
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .code-col{
+    background: #0f1c17;
+    border-radius: 8px;
+    padding: 10px;
+    overflow-x: auto;
+    box-shadow: 0 4px 18px var(--shadow);
+  }
+  .code-seg{
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #cfe6d8;
+    background: transparent;
+    border: none;
+    border-left: 3px solid transparent;
+    padding: 5px 10px;
+    margin: 2px 0;
+    border-radius: 4px;
+    white-space: pre;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .code-seg:hover{ background: rgba(255,255,255,0.05); }
+  .code-seg.active{
+    background: rgba(216,167,92,0.16);
+    border-left-color: var(--amber-light);
+    color: #ffffff;
+  }
+  .code-panel{
+    position: sticky;
+    top: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 18px var(--shadow);
+    min-height: 150px;
+  }
+  .code-panel-hint{
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #8a938a;
+    margin-bottom: 8px;
+  }
+  .code-panel-plain{
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .code-panel .lens-stack{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  @media (max-width: 760px){
+    .code-lab-layout{ grid-template-columns: 1fr; }
+    .code-panel{ position: static; }
+  }
 </style>
 </head>
 <body>
@@ -612,6 +716,7 @@
     <input id="search" type="text" placeholder="Search a term or keyword…" autocomplete="off">
     <button class="mode-btn" id="studyToggle">Study Mode</button>
     <button class="mode-btn" id="quizToggle">Quiz Mode</button>
+    <button class="mode-btn" id="codeLabToggle">Code Lab</button>
   </div>
   <div class="tabs" id="tabs"></div>
   <div class="tabs" id="lensChips"></div>
@@ -682,6 +787,25 @@
     <div class="quiz-feedback" id="quizFeedback"></div>
     <button class="mode-btn secondary" id="quizNext" style="display:none;">Next Question →</button>
     <button class="mode-btn secondary" id="quizEnd">End Quiz &amp; See Summary</button>
+  </div>
+</div>
+
+<div class="code-wrap" id="codeWrap">
+  <button class="mode-btn secondary" id="backToGlossaryCode" style="align-self:flex-start;">← Back to Glossary</button>
+  <p class="code-lab-intro">Real functions from <em>this very site</em>, broken down line by line. Tap a segment of code to see what it does — then flip the lenses below to hear the same logic retold through Motorsport, Hogwarts, a kitchen, and more.</p>
+  <div class="tabs code-walk-tabs" id="codeWalkTabs"></div>
+  <div class="tabs code-lens-row" id="codeLensChips"></div>
+  <div class="code-walk-meta">
+    <div class="code-walk-title" id="codeWalkTitle"></div>
+    <div class="code-walk-summary" id="codeWalkSummary"></div>
+  </div>
+  <div class="code-lab-layout">
+    <div class="code-col" id="codeCol"></div>
+    <div class="code-panel">
+      <div class="code-panel-hint" id="codePanelHint">Tap a line of code →</div>
+      <div class="code-panel-plain" id="codePanelPlain"></div>
+      <div class="lens-stack" id="codeLensStack"></div>
+    </div>
   </div>
 </div>
 
@@ -1157,8 +1281,9 @@ function renderTabs(){
   });
 }
 
-function renderLensChips(){
-  lensChipsEl.innerHTML = '';
+function buildLensChipsInto(container){
+  if(!container) return;
+  container.innerHTML = '';
   LENS_OPTIONS.forEach(l => {
     const chip = document.createElement('button');
     const active = selectedLenses.has(l.key);
@@ -1172,10 +1297,16 @@ function renderLensChips(){
         selectedLenses.add(l.key);
       }
       renderLensChips();
-      if(studyMode){ renderStudyCard(); } else { renderGrid(); }
+      if(studyMode){ renderStudyCard(); }
+      else if(codeLabMode){ renderCodePanel(); }
+      else { renderGrid(); }
     };
-    lensChipsEl.appendChild(chip);
+    container.appendChild(chip);
   });
+}
+function renderLensChips(){
+  buildLensChipsInto(lensChipsEl);
+  buildLensChipsInto(codeLensChipsEl);
 }
 
 function getFiltered(){
@@ -1292,6 +1423,7 @@ function shuffle(arr){
 
 function enterStudy(){
   if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; }
+  if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; }
   studyMode = true;
   studyDeck = shuffle(getFiltered().length ? getFiltered() : DATA);
   studyIndex = 0;
@@ -1479,6 +1611,7 @@ function setSessionName(name){
 
 function enterQuiz(){
   if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; }
+  if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; }
   quizMode = true;
   document.querySelector('.controls').style.display = 'none';
   countEl.style.display = 'none';
@@ -1707,6 +1840,266 @@ document.getElementById('quizNext').addEventListener('click', () => {
   }
 });
 document.getElementById('quizEnd').addEventListener('click', showQuizSummary);
+
+// ==================== CODE LAB ====================
+// Break down real functions from THIS file, segment by segment,
+// re-encoded through the same lenses used everywhere else.
+const CODE_WALKS = [
+  {
+    id: 'get-lens-text',
+    title: 'getLensText(d, key)',
+    summary: 'The heart of the whole site: turn one idea into whichever world you picked.',
+    segments: [
+      {
+        code: 'function getLensText(d, key){',
+        plain: 'Take a term (d) and a lens key like "f1", and hand back the right retelling of it.',
+        lenses: {
+          f1: 'The strategy call: given the car and the tyre compound you\'ve chosen, decide which race plan to run.',
+          fandom: 'A spell that takes a subject and a House, and returns the version taught in that House.',
+          gaming: 'A skin-swapper: feed it a character and a cosmetic, get back that character wearing it.',
+          cooking: 'A recipe adapter: give it a dish and a cuisine, get the version cooked that way.',
+          sports: 'The commentator: hand them a play and a sport, they call it in that sport\'s language.',
+          medical: 'Intake: given a patient and a specialty, route them to the right specialist\'s notes.'
+        }
+      },
+      {
+        code: '  if (key === \'medical\') return d.analogy;',
+        plain: 'If the chosen lens is the default one, just return the original analogy unchanged.',
+        lenses: {
+          f1: 'No aero package selected — send the car out in base setup, exactly as it was built.',
+          fandom: 'The plain incantation, before you Transfigure it into any other form.',
+          gaming: 'Default skin requested — return the character with no cosmetic applied.',
+          cooking: 'House style ordered — serve the dish the original way, no cuisine swap.',
+          sports: 'The neutral call, before any sport-specific slang gets layered on.'
+        }
+      },
+      {
+        code: '  return (d.lenses && d.lenses[key]) ? d.lenses[key] : d.analogy;',
+        plain: 'Otherwise return that lens\'s translation — but if this term doesn\'t have one, fall back to the original so it\'s never blank.',
+        lenses: {
+          f1: 'Fit the compound you asked for — but if it\'s not in the garage, default to the mediums so the car still races.',
+          fandom: 'Cast the House-specific version; no spell recorded for that House? Fall back to the standard one.',
+          gaming: 'Equip the chosen skin, or the default if that skin was never unlocked — you\'re never left with no model.',
+          cooking: 'Plate the chosen cuisine\'s version, or the house recipe if that kitchen never wrote one down.',
+          sports: 'Use the sport\'s own term, or the neutral call if there isn\'t one — the play always gets described.'
+        }
+      },
+      {
+        code: '}',
+        plain: 'That\'s the whole trick — four lines are the entire "same concept, different world" engine.',
+        lenses: {
+          f1: 'Lights out. One tiny pit-wall decision decides the look of every lap that follows.',
+          fandom: 'And that small charm is what lets one idea appear in eight different disguises.',
+          gaming: 'One function, and every concept in the game can wear any skin you own.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'render-grid',
+    title: 'renderGrid()',
+    summary: 'Rebuilds the whole card board from scratch every time a filter changes.',
+    segments: [
+      {
+        code: 'const filtered = getFiltered();',
+        plain: 'Ask for only the cards that survive the current subject, category, search, and star filters.',
+        lenses: {
+          f1: 'Scrutineering: only the cars that pass every check are allowed onto the grid.',
+          fandom: 'The Sorting Hat runs first — only the terms belonging to this House make the list.',
+          gaming: 'Apply the active filters, like showing only the items your search bar matches in the inventory.',
+          cooking: 'Pull from the pantry only the ingredients tonight\'s menu actually calls for.'
+        }
+      },
+      {
+        code: 'grid.innerHTML = \'\';',
+        plain: 'Wipe the board completely clean before repainting, so nothing from the last view lingers.',
+        lenses: {
+          f1: 'Clear the starting grid entirely before the new order is painted on.',
+          fandom: 'Vanish everything on the board with a clean sweep before the next scene is set.',
+          gaming: 'Clear the whole HUD before redrawing it — no ghost icons left from last frame.',
+          cooking: 'Wipe the plate down to bare porcelain before you start plating again.'
+        }
+      },
+      {
+        code: 'filtered.forEach((d) => {',
+        plain: 'Now walk through every surviving card, one at a time, and build it.',
+        lenses: {
+          f1: 'Go car by car down the grid, prepping each one in turn.',
+          fandom: 'Call each student forward one by one to be placed.',
+          gaming: 'Loop over every item that passed the filter and render its slot.'
+        }
+      },
+      {
+        code: 'card.innerHTML = `<div class="face">${d.term}</div>\n                  <div class="face back">${lenses}</div>`;',
+        plain: 'Stamp out the card\'s HTML: a front face showing the term, and a back face holding the lens translations.',
+        lenses: {
+          f1: 'Build the car: livery and number on the front, full telemetry readout on the back.',
+          fandom: 'Enchant a two-sided card — the name shows face-up, the translations hidden on the flip side.',
+          gaming: 'Assemble the item card: icon on the front, the full tooltip on the reverse.',
+          cooking: 'Plate both sides of the tasting card — dish name up top, the flavor notes underneath.'
+        }
+      },
+      {
+        code: 'card.querySelector(\'.card-inner\').onclick = () => card.classList.toggle(\'flipped\');',
+        plain: 'Wire the click so tapping the card flips it between the front and back faces.',
+        lenses: {
+          f1: 'Rig the switch on the wheel so one press flips the dash between lap time and tyre temps.',
+          fandom: 'Charm the card so a single tap turns it over to reveal what\'s on the other side.',
+          gaming: 'Bind the interact key so pressing it flips the card to its tooltip side.'
+        }
+      },
+      {
+        code: 'grid.appendChild(card);',
+        plain: 'Drop the finished card onto the board so it actually shows up on screen.',
+        lenses: {
+          f1: 'Roll the finished car out and park it in its grid slot.',
+          fandom: 'Send the placed student to their House table where everyone can see them.',
+          gaming: 'Commit the built slot into the visible inventory grid.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'quiz-scoring',
+    title: 'submitQuizAnswer() — scoring',
+    summary: 'How a single answer turns into points, streaks, and the streak multiplier.',
+    segments: [
+      {
+        code: 'const correct = checkAnswer(quizInput.value, d.term, wordBank);',
+        plain: 'Compare what the player typed against the real answer to decide right or wrong.',
+        lenses: {
+          f1: 'The stewards review the move: legal or not — that verdict drives everything after.',
+          fandom: 'Check the wand movement against the spell\'s true form — cast correctly or not?',
+          gaming: 'Hit-detection: did the input actually land on the target, yes or no?',
+          sports: 'The ref makes the call — good or no good — before anything else happens.'
+        }
+      },
+      {
+        code: 'if (correct) {\n  quizStreak++;\n  const multiplier = quizStreak >= 5 ? 2 : 1;',
+        plain: 'On a right answer, grow the streak; once it hits 5 in a row, points start counting double.',
+        lenses: {
+          f1: 'String clean laps together — after five, you unlock a purple-sector bonus on every point.',
+          fandom: 'Each flawless cast builds momentum; five straight and your spellwork starts scoring double.',
+          gaming: 'Build the combo meter — at 5x it lights up and every hit is worth double.',
+          sports: 'Keep the run alive — five unanswered scores and you\'re in bonus territory.'
+        }
+      },
+      {
+        code: '  quizScore += 10 * multiplier;',
+        plain: 'Add the points — 10 normally, or 20 while the streak bonus is active.',
+        lenses: {
+          f1: 'Bank the points: standard haul, doubled once the bonus is live.',
+          fandom: 'Award House points — ten, or twenty while your streak burns bright.',
+          gaming: 'Add to the score, multiplied by whatever the combo meter is at.'
+        }
+      },
+      {
+        code: '} else {\n  quizStreak = 0;\n  quizScore = Math.max(0, quizScore - 5);\n}',
+        plain: 'A miss resets the streak to zero and docks 5 points — but never lets the score go negative.',
+        lenses: {
+          f1: 'Spin off and the momentum\'s gone: streak wiped, a small time penalty, but you\'re never below zero on the board.',
+          fandom: 'A botched spell breaks the run and costs a few House points — though you can\'t drop below nothing.',
+          gaming: 'Take a hit and the combo drops to zero, minus a small score penalty floored at zero.',
+          sports: 'Turnover: the run ends, a minor deduction, but the scoreboard won\'t go under zero.'
+        }
+      }
+    ]
+  }
+];
+
+let codeLabMode = false;
+let activeWalk = 0;
+let activeSeg = 0;
+
+const codeWrap = document.getElementById('codeWrap');
+const codeLabToggle = document.getElementById('codeLabToggle');
+const codeLensChipsEl = document.getElementById('codeLensChips');
+const codeColEl = document.getElementById('codeCol');
+
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function buildSegLensStackHTML(seg){
+  const order = LENS_OPTIONS.filter(l => selectedLenses.has(l.key));
+  return order.map(l => {
+    const txt = (seg.lenses && seg.lenses[l.key]) ? seg.lenses[l.key] : null;
+    return `
+    <div class="lens-block" style="--lens-color:${l.color}">
+      <div class="lens-label">${l.icon} ${l.label}</div>
+      <div class="lens-text">${txt ? txt : '<span style="opacity:.55">translation coming soon</span>'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderCodeWalkTabs(){
+  const el = document.getElementById('codeWalkTabs');
+  el.innerHTML = '';
+  CODE_WALKS.forEach((w, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (i === activeWalk ? ' active' : '');
+    btn.textContent = w.title;
+    btn.onclick = () => { activeWalk = i; activeSeg = 0; renderCodeWalk(); };
+    el.appendChild(btn);
+  });
+}
+
+function renderCodeWalk(){
+  const w = CODE_WALKS[activeWalk];
+  renderCodeWalkTabs();
+  document.getElementById('codeWalkTitle').textContent = w.title;
+  document.getElementById('codeWalkSummary').textContent = w.summary;
+  codeColEl.innerHTML = '';
+  w.segments.forEach((seg, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'code-seg' + (i === activeSeg ? ' active' : '');
+    btn.innerHTML = escHtml(seg.code);
+    btn.onclick = () => { activeSeg = i; renderCodePanel(); };
+    codeColEl.appendChild(btn);
+  });
+  renderCodePanel();
+}
+
+function renderCodePanel(){
+  const w = CODE_WALKS[activeWalk];
+  const seg = w.segments[activeSeg];
+  if(!seg) return;
+  [...codeColEl.children].forEach((el, i) => el.classList.toggle('active', i === activeSeg));
+  document.getElementById('codePanelHint').textContent = `Segment ${activeSeg + 1} of ${w.segments.length}`;
+  document.getElementById('codePanelPlain').textContent = seg.plain;
+  document.getElementById('codeLensStack').innerHTML = buildSegLensStackHTML(seg);
+}
+
+function enterCodeLab(){
+  if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; }
+  if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; }
+  codeLabMode = true;
+  codeLabToggle.textContent = 'Exit Code Lab';
+  document.querySelector('.controls').style.display = 'none';
+  countEl.style.display = 'none';
+  grid.style.display = 'none';
+  emptyEl.style.display = 'none';
+  codeWrap.classList.add('active');
+  activeWalk = 0;
+  activeSeg = 0;
+  renderLensChips();      // populates the Code Lab lens row too
+  renderCodeWalk();
+}
+
+function exitCodeLab(){
+  codeLabMode = false;
+  codeLabToggle.textContent = 'Code Lab';
+  codeWrap.classList.remove('active');
+  document.querySelector('.controls').style.display = 'flex';
+  countEl.style.display = 'block';
+  grid.style.display = 'grid';
+  renderGrid();
+}
+
+codeLabToggle.addEventListener('click', () => {
+  if(codeLabMode){ exitCodeLab(); } else { enterCodeLab(); }
+});
+document.getElementById('backToGlossaryCode').addEventListener('click', exitCodeLab);
 
 renderSubjectTabs();
 renderTabs();
