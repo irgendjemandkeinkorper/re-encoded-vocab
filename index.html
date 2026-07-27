@@ -1859,7 +1859,9 @@ const CODE_WALKS = [
           gaming: 'A skin-swapper: feed it a character and a cosmetic, get back that character wearing it.',
           cooking: 'A recipe adapter: give it a dish and a cuisine, get the version cooked that way.',
           sports: 'The commentator: hand them a play and a sport, they call it in that sport\'s language.',
-          medical: 'Intake: given a patient and a specialty, route them to the right specialist\'s notes.'
+          medical: 'Intake: given a patient and a specialty, route them to the right specialist\'s notes.',
+          ttrpg: 'The rules lookup: given a fantasy action and a tabletop system, find the rule describing that action in that system.',
+          millennial: 'The filter: given a message and a group chat, translate the post to match that chat\'s exact vibe.'
         }
       },
       {
@@ -1870,7 +1872,10 @@ const CODE_WALKS = [
           fandom: 'The plain incantation, before you Transfigure it into any other form.',
           gaming: 'Default skin requested — return the character with no cosmetic applied.',
           cooking: 'House style ordered — serve the dish the original way, no cuisine swap.',
-          sports: 'The neutral call, before any sport-specific slang gets layered on.'
+          sports: 'The neutral call, before any sport-specific slang gets layered on.',
+          medical: 'No specialist requested — retrieve the patient\'s standard primary care notes with no specialist routing.',
+          ttrpg: 'Base rules requested — describe the generic action in plain English without any game-system mechanics.',
+          millennial: 'No group chat specified — post the raw draft directly to your feed with no extra filters.'
         }
       },
       {
@@ -1881,7 +1886,10 @@ const CODE_WALKS = [
           fandom: 'Cast the House-specific version; no spell recorded for that House? Fall back to the standard one.',
           gaming: 'Equip the chosen skin, or the default if that skin was never unlocked — you\'re never left with no model.',
           cooking: 'Plate the chosen cuisine\'s version, or the house recipe if that kitchen never wrote one down.',
-          sports: 'Use the sport\'s own term, or the neutral call if there isn\'t one — the play always gets described.'
+          sports: 'Use the sport\'s own term, or the neutral call if there isn\'t one — the play always gets described.',
+          medical: 'Retrieve the requested specialist\'s assessment, or fall back to the primary care chart so the file is never empty.',
+          ttrpg: 'Look up the rule in the chosen expansion compendium, or fall back to the core rulebook so the action still resolves.',
+          millennial: 'Send the customized slang version, or fall back to the basic text message if you haven\'t written a custom one.'
         }
       },
       {
@@ -1890,7 +1898,12 @@ const CODE_WALKS = [
         lenses: {
           f1: 'Lights out. One tiny pit-wall decision decides the look of every lap that follows.',
           fandom: 'And that small charm is what lets one idea appear in eight different disguises.',
-          gaming: 'One function, and every concept in the game can wear any skin you own.'
+          gaming: 'One function, and every concept in the game can wear any skin you own.',
+          medical: 'That concludes intake — one simple routing rule ensures every patient is seamlessly directed across the clinic.',
+          sports: 'And that is the game plan — one central playbook translates every play for any broadcast booth on the network.',
+          cooking: 'The station is prepped — this basic conversion method lets your kitchen adapt any recipe to any cuisine on the fly.',
+          ttrpg: 'Campaign prep done — this single lookup lets your tabletop party translate any classic concept into eight different rulesets.',
+          millennial: 'Post complete — this one simple adapter ensures your messages are perfectly tailored to any social circle.'
         }
       }
     ]
@@ -1907,7 +1920,11 @@ const CODE_WALKS = [
           f1: 'Scrutineering: only the cars that pass every check are allowed onto the grid.',
           fandom: 'The Sorting Hat runs first — only the terms belonging to this House make the list.',
           gaming: 'Apply the active filters, like showing only the items your search bar matches in the inventory.',
-          cooking: 'Pull from the pantry only the ingredients tonight\'s menu actually calls for.'
+          cooking: 'Pull from the pantry only the ingredients tonight\'s menu actually calls for.',
+          medical: 'Triage: query the medical database to isolate only the patients assigned to your department today.',
+          sports: 'Selection: filter the active roster to find only the healthy players who match the starting positions.',
+          ttrpg: 'Encounter Prep: scan the monster compendium to select only the creatures that match this dungeon\'s level.',
+          millennial: 'Vibe Check: filter your phone\'s camera roll to show only the photos matching your curated aesthetic.'
         }
       },
       {
@@ -1917,7 +1934,11 @@ const CODE_WALKS = [
           f1: 'Clear the starting grid entirely before the new order is painted on.',
           fandom: 'Vanish everything on the board with a clean sweep before the next scene is set.',
           gaming: 'Clear the whole HUD before redrawing it — no ghost icons left from last frame.',
-          cooking: 'Wipe the plate down to bare porcelain before you start plating again.'
+          cooking: 'Wipe the plate down to bare porcelain before you start plating again.',
+          medical: 'Wipe the ward\'s master whiteboard completely clean before the morning shift handoff.',
+          sports: 'Erase the playbook whiteboard completely before drawing up the next game\'s lineup.',
+          ttrpg: 'Sweep the battlemap clear of all old miniatures and terrain before laying out the next combat encounter.',
+          millennial: 'Wipe your Instagram feed completely clean of archived drafts before loading the new profile layout.'
         }
       },
       {
@@ -1926,7 +1947,12 @@ const CODE_WALKS = [
         lenses: {
           f1: 'Go car by car down the grid, prepping each one in turn.',
           fandom: 'Call each student forward one by one to be placed.',
-          gaming: 'Loop over every item that passed the filter and render its slot.'
+          gaming: 'Loop over every item that passed the filter and render its slot.',
+          medical: 'Go down the filtered clinic schedule patient by patient to compile their files.',
+          sports: 'Go down the filtered lineup player by player to prepare their active jersey cards.',
+          cooking: 'Process each selected ingredient one by one to prepare it for plating.',
+          ttrpg: 'Go through the prepared encounter roster monster by monster to compile their stat blocks.',
+          millennial: 'Loop through the curated list of photos one by one to assemble each post.'
         }
       },
       {
@@ -1936,7 +1962,11 @@ const CODE_WALKS = [
           f1: 'Build the car: livery and number on the front, full telemetry readout on the back.',
           fandom: 'Enchant a two-sided card — the name shows face-up, the translations hidden on the flip side.',
           gaming: 'Assemble the item card: icon on the front, the full tooltip on the reverse.',
-          cooking: 'Plate both sides of the tasting card — dish name up top, the flavor notes underneath.'
+          cooking: 'Plate both sides of the tasting card — dish name up top, the flavor notes underneath.',
+          medical: 'Print the double-sided chart: patient identity on the front page, and clinical vitals on the back cover.',
+          sports: 'Configure the lineup magnet: player number on the front, and seasonal stats on the back.',
+          ttrpg: 'Inscribe the battle token: monster name and artwork on the front face, and armor class on the underside.',
+          millennial: 'Format the post template: the aesthetic photo on the front, and the comments and caption on the back.'
         }
       },
       {
@@ -1945,7 +1975,12 @@ const CODE_WALKS = [
         lenses: {
           f1: 'Rig the switch on the wheel so one press flips the dash between lap time and tyre temps.',
           fandom: 'Charm the card so a single tap turns it over to reveal what\'s on the other side.',
-          gaming: 'Bind the interact key so pressing it flips the card to its tooltip side.'
+          gaming: 'Bind the interact key so pressing it flips the card to its tooltip side.',
+          medical: 'Clip the charts so the doctor can easily flip the page to toggle between identity and medical history.',
+          sports: 'Mount the magnet so the coach can easily flip it to swap between field position and game stats.',
+          cooking: 'Score the paper menu card so a diner can easily fold and flip it between the dish name and the allergen list.',
+          ttrpg: 'Mount the double-sided token so the DM can easily flip it to toggle between monster artwork and raw stats.',
+          millennial: 'Add a double-tap gesture so users can quickly toggle between the clean picture and the caption detail.'
         }
       },
       {
@@ -1954,7 +1989,12 @@ const CODE_WALKS = [
         lenses: {
           f1: 'Roll the finished car out and park it in its grid slot.',
           fandom: 'Send the placed student to their House table where everyone can see them.',
-          gaming: 'Commit the built slot into the visible inventory grid.'
+          gaming: 'Commit the built slot into the visible inventory grid.',
+          medical: 'Slide the completed folder into the active wall rack so the rounding nurse can read it.',
+          sports: 'Stick the player\'s magnet onto the magnetic tactics board so they are active in the starting lineup.',
+          cooking: 'Place the finished plate on the pass so the runner can serve it to the guest\'s table.',
+          ttrpg: 'Place the finished miniature onto the dry-erase battle grid so it is active in the encounter.',
+          millennial: 'Publish the formatted post so it appears at the top of your profile grid.'
         }
       }
     ]
@@ -1971,7 +2011,11 @@ const CODE_WALKS = [
           f1: 'The stewards review the move: legal or not — that verdict drives everything after.',
           fandom: 'Check the wand movement against the spell\'s true form — cast correctly or not?',
           gaming: 'Hit-detection: did the input actually land on the target, yes or no?',
-          sports: 'The ref makes the call — good or no good — before anything else happens.'
+          sports: 'The ref makes the call — good or no good — before anything else happens.',
+          medical: 'Verify the lab results: compare the patient\'s diagnosis against the clinical guidelines to determine if it is accurate.',
+          ttrpg: 'Roll to hit: check your d20 roll against the monster\'s Armor Class to see if the attack lands.',
+          cooking: 'Taste test: compare the seasoned dish against the head chef\'s standard recipe to see if the flavor is balanced.',
+          millennial: 'Vibe check: compare their text reply to the unwritten rules of the group chat to see if it\'s a social win.'
         }
       },
       {
@@ -1981,7 +2025,11 @@ const CODE_WALKS = [
           f1: 'String clean laps together — after five, you unlock a purple-sector bonus on every point.',
           fandom: 'Each flawless cast builds momentum; five straight and your spellwork starts scoring double.',
           gaming: 'Build the combo meter — at 5x it lights up and every hit is worth double.',
-          sports: 'Keep the run alive — five unanswered scores and you\'re in bonus territory.'
+          sports: 'Keep the run alive — five unanswered scores and you\'re in bonus territory.',
+          medical: 'If the diagnosis is correct, grow your clinical streak; five correct cases in a row earns a residency bonus that doubles your board score.',
+          ttrpg: 'On a hit, advance your combat streak; five consecutive hits unlock an Action Surge that doubles all XP gains.',
+          cooking: 'If the dish is perfect, grow your successful service streak; five perfect plates in a row earns a Michelin star bonus that doubles all tips.',
+          millennial: 'If it\'s a hit, keep your daily streak alive; hit five days in a row and you unlock super-user status that doubles all engagement.'
         }
       },
       {
@@ -1990,7 +2038,12 @@ const CODE_WALKS = [
         lenses: {
           f1: 'Bank the points: standard haul, doubled once the bonus is live.',
           fandom: 'Award House points — ten, or twenty while your streak burns bright.',
-          gaming: 'Add to the score, multiplied by whatever the combo meter is at.'
+          gaming: 'Add to the score, multiplied by whatever the combo meter is at.',
+          medical: 'Add to your medical licensing score: 10 points standard, or 20 points while the residency bonus is active.',
+          sports: 'Put points on the scoreboard: ten points standard, or twenty while you are hot in bonus territory.',
+          ttrpg: 'Award combat experience points: 10 XP standard, or 20 XP while the Action Surge multiplier is active.',
+          cooking: 'Add to the kitchen tips: ten dollars standard, or twenty dollars while the Michelin star bonus is active.',
+          millennial: 'Grow your follower count: ten followers standard, or twenty while the algorithm has you trending.'
         }
       },
       {
@@ -2000,7 +2053,11 @@ const CODE_WALKS = [
           f1: 'Spin off and the momentum\'s gone: streak wiped, a small time penalty, but you\'re never below zero on the board.',
           fandom: 'A botched spell breaks the run and costs a few House points — though you can\'t drop below nothing.',
           gaming: 'Take a hit and the combo drops to zero, minus a small score penalty floored at zero.',
-          sports: 'Turnover: the run ends, a minor deduction, but the scoreboard won\'t go under zero.'
+          sports: 'Turnover: the run ends, a minor deduction, but the scoreboard won\'t go under zero.',
+          medical: 'A misdiagnosis resets your clinical streak to zero and deducts 5 residency points, but your overall score cannot drop below zero.',
+          ttrpg: 'A critical miss resets your combat streak to zero and deducts 5 gold, though your gold pouch can never drop below zero.',
+          cooking: 'Sending out a bad plate resets your kitchen streak to zero and docks 5 tip dollars, though your total tips can never go negative.',
+          millennial: 'Getting left on read resets your daily streak to zero and costs you 5 followers, though your follower count can never drop below zero.'
         }
       }
     ]
