@@ -2156,6 +2156,111 @@ const CODE_WALKS = [
         }
       }
     ]
+  },
+  {
+    id: 'leaderboard-flow',
+    title: 'Leaderboard Round-Trip',
+    summary: 'The complete async lifecycle of submitting high scores and fetching the top players.',
+    segments: [
+      {
+        code: 'if(!supabaseClient) return;',
+        plain: 'Check if the Supabase network client is loaded and ready before attempting any leaderboard database operations.',
+        lenses: {
+          medical: 'Before administering a vaccine or treatment, check that the hospital network is online so you can log the patient\'s record.',
+          sports: 'Before starting the play, verify that the arena scoreboard is powered on and connected to the official game clock.',
+          fandom: 'Before casting a spell, check that your wand is connected to the magical network so the Ministry can record your spellwork.',
+          ttrpg: 'Before rolling the dice, make sure the digital campaign logger is active so all players can see the roll history.',
+          cooking: 'Before opening the restaurant doors, confirm that the order ticket printer is plugged in and ready to print incoming orders.',
+          millennial: 'Before sending your status update, ensure your phone has a strong Wi-Fi signal so the post doesn\'t get lost.',
+          f1: 'Before releasing the car from the garage, check that the telemetry uplink to the pit wall is fully active.',
+          gaming: 'Before searching for a match, check that you are connected to the game servers so your progress can be saved.'
+        }
+      },
+      {
+        code: 'await supabaseClient.from(\'leaderboard\').insert({\n  session_name: name,\n  subject: activeSubject,\n  score: quizScore,\n  correct_count: quizCorrectCount,\n  total_questions: total,\n  best_streak: quizStreak,\n});',
+        plain: 'Send the player\'s name, quiz subject, total score, correct answer count, total questions, and longest streak directly to the "leaderboard" database table.',
+        lenses: {
+          medical: 'Submit the patient\'s vitals, medical record number, and full diagnostic test results directly to the clinic\'s central electronic database.',
+          sports: 'Log the athlete\'s name, current event, total points scored, successful shots, and longest scoring run onto the official league stat sheet.',
+          fandom: 'Register the wizard\'s name, magic discipline, house points earned, successful charm casts, and consecutive spell streak in the Ministry registry.',
+          ttrpg: 'Add your character\'s name, current quest, gold pieces earned, successful skill checks, and consecutive crits to the guild master\'s chronicle.',
+          cooking: 'File the chef\'s name, station assignment, total points scored, perfect plates served, and longest consecutive perfect service streak on the kitchen noticeboard.',
+          millennial: 'Post your username, current topic, high score, perfect tweets, and consecutive viral threads directly to your social profile database.',
+          f1: 'Send the driver\'s name, race category, total championship points, successful overtakes, and consecutive clean laps to the official FIA database.',
+          gaming: 'Upload your gamertag, game mode, final score, kills, shots fired, and highest killstreak to the global multiplayer server.'
+        }
+      },
+      {
+        code: '} catch(e) {\n  console.warn(\'Could not submit score to leaderboard:\', e);\n}',
+        plain: 'If a network error or connection failure occurs during submission, catch the exception and log a warning to keep the app running.',
+        lenses: {
+          medical: 'If the central database is offline during charting, note the connection warning and continue caring for the patient without interruption.',
+          sports: 'If the arena network goes down mid-game, let the official scorer note the issue while play continues on the field.',
+          fandom: 'If the Ministry registry connection is severed during an exam, log a magical warning but let the wizard complete their wizarding tests.',
+          ttrpg: 'If the digital campaign logger drops offline during your turn, note the error but keep rolling physical dice at the table.',
+          cooking: 'If the kitchen ticket printer jams during the dinner rush, warn the head chef but keep plating dishes for the hungry diners.',
+          millennial: 'If the app fails to upload your post due to low signal, log a warning in the background while keeping the app from crashing.',
+          f1: 'If the telemetry link fails during a hot lap, log a warning on the pit wall but keep the driver racing on track.',
+          gaming: 'If saving your score to the cloud fails, log the network warning in the background so the game doesn\'t freeze mid-session.'
+        }
+      },
+      {
+        code: 'const { data, error } = await supabaseClient\n  .from(\'leaderboard\')\n  .select(\'session_name, score, correct_count, total_questions\')\n  .eq(\'subject\', leaderboardSubject)\n  .order(\'score\', { ascending: false })\n  .limit(10);',
+        plain: 'Fetch the top 10 rows from the database, filtering by the selected subject and sorting by score in descending order.',
+        lenses: {
+          medical: 'Request the health records of the top 10 healthiest patients, filtering by their specific diagnosis and sorting by fitness score.',
+          sports: 'Retrieve the league leaderboards for the top 10 athletes in this sport, sorted from highest points scored to lowest.',
+          fandom: 'Consult the House Cup records to fetch the top 10 point earners, filtered by House and sorted from highest score to lowest.',
+          ttrpg: 'Consult the adventurer tavern archives to find the top 10 heroes, filtered by class and sorted from highest level down.',
+          cooking: 'Pull the leaderboard of the top 10 culinary masters, filtered by cuisine type and sorted from highest dish rating down.',
+          millennial: 'Load the top 10 trending influencers, filtered by interest niche and sorted from most viral engagement to least.',
+          f1: 'Retrieve the top 10 drivers from the standings, filtering by race category and sorting by championship points in descending order.',
+          gaming: 'Query the database for the top 10 player profiles, filtering by game mode and sorting by high score from highest to lowest.'
+        }
+      },
+      {
+        code: 'if(error) throw error;',
+        plain: 'If the database query encounters an issue, immediately throw an error to trigger the catch block and display a graceful error message.',
+        lenses: {
+          medical: 'If the lab analyzer malfunctions, halt the reporting flow immediately so incorrect results are not added to the patient\'s chart.',
+          sports: 'If the scorekeeper registers a glaring referee error, raise an immediate objection to stop the official timer and investigate the call.',
+          fandom: 'If the magical quill blots or tears the parchment, trigger a magical warning to stop the scroll from recording corrupt wizarding data.',
+          ttrpg: 'If a player is caught using weighted dice, immediately call a foul to pause the game and verify the integrity of the board state.',
+          cooking: 'If the sous chef spots a spoiled ingredient in the pan, sound the alarm immediately to stop that dish from being served to the guest.',
+          millennial: 'If the network gateway returns a broken status code, trigger an immediate app error to alert the user that the feed is unavailable.',
+          f1: 'If the engine telemetry detects a critical failure, immediately trigger a cockpit warning to abort the lap and return to the pits.',
+          gaming: 'If the game detects a corrupt save file or hacked packet, trigger a connection error to prevent corrupt data from rendering.'
+        }
+      },
+      {
+        code: 'if(!data || !data.length){\n  listEl.textContent = \'No scores yet for this subject — be the first!\';\n  return;\n}',
+        plain: 'If no score records are returned from the database, display a welcoming message inviting the player to be the first to set a record.',
+        lenses: {
+          medical: 'If the patient intake list is empty, display a notice letting the medical staff know there are currently no patients waiting to be seen.',
+          sports: 'If the tournament bracket has no registered teams yet, display a flyer encouraging local clubs to sign up and start the season.',
+          fandom: 'If the house scoreboard is completely empty at the start of term, display a prompt encouraging students to earn the first house points.',
+          ttrpg: 'If the bounty board has no completed quests listed, show a message inviting your party to pick up the very first quest.',
+          cooking: 'If the specials board has no dishes written on it yet, display a message letting diners know the first gourmet recipe is being prepped.',
+          millennial: 'If the group chat has no comments or messages yet, show a placeholder prompt urging you to send the first meme to break the ice.',
+          f1: 'If the qualifying timing sheet is blank at the start of the session, display a message waiting for the first car to leave pit lane.',
+          gaming: 'If the competitive ladder has no ranked players yet, display a screen challenging you to play a match and claim the number one spot.'
+        }
+      },
+      {
+        code: 'listEl.innerHTML = data.map((row, i) => `\n  <div class="leaderboard-row">\n    <span class="rank">#\${i + 1}</span>\n    <span class="name">\${row.session_name}</span>\n    <span class="pts">\${row.score} pts</span>\n  </div>\n`).join(\'\');',
+        plain: 'Convert the array of database score records into formatted HTML rows showing the rank number, player name, and their score.',
+        lenses: {
+          medical: 'Map the list of top patient outcomes to a waiting room screen displaying patient ranking, initials, and target recovery milestone.',
+          sports: 'Convert the league statistics array into a stadium scoreboard displaying each athlete\'s rank, name, and total season points.',
+          fandom: 'Transfigure the scroll of house achievements into a great hall banner showing each student\'s rank, name, and total points.',
+          ttrpg: 'Scribe the adventurer guild records onto the parchment scroll, listing each hero\'s rank, name, and earned prestige points.',
+          cooking: 'Format the chef rankings into a leaderboard poster for the restaurant wall, showing rank, chef name, and review score.',
+          millennial: 'Map the trending profiles array into a live feed layout displaying rank, creator handle, and total follower count.',
+          f1: 'Render the championship standings array onto the pitlane broadcast monitor displaying each driver\'s rank, three-letter code, and points.',
+          gaming: 'Map the matchmaking rankings array into a lobby scoreboard showing each player\'s position rank, gamertag, and competitive rating.'
+        }
+      }
+    ]
   }
 ];
 
