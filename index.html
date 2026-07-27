@@ -2004,6 +2004,97 @@ const CODE_WALKS = [
         }
       }
     ]
+  },
+  {
+    id: 'card-flip',
+    title: 'CSS 3D Card Flip',
+    summary: 'The perspective, backface-visibility, and 3D transform trick that makes our cards spin.',
+    segments: [
+      {
+        code: '.card {\n  perspective: 1200px;\n}',
+        plain: 'Establish a 3D viewing box on the container so its contents have real-world depth and realistic proportion.',
+        lenses: {
+          medical: 'Adjust the focal length of the ophthalmic slit lamp to give the doctor proper depth perception inside the eye chamber.',
+          sports: 'Mount the stadium camera on a high boom crane to capture the physical depth of the play across the pitch.',
+          fandom: 'Enchant the room with an expansion charm, ensuring there is physical depth for objects to fly through without hitting walls.',
+          ttrpg: 'Place the battle map under a transparent grid dome so players can gauge high ground and vertical distance accurately.',
+          cooking: 'Adjust the height of the kitchen display heat lamp so the plates below are bathed in even, three-dimensional warmth.',
+          millennial: 'Put on a pair of vintage red-and-cyan paper 3D glasses to make the flat cinema screen pop with physical depth.',
+          f1: 'Position the trackside camera at a wide-angle apex, giving viewers a sense of physical speed and distance as cars approach.',
+          gaming: 'Configure the viewport\'s field of view in the graphics engine to prevent flat, orthographic rendering of the game world.'
+        }
+      },
+      {
+        code: '.card-inner {\n  transition: transform .5s;\n  transform-style: preserve-3d;\n}',
+        plain: 'Keep the child elements in the same 3D room, and smooth out any rotation changes over half a second.',
+        lenses: {
+          medical: 'Maintain structural integrity of the joint capsule during rotation so tendons do not slip or compress flat.',
+          sports: 'Coordinate a smooth body turn on the pitch while keeping the shoulders and hips aligned in three-dimensional motion.',
+          fandom: 'Cast a stabilizing charm on the rotating staircases to keep the students standing upright in 3D space during the shift.',
+          ttrpg: 'Keep the multi-tiered dice tower stable and moving smoothly as you rotate it to face another player at the table.',
+          cooking: 'Set the rotisserie gear speed to turn the spit smoothly, keeping the meat roasting evenly in three-dimensional space.',
+          millennial: 'Press play on the VHS player, letting the magnetic tape glide smoothly over the drum to prevent any jittery screen tracking.',
+          f1: 'Calibrate the differential and suspension to keep the chassis balanced in 3D space during a high-speed weight transition.',
+          gaming: 'Enable the physics engine\'s interpolation to render a smooth rotation animation of the mesh without flattening its polygons.'
+        }
+      },
+      {
+        code: '.card.flipped .card-inner {\n  transform: rotateY(180deg);\n}',
+        plain: 'When the flipped state is active, swing the inner container halfway around on its vertical axis.',
+        lenses: {
+          medical: 'Pronate the patient\'s forearm to turn the palm from facing upward to facing completely downward.',
+          sports: 'Execute a perfect half-turn spin on the heel to face the opposite direction and shield the ball from defenders.',
+          fandom: 'Use a reversing charm to spin the hourglass completely upside down and start the next countdown.',
+          ttrpg: 'Flip the double-sided cardboard terrain tile over to reveal the scorched, destroyed version of the same room.',
+          cooking: 'Flip the pancake over with a quick flick of the wrist so the uncooked top lands face down on the griddle.',
+          millennial: 'Rotate the cassette tape in the deck to play Side B after Side A finishes its run.',
+          f1: 'Execute a sharp 180-degree spin on the skidpad to face the opposite direction after losing rear grip.',
+          gaming: 'Rotate the character model by half a circle on the global Y-axis to face the camera after a custom emote trigger.'
+        }
+      },
+      {
+        code: '.face {\n  backface-visibility: hidden;\n}',
+        plain: 'Hide the side of the card that is currently pointing away from the viewer, preventing mirrored, reversed text.',
+        lenses: {
+          medical: 'Apply an opaque medical backing patch so the treatment area remains fully isolated and unseen from the outside.',
+          sports: 'Put on a solid-colored scrimmage vest so opponents cannot see your play sheet taped to the inside.',
+          fandom: 'Enchant the back of the portrait with a concealing spell so students only see the painted figure, never the canvas backing.',
+          ttrpg: 'Design the dungeon master\'s screen to be completely opaque, hiding the secret campaign notes from the players opposite.',
+          cooking: 'Frost the outside of the cake thickly to fully conceal the colorful sponge layers baked inside.',
+          millennial: 'Scribble on the back of the CD-R with a thick black permanent marker so nobody can read the handwritten tracklist from the underside.',
+          f1: 'Fit a carbon-fibre heat shield behind the engine cover to completely block the hot exhaust glow from being visible from behind.',
+          gaming: 'Enable backface culling in the render pipeline to skip drawing polygon sides that face away from the player\'s camera.'
+        }
+      },
+      {
+        code: '.face {\n  position: absolute;\n  inset: 0;\n}',
+        plain: 'Stack both the front and back faces exactly on top of each other, filling the entire card area.',
+        lenses: {
+          medical: 'Align the diagnostic x-ray film exactly over the anatomical light board to compare the bone structures perfectly.',
+          sports: 'Position the substitute defender exactly on the boundary line to cover the exact zone of the exiting player.',
+          fandom: 'Cast a perfect duplication overlay so the illusionary copy sits directly inside the original object\'s physical footprint.',
+          ttrpg: 'Stack the transparent reference overlays perfectly on top of the main map to reveal hidden trapdoors in the exact rooms.',
+          cooking: 'Press two warm tortilla sheets perfectly flush together to seal the cheese inside the quesadilla border.',
+          millennial: 'Lay the clear plastic overhead projector transparency directly onto the light glass to align the diagram perfectly.',
+          f1: 'Stack the front wing element directly over the main nose box assembly to maintain a perfectly integrated aerodynamic profile.',
+          gaming: 'Overlay the HUD inventory slots perfectly on top of the container grid so every item box aligns with its background frame.'
+        }
+      },
+      {
+        code: 'card.querySelector(\'.card-inner\').onclick = () =>\n  card.classList.toggle(\'flipped\');',
+        plain: 'Use a simple JavaScript event listener to flip the class when clicked, letting CSS do all the hard animation work.',
+        lenses: {
+          medical: 'Tap the reflex hammer on the patellar tendon to automatically trigger the involuntary leg extension reflex.',
+          sports: 'Blow the whistle to immediately trigger the players to stop running and turn toward the sideline.',
+          fandom: 'Tap the magical brick with your wand to trigger the wall to peel back and open the secret alleyway.',
+          ttrpg: 'Roll a natural 20 on your agility check to instantly trigger the rogue\'s backflip out of the trap\'s range.',
+          cooking: 'Press the power button on the stand mixer to instantly start the planetary whisk rotation.',
+          millennial: 'Press the eject button on the VCR to trigger the mechanical arms to lift and pop the tape out.',
+          f1: 'Pull the gear paddle on the steering wheel to trigger the hydraulic actuator to instantly drop into the next gear.',
+          gaming: 'Press the interaction button near the door to trigger the smooth opening animation scripted in the engine.'
+        }
+      }
+    ]
   }
 ];
 
