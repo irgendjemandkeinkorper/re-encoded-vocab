@@ -1786,7 +1786,7 @@ async function fetchAndRenderLeaderboard(){
     listEl.innerHTML = data.map((row, i) => `
       <div class="leaderboard-row">
         <span class="rank">#${i + 1}</span>
-        <span class="name">${row.session_name}</span>
+        <span class="name">${escHtml(row.session_name)}</span>
         <span class="pts">${row.score} pts</span>
       </div>
     `).join('');
@@ -2247,7 +2247,7 @@ const CODE_WALKS = [
         }
       },
       {
-        code: 'listEl.innerHTML = data.map((row, i) => `\n  <div class="leaderboard-row">\n    <span class="rank">#\${i + 1}</span>\n    <span class="name">\${row.session_name}</span>\n    <span class="pts">\${row.score} pts</span>\n  </div>\n`).join(\'\');',
+        code: 'listEl.innerHTML = data.map((row, i) => `\n  <div class="leaderboard-row">\n    <span class="rank">#\${i + 1}</span>\n    <span class="name">\${escHtml(row.session_name)}</span>\n    <span class="pts">\${row.score} pts</span>\n  </div>\n`).join(\'\');',
         plain: 'Convert the array of database score records into formatted HTML rows showing the rank number, player name, and their score.',
         lenses: {
           medical: 'Map the list of top patient outcomes to a waiting room screen displaying patient ranking, initials, and target recovery milestone.',
@@ -2274,7 +2274,12 @@ const codeLensChipsEl = document.getElementById('codeLensChips');
 const codeColEl = document.getElementById('codeCol');
 
 function escHtml(s){
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function buildSegLensStackHTML(seg){
