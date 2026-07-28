@@ -1507,29 +1507,57 @@ let quizStreak = 0;
 let quizAnswered = false;
 let quizCorrectCount = 0;
 let quizBestStreak = 0;
+let quizWordBank = []; // Cache the word bank for the current quiz session to avoid rebuilds
 
 const quizWrap = document.getElementById('quizWrap');
 const quizToggle = document.getElementById('quizToggle');
 const quizInput = document.getElementById('quizInput');
 
+/**
+ * Calculates the Levenshtein distance between two strings.
+ * Optimized to use two 1D arrays (O(N) space) instead of a full 2D grid,
+ * greatly reducing memory allocation and garbage collection overhead.
+ */
 function levenshtein(a, b){
   const m = a.length, n = b.length;
   if(m === 0) return n;
   if(n === 0) return m;
-  const dp = Array.from({length: m+1}, () => new Array(n+1).fill(0));
-  for(let i=0;i<=m;i++) dp[i][0] = i;
-  for(let j=0;j<=n;j++) dp[0][j] = j;
-  for(let i=1;i<=m;i++){
-    for(let j=1;j<=n;j++){
-      const cost = a[i-1] === b[j-1] ? 0 : 1;
-      dp[i][j] = Math.min(
-        dp[i-1][j] + 1,
-        dp[i][j-1] + 1,
-        dp[i-1][j-1] + cost
+
+  // Ensure a is the shorter string to minimize space
+  let s1 = a, s2 = b;
+  if (s1.length > s2.length) {
+    s1 = b;
+    s2 = a;
+  }
+
+  const len1 = s1.length;
+  const len2 = s2.length;
+
+  let prev = new Array(len1 + 1);
+  let curr = new Array(len1 + 1);
+
+  for (let i = 0; i <= len1; i++) {
+    prev[i] = i;
+  }
+
+  for (let j = 1; j <= len2; j++) {
+    curr[0] = j;
+    const char2 = s2[j - 1];
+    for (let i = 1; i <= len1; i++) {
+      const cost = s1[i - 1] === char2 ? 0 : 1;
+      curr[i] = Math.min(
+        prev[i] + 1,      // deletion
+        curr[i - 1] + 1,  // insertion
+        prev[i - 1] + cost // substitution
       );
     }
+    // Swap arrays
+    const temp = prev;
+    prev = curr;
+    curr = temp;
   }
-  return dp[m][n];
+
+  return prev[len1];
 }
 
 function normalizeAnswer(s){
@@ -1569,6 +1597,14 @@ function buildWordBank(pool){
   return bank;
 }
 
+/**
+ * Check user's typed answer against the correct term using exact and fuzzy matching.
+ * Performance optimizations:
+ * 1. Checks exact match first (O(1)).
+ * 2. Employs length-difference early-pruning during the fuzzy search to skip
+ *    expensive Levenshtein computations when a word variant cannot possibly be the best match.
+ * 3. Prioritizes computing correct term's variants to set a tight distance baseline early.
+ */
 function checkAnswer(userInput, correctTerm, wordBank){
   const userNorm = normalizeAnswer(userInput);
   if(!userNorm) return false;
@@ -1577,17 +1613,34 @@ function checkAnswer(userInput, correctTerm, wordBank){
   const correctVariants = getAcceptableVariants(correctTerm);
   if(correctVariants.includes(userNorm)) return true;
 
-  // fuzzy match: find the closest variant in the whole word bank (typo tolerance),
-  // then check whether that closest match actually belongs to the correct term
+  // fuzzy match: find the closest variant in the whole word bank (typo tolerance)
   let best = null;
   let bestDist = Infinity;
+
+  // Optimization: Prioritize correct variants to set a low/ideal distance baseline first
+  correctVariants.forEach(variant => {
+    const dist = levenshtein(userNorm, variant);
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = { variant, term: correctTerm };
+    }
+  });
+
+  // Now scan the rest of the word bank, utilizing early length pruning
   wordBank.forEach(entry => {
+    // Length-difference early pruning: if the absolute difference in length
+    // is already >= our best distance so far, Levenshtein cannot possibly be smaller
+    if (Math.abs(userNorm.length - entry.variant.length) >= bestDist) {
+      return;
+    }
+
     const dist = levenshtein(userNorm, entry.variant);
     if(dist < bestDist){
       bestDist = dist;
       best = entry;
     }
   });
+
   if(!best) return false;
   const threshold = Math.max(1, Math.floor(best.variant.length * 0.25));
   return bestDist <= threshold && best.term === correctTerm;
@@ -1637,6 +1690,8 @@ function startQuizSession(){
   resetQuizCardStructure();
   const pool = getFiltered().length ? getFiltered() : DATA.filter(d => d.subject === activeSubject);
   quizDeck = shuffle(pool);
+  // Cache the full word bank for this quiz session to avoid reconstructing it on every single submission
+  quizWordBank = buildWordBank(quizDeck);
   quizIndex = 0;
   quizScore = 0;
   quizStreak = 0;
@@ -1683,9 +1738,9 @@ function renderQuizQuestion(){
 function submitQuizAnswer(){
   if(quizAnswered || !quizDeck.length) return;
   const d = quizDeck[quizIndex];
-  const pool = quizDeck;
-  const wordBank = buildWordBank(pool);
-  const correct = checkAnswer(quizInput.value, d.term, wordBank);
+  // Performance optimization: utilize the pre-built, cached quizWordBank
+  // instead of rebuilding the entire word bank on every single submit.
+  const correct = checkAnswer(quizInput.value, d.term, quizWordBank);
   quizAnswered = true;
   quizInput.disabled = true;
 
