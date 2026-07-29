@@ -221,6 +221,27 @@
   }
   .star-btn.starred{ color: var(--amber); }
 
+  .copy-btn{
+    position: absolute;
+    top: 10px; right: 35px;
+    background: none;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px;
+    z-index: 2;
+    opacity: 0.75;
+    transition: transform 0.1s ease, opacity 0.15s ease;
+  }
+  .copy-btn:hover{
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  .copy-btn:active{
+    transform: scale(0.9);
+  }
+
   .quiz-wrap{
     max-width: 620px;
     margin: 40px auto 0 auto;
@@ -1239,6 +1260,53 @@ function toggleStar(term){
   if(studyMode){ renderStudyCard(); } else { renderGrid(); }
 }
 
+function copyToClipboard(text, btnElement) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(() => showCopySuccess(btnElement))
+      .catch(err => {
+        console.error('Failed to copy: ', err);
+        fallbackCopyToClipboard(text, btnElement);
+      });
+  } else {
+    fallbackCopyToClipboard(text, btnElement);
+  }
+}
+
+function fallbackCopyToClipboard(text, btnElement) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.style.top = "0";
+  textArea.style.left = "0";
+  textArea.style.position = "fixed";
+  textArea.style.opacity = "0";
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try {
+    const successful = document.execCommand('copy');
+    if (successful) {
+      showCopySuccess(btnElement);
+    } else {
+      console.error('Fallback copy failed');
+    }
+  } catch (err) {
+    console.error('Fallback copy error: ', err);
+  }
+  document.body.removeChild(textArea);
+}
+
+function showCopySuccess(btnElement) {
+  if (!btnElement || btnElement.textContent === '✅') return;
+  const originalText = btnElement.textContent;
+  btnElement.textContent = '✅';
+  btnElement.title = 'Copied!';
+  setTimeout(() => {
+    btnElement.textContent = originalText;
+    btnElement.title = 'Copy term';
+  }, 1200);
+}
+
 const grid = document.getElementById('grid');
 const tabsEl = document.getElementById('tabs');
 const lensChipsEl = document.getElementById('lensChips');
@@ -1344,6 +1412,7 @@ function renderGrid(){
     const isStarred = starred.has(d.term);
     card.innerHTML = `
       <button class="star-btn ${isStarred ? 'starred' : ''}" title="Star to study later">${isStarred ? '★' : '☆'}</button>
+      <button class="copy-btn" title="Copy term">📋</button>
       <div class="card-inner">
         <div class="face ${colorClass(d.cat)}">
           <div class="tag">${d.sub}</div>
@@ -1359,6 +1428,10 @@ function renderGrid(){
     `;
     card.querySelector('.card-inner').onclick = () => card.classList.toggle('flipped');
     card.querySelector('.star-btn').onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
+    card.querySelector('.copy-btn').onclick = (e) => {
+      e.stopPropagation();
+      copyToClipboard(d.term, card.querySelector('.copy-btn'));
+    };
     grid.appendChild(card);
   });
 }
@@ -1472,6 +1545,18 @@ function renderStudyCard(){
   starBtn.textContent = isStarred ? '★' : '☆';
   starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
   card.appendChild(starBtn);
+
+  const existingCopy = card.querySelector('.copy-btn');
+  if(existingCopy) existingCopy.remove();
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'copy-btn';
+  copyBtn.title = 'Copy term';
+  copyBtn.textContent = '📋';
+  copyBtn.onclick = (e) => {
+    e.stopPropagation();
+    copyToClipboard(d.term, copyBtn);
+  };
+  card.appendChild(copyBtn);
 }
 
 document.getElementById('studyCard').querySelector('.card-inner').addEventListener('click', function(){
