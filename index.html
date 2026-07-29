@@ -769,6 +769,163 @@
     .code-lab-layout{ grid-template-columns: 1fr; }
     .code-panel{ position: static; }
   }
+
+  /* Mobile Usability & Responsiveness Adjustments */
+  @media (max-width: 600px) {
+    body {
+      padding: 0 0 40px 0;
+    }
+
+    header {
+      padding: 32px 16px 20px 16px;
+    }
+
+    .controls {
+      padding: 0 12px;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    /* Make search row and mode buttons fully responsive */
+    .search-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    #search {
+      width: 100%;
+      padding: 10px 14px;
+    }
+
+    /* Distribute mode buttons nicely on a row or grid */
+    .search-row .mode-btn {
+      width: 100%;
+      text-align: center;
+      padding: 11px 14px;
+      font-size: 13px;
+    }
+
+    /* Tabs & Lens Chips adjustments */
+    .tabs {
+      gap: 6px;
+    }
+
+    .tab {
+      padding: 6px 12px;
+      font-size: 11.5px;
+    }
+
+    .lens-chip {
+      padding: 6px 10px;
+      font-size: 11px;
+    }
+
+    /* Perfect grid/flexbox arrangement for toolbar icon buttons */
+    .toolbar-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+
+    .toolbar-row .icon-btn {
+      text-align: center;
+      padding: 10px 8px;
+      font-size: 11.5px;
+      margin: 0;
+      width: 100%;
+    }
+
+    /* Glossary cards readability and size scaling */
+    .grid {
+      padding: 0 12px;
+      gap: 14px;
+      grid-template-columns: 1fr; /* single column on narrow mobile screens */
+    }
+
+    .card {
+      height: 290px;
+    }
+
+    .face {
+      padding: 16px;
+    }
+
+    .term {
+      font-size: 19px;
+      margin-bottom: 6px;
+    }
+
+    .def, .analogy-text, .lens-block .lens-text {
+      font-size: 13px;
+    }
+
+    /* Study Mode enhancements */
+    .study-wrap {
+      padding: 0 12px;
+      gap: 16px;
+    }
+
+    .study-card {
+      height: 380px;
+    }
+
+    /* Quiz Mode adjustments */
+    .quiz-wrap {
+      padding: 0 12px;
+    }
+
+    .quiz-card {
+      padding: 18px;
+      min-height: 160px;
+    }
+
+    .quiz-prompt {
+      font-size: 15px;
+    }
+
+    .quiz-answer-row {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #quizInput {
+      width: 100%;
+      padding: 11px 14px;
+    }
+
+    #quizSubmit, #quizNameStart {
+      width: 100%;
+      padding: 11px 14px;
+    }
+
+    .quiz-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .quiz-stats {
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    /* Code Lab layout scroll controls */
+    .code-col {
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    .code-seg {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+
+    .code-panel {
+      min-height: auto;
+    }
+  }
 </style>
 </head>
 <body>
