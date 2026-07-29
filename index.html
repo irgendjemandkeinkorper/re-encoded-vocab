@@ -1640,13 +1640,23 @@ importFile.addEventListener('change', (e) => {
   reader.onload = (ev) => {
     try {
       const list = JSON.parse(ev.target.result);
+      if (!Array.isArray(list)) {
+        throw new Error('Imported data must be a JSON array');
+      }
+      const validTerms = new Set(DATA.map(d => d.term));
+      let count = 0;
       list.forEach(item => {
-        const term = typeof item === 'string' ? item : item.term;
-        if(term) starred.add(term);
+        const term = (item && typeof item === 'object' && 'term' in item) ? item.term : item;
+        if (typeof term === 'string' && validTerms.has(term)) {
+          if (!starred.has(term)) {
+            starred.add(term);
+            count++;
+          }
+        }
       });
       saveStarred();
       renderGrid();
-      alert(`Imported ${list.length} starred term(s).`);
+      alert(`Imported ${count} starred term(s).`);
     } catch(err){
       alert('Could not read that file — make sure it\'s a JSON export from this glossary.');
     }
@@ -1901,10 +1911,17 @@ function resetQuizCardStructure(){
 
 const SESSION_NAME_KEY = 'vocab_session_name';
 function getSessionName(){
-  try { return sessionStorage.getItem(SESSION_NAME_KEY) || ''; } catch(e){ return ''; }
+  try {
+    const val = sessionStorage.getItem(SESSION_NAME_KEY);
+    return typeof val === 'string' ? val.trim().slice(0, 40) : '';
+  } catch(e){
+    return '';
+  }
 }
 function setSessionName(name){
-  try { sessionStorage.setItem(SESSION_NAME_KEY, name); } catch(e){}
+  if (typeof name !== 'string') return;
+  const sanitized = name.trim().slice(0, 40);
+  try { sessionStorage.setItem(SESSION_NAME_KEY, sanitized); } catch(e){}
 }
 
 function enterQuiz(){
@@ -2086,7 +2103,7 @@ async function fetchAndRenderLeaderboard(){
       <div class="leaderboard-row">
         <span class="rank">#${i + 1}</span>
         <span class="name">${escHtml(row.session_name)}</span>
-        <span class="pts">${row.score} pts</span>
+        <span class="pts">${parseInt(row.score, 10) || 0} pts</span>
       </div>
     `).join('');
   } catch(e) {
@@ -2546,7 +2563,7 @@ const CODE_WALKS = [
         }
       },
       {
-        code: 'listEl.innerHTML = data.map((row, i) => `\n  <div class="leaderboard-row">\n    <span class="rank">#\${i + 1}</span>\n    <span class="name">\${escHtml(row.session_name)}</span>\n    <span class="pts">\${row.score} pts</span>\n  </div>\n`).join(\'\');',
+        code: 'listEl.innerHTML = data.map((row, i) => `\n  <div class="leaderboard-row">\n    <span class="rank">#\${i + 1}</span>\n    <span class="name">\${escHtml(row.session_name)}</span>\n    <span class="pts">\${parseInt(row.score, 10) || 0} pts</span>\n  </div>\n`).join(\'\');',
         plain: 'Convert the array of database score records into formatted HTML rows showing the rank number, player name, and their score.',
         lenses: {
           medical: 'Map the list of top patient outcomes to a waiting room screen displaying patient ranking, initials, and target recovery milestone.',
