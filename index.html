@@ -1582,6 +1582,10 @@ function renderGrid(){
   grid.innerHTML = '';
   emptyEl.style.display = filtered.length ? 'none' : 'block';
 
+  // Performance optimization: Use a DocumentFragment to batch DOM insertions
+  // and minimize layout thrashing and paint cycles.
+  const fragment = document.createDocumentFragment();
+
   filtered.forEach((d) => {
     const card = document.createElement('div');
     card.className = 'card';
@@ -1603,14 +1607,32 @@ function renderGrid(){
     `;
     card.querySelector('.card-inner').onclick = () => card.classList.toggle('flipped');
     card.querySelector('.star-btn').onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
-    grid.appendChild(card);
+    fragment.appendChild(card);
   });
+
+  grid.appendChild(fragment);
 }
 
-searchInput.addEventListener('input', (e) => {
+/**
+ * Debounces a function, delaying its execution until after the specified delay
+ * in milliseconds has elapsed since the last time the debounced function was called.
+ * This prevents rapid-fire executions (such as on keypress/input events).
+ */
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+// Debounce search input to avoid triggering heavy DOM reflows and filtering loops on every keystroke
+searchInput.addEventListener('input', debounce((e) => {
   searchTerm = e.target.value.toLowerCase();
   renderGrid();
-});
+}, 150));
 
 starredToggle.addEventListener('click', () => {
   starredOnly = !starredOnly;
