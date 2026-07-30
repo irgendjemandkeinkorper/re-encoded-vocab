@@ -1483,6 +1483,21 @@ function toggleTheme() {
   updateThemeButton();
 }
 
+/**
+ * Debounce helper to prevent rapid execution of expensive operations like rendering and filtering.
+ * Postpones execution of func until after wait milliseconds have elapsed since the last call.
+ */
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(context, args);
+    }, wait);
+  };
+}
+
 const grid = document.getElementById('grid');
 const tabsEl = document.getElementById('tabs');
 const lensChipsEl = document.getElementById('lensChips');
@@ -1582,6 +1597,9 @@ function renderGrid(){
   grid.innerHTML = '';
   emptyEl.style.display = filtered.length ? 'none' : 'block';
 
+  // Create a DocumentFragment to batch DOM insertions, minimizing repaints and layout recalculations
+  const fragment = document.createDocumentFragment();
+
   filtered.forEach((d) => {
     const card = document.createElement('div');
     card.className = 'card';
@@ -1603,14 +1621,16 @@ function renderGrid(){
     `;
     card.querySelector('.card-inner').onclick = () => card.classList.toggle('flipped');
     card.querySelector('.star-btn').onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
-    grid.appendChild(card);
+    fragment.appendChild(card);
   });
+
+  grid.appendChild(fragment);
 }
 
-searchInput.addEventListener('input', (e) => {
+searchInput.addEventListener('input', debounce((e) => {
   searchTerm = e.target.value.toLowerCase();
   renderGrid();
-});
+}, 150));
 
 starredToggle.addEventListener('click', () => {
   starredOnly = !starredOnly;
