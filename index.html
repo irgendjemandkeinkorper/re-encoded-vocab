@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://ezbkfhzddyjamndzhqxq.supabase.co wss://ezbkfhzddyjamndzhqxq.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
 <script>
   (function() {
     try {
@@ -1910,17 +1911,27 @@ function resetQuizCardStructure(){
 }
 
 const SESSION_NAME_KEY = 'vocab_session_name';
+
+function sanitizeName(name) {
+  if (typeof name !== 'string') return '';
+  // Strip any HTML/XML tags
+  let cleaned = name.replace(/<\/?[^>]+(>|$)/g, "");
+  // Limit to safe characters: alphanumeric, spaces, hyphens, underscores, dots
+  cleaned = cleaned.replace(/[^a-zA-Z0-9\s\-_.]/g, "");
+  return cleaned.trim().slice(0, 40);
+}
+
 function getSessionName(){
   try {
     const val = sessionStorage.getItem(SESSION_NAME_KEY);
-    return typeof val === 'string' ? val.trim().slice(0, 40) : '';
+    return sanitizeName(val);
   } catch(e){
     return '';
   }
 }
 function setSessionName(name){
-  if (typeof name !== 'string') return;
-  const sanitized = name.trim().slice(0, 40);
+  const sanitized = sanitizeName(name);
+  if (!sanitized) return;
   try { sessionStorage.setItem(SESSION_NAME_KEY, sanitized); } catch(e){}
 }
 
@@ -2132,8 +2143,13 @@ leaderboardOverlay.addEventListener('click', (e) => {
 
 document.getElementById('quizNameStart').addEventListener('click', () => {
   const name = document.getElementById('quizNameInput').value.trim();
-  if(!name){ document.getElementById('quizNameInput').focus(); return; }
-  setSessionName(name);
+  const sanitized = sanitizeName(name);
+  if(!sanitized){
+    alert("Please enter a valid name (alphanumeric, spaces, hyphens, underscores, and dots only).");
+    document.getElementById('quizNameInput').focus();
+    return;
+  }
+  setSessionName(sanitized);
   startQuizSession();
 });
 document.getElementById('quizNameInput').addEventListener('keydown', (e) => {
