@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://ezbkfhzddyjamndzhqxq.supabase.co wss://ezbkfhzddyjamndzhqxq.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
 <script>
   (function() {
@@ -1109,8 +1109,13 @@
 
   /* Mobile Usability & Responsiveness Adjustments */
   @media (max-width: 600px) {
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
     body {
-      padding: 0 0 40px 0;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) calc(60px + env(safe-area-inset-bottom)) env(safe-area-inset-left);
     }
 
     header {
@@ -1121,6 +1126,7 @@
       padding: 0 12px;
       gap: 12px;
       margin-top: 16px;
+      max-width: 100%;
     }
 
     /* Make search row and mode buttons fully responsive */
@@ -1132,46 +1138,99 @@
 
     #search {
       width: 100%;
-      padding: 10px 14px;
+      padding: 12px 14px;
+      font-size: 16px; /* Prevents auto-zoom on iOS safari */
+      min-height: 44px;
     }
 
     /* Distribute mode buttons nicely on a row or grid */
     .search-row .mode-btn {
       width: 100%;
       text-align: center;
-      padding: 11px 14px;
-      font-size: 13px;
+      padding: 12px 18px;
+      font-size: 14px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Tabs & Lens Chips adjustments */
+    /* Tabs & Lens Chips adjustments to scroll horizontally on small screens */
     .tabs {
-      gap: 6px;
-    }
-
-    .tab {
-      padding: 6px 12px;
-      font-size: 11.5px;
-    }
-
-    .lens-chip {
-      padding: 6px 10px;
-      font-size: 11px;
-    }
-
-    /* Perfect grid/flexbox arrangement for toolbar icon buttons */
-    .toolbar-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       gap: 8px;
-      width: 100%;
+      padding: 4px 12px 8px 12px;
+      margin-left: -12px;
+      margin-right: -12px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+    }
+    .tabs::-webkit-scrollbar {
+      height: 4px;
+    }
+    .tabs::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 4px;
+    }
+
+    .tab, .lens-chip {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      padding: 10px 16px;
+      font-size: 13px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Horizontal scroll track behavior for operations toolbar button row */
+    .toolbar-row {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      gap: 8px;
+      padding: 4px 12px 8px 12px;
+      margin-left: -12px;
+      margin-right: -12px;
+      scrollbar-width: thin;
+      width: calc(100% + 24px);
+    }
+    .toolbar-row::-webkit-scrollbar {
+      height: 4px;
+    }
+    .toolbar-row::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 4px;
     }
 
     .toolbar-row .icon-btn {
+      flex: 0 0 auto;
       text-align: center;
-      padding: 10px 8px;
-      font-size: 11.5px;
+      padding: 10px 16px;
+      font-size: 13px;
       margin: 0;
-      width: 100%;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Star button touch target boosting */
+    .star-btn {
+      top: 0;
+      right: 0;
+      width: 44px;
+      height: 44px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
     }
 
     /* Glossary cards readability and size scaling */
@@ -1182,7 +1241,7 @@
     }
 
     .card {
-      height: 290px;
+      height: 310px; /* added vertical room for larger text/scrolling blocks */
     }
 
     .face {
@@ -1194,8 +1253,25 @@
       margin-bottom: 6px;
     }
 
-    .def, .analogy-text, .lens-block .lens-text {
+    .def {
       font-size: 13px;
+      overflow-y: auto;
+      max-height: 120px;
+    }
+
+    .lens-stack {
+      overflow-y: auto;
+      max-height: 180px;
+    }
+
+    .analogy-text, .lens-block .lens-text {
+      font-size: 13px;
+    }
+
+    .example {
+      max-width: 100%;
+      overflow-x: auto;
+      word-break: break-all;
     }
 
     /* Study Mode enhancements */
@@ -1206,6 +1282,28 @@
 
     .study-card {
       height: 380px;
+    }
+
+    #studyBack {
+      overflow-y: auto;
+    }
+
+    .study-nav .mode-btn {
+      min-height: 44px;
+      padding: 12px 20px;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #shuffleBtn {
+      min-height: 44px;
+      padding: 12px 20px;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     /* Quiz Mode adjustments */
@@ -1227,14 +1325,21 @@
       gap: 8px;
     }
 
-    #quizInput {
+    #quizInput, #quizNameInput {
       width: 100%;
-      padding: 11px 14px;
+      padding: 12px 14px;
+      font-size: 16px; /* Prevents iOS auto-zoom on focus */
+      min-height: 44px;
     }
 
-    #quizSubmit, #quizNameStart {
+    #quizSubmit, #quizNameStart, #quizNext, #quizEnd {
       width: 100%;
-      padding: 11px 14px;
+      padding: 12px 14px;
+      font-size: 14px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .quiz-header {
@@ -1252,15 +1357,48 @@
     .code-col {
       max-height: 240px;
       overflow-y: auto;
+      overflow-x: auto; /* enable horizontal scrolling for long code blocks */
     }
 
     .code-seg {
       font-size: 11px;
-      padding: 4px 8px;
+      padding: 8px 10px; /* comfortable tap targets */
+      min-height: 36px;
     }
 
     .code-panel {
       min-height: auto;
+    }
+
+    /* Leaderboard popup optimization */
+    .leaderboard-overlay {
+      padding: calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left));
+    }
+
+    .leaderboard-panel {
+      max-height: calc(100vh - 40px);
+      max-height: calc(100dvh - 40px);
+      width: 100%;
+      margin: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #leaderboardList {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    #leaderboardClose {
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
     }
   }
 </style>
@@ -3084,6 +3222,19 @@ if (themeToggleBtn) {
   themeToggleBtn.addEventListener('click', toggleTheme);
 }
 updateThemeButton();
+
+// Mobile keyboard usability: scroll focused inputs into view to ensure they remain visible above software keyboard
+const inputsToScroll = ['search', 'quizNameInput', 'quizInput'];
+inputsToScroll.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('focus', (e) => {
+      setTimeout(() => {
+        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    });
+  }
+});
 
 renderSubjectTabs();
 renderTabs();
