@@ -1,0 +1,446 @@
+{
+  "$schema": "../schemas/learning-paths.schema.json",
+  "version": "1.0.0",
+  "paths": [
+    {
+      "id": "python-fundamentals",
+      "title": "Python Fundamentals",
+      "description": "Master the core programming concepts of the Python language, including primitive types, basic data structures, logical operations, and software modularity.",
+      "estimatedEffort": "8 hours",
+      "outcome": "Able to write, read, and understand basic modular Python programs, design simple functions, and handle standard runtime errors.",
+      "prerequisites": [
+        "Basic computer literacy"
+      ],
+      "modules": [
+        {
+          "id": "python-core-data",
+          "title": "Python Core and Primitive Types",
+          "description": "Learn the baseline building blocks of Python: how variables hold data, and how primitive data types model real-world concepts.",
+          "estimatedEffort": "2 hours",
+          "lessons": [
+            {
+              "id": "variables-and-types",
+              "title": "Variables and Data Types",
+              "description": "Discover how Python names values and stores different representations of data.",
+              "terms": [
+                { "term": "Variable", "cat": "python" },
+                { "term": "Data Type", "cat": "python" }
+              ]
+            },
+            {
+              "id": "strings-and-booleans",
+              "title": "Strings and Booleans",
+              "description": "Work with text data and basic logical flags.",
+              "terms": [
+                { "term": "String", "cat": "python" },
+                { "term": "Boolean", "cat": "python" }
+              ]
+            }
+          ],
+          "checkpoint": {
+            "id": "checkpoint-python-core",
+            "title": "Module 1 Review: Variable Binding & Types",
+            "description": "A review challenge testing your knowledge of storage, strings, and true/false flags.",
+            "completionRequirements": {
+              "type": "quiz",
+              "description": "Pass the Python Core & Types quiz on variables, string operations, and booleans with 100% correct answers.",
+              "minScore": 100
+            }
+          }
+        },
+        {
+          "id": "python-collections",
+          "title": "Structured Collections",
+          "description": "Organize data using list collections, key-value mappings, immutable sequences, and sequence positions.",
+          "estimatedEffort": "2 hours",
+          "lessons": [
+            {
+              "id": "lists-and-indexing",
+              "title": "Lists and Indexing",
+              "description": "Learn about ordered mutable sequences and how to target items by their positional indexes.",
+              "terms": [
+                { "term": "List", "cat": "python" },
+                { "term": "Index", "cat": "python" }
+              ]
+            },
+            {
+              "id": "dictionaries-and-tuples",
+              "title": "Dictionaries and Tuples",
+              "description": "Deepen your collection knowledge with key-value pairs and immutable, read-only structures.",
+              "terms": [
+                { "term": "Dictionary", "cat": "python" },
+                { "term": "Tuple", "cat": "python" }
+              ]
+            }
+          ],
+          "checkpoint": {
+            "id": "checkpoint-python-collections",
+            "title": "Module 2 Review: Data Collections",
+            "description": "Evaluate your understanding of structural mutability, indexing offsets, and hash lookups.",
+            "completionRequirements": {
+              "type": "quiz",
+              "description": "Complete the data collections assessment with a score of 80% or higher.",
+              "minScore": 80
+            }
+          }
+        },
+        {
+          "id": "python-flow-and-logic",
+          "title": "Flow Control and Executable Logic",
+          "description": "Unleash program responsiveness through functional components, arguments, conditionals, and loops.",
+          "estimatedEffort": "2.5 hours",
+          "lessons": [
+            {
+              "id": "functions-and-returns",
+              "title": "Functions, Parameters, and Return Values",
+              "description": "Package reusable procedures that accept inputs and hand back processed outcomes.",
+              "terms": [
+                { "term": "Function", "cat": "python" },
+                { "term": "Parameter / Argument", "cat": "python" },
+                { "term": "Return Value", "cat": "python" }
+              ]
+            },
+            {
+              "id": "conditionals-and-loops",
+              "title": "Conditionals and Loops",
+              "description": "Add branching paths and cyclic loops to repeat work efficiently.",
+              "terms": [
+                { "term": "Conditional (if / elif / else)", "cat": "python" },
+                { "term": "For Loop", "cat": "python" },
+                { "term": "While Loop", "cat": "python" }
+              ]
+            }
+          ],
+          "checkpoint": {
+            "id": "checkpoint-python-logic",
+            "title": "Module 3 Review: Operational Flow Control",
+            "description": "A quiz testing logic pathways, conditional expressions, and finite versus infinite loops.",
+            "completionRequirements": {
+              "type": "quiz",
+              "description": "Pass the interactive operational flow control test with 90% or higher.",
+              "minScore": 90
+            }
+          }
+        },
+        {
+          "id": "python-modularity-and-structure",
+          "title": "Object Modularity and Robust Structure",
+          "description": "Master clean design using object orientation, imported codebases, robust fail-safes, and clean documentation.",
+          "estimatedEffort": "1.5 hours",
+          "lessons": [
+            {
+              "id": "classes-and-modules",
+              "title": "Classes, Objects, and Imports",
+              "description": "Model structured data types with object classes and tap into outer code modules.",
+              "terms": [
+                { "term": "Class / Object", "cat": "python" },
+                { "term": "Import / Module", "cat": "python" }
+              ]
+            },
+            {
+              "id": "errors-and-documentation",
+              "title": "Error Handling and Comments",
+              "description": "Write fail-proof execution flows and record clear, human-readable commentary.",
+              "terms": [
+                { "term": "Try / Except", "cat": "python" },
+                { "term": "Comment (#)", "cat": "python" }
+              ]
+            }
+          ]
+        }
+      ],
+      "finalCheckpoint": {
+        "id": "final-checkpoint-python",
+        "title": "Python Foundations Graduation",
+        "description": "Bring all fundamentals together by demonstrating full conceptual grasp of Python syntax, logic, collections, and errors.",
+        "completionRequirements": {
+          "type": "quiz",
+          "description": "Complete the comprehensive Python cumulative final exam with at least an 85% score.",
+          "minScore": 85
+        }
+      }
+    },
+    {
+      "id": "software-testing-foundations",
+      "title": "Software Testing Foundations",
+      "description": "Gain a solid grasp of software testing methodology, lifecycle phases, verification levels, defect triage, and Agile collaboration.",
+      "estimatedEffort": "6 hours",
+      "outcome": "Understand how software quality assurance fits into modern product development, design useful test scenarios, and write structured bug reports.",
+      "prerequisites": [
+        "Basic software development awareness"
+      ],
+      "modules": [
+        {
+          "id": "qa-lifecycle-and-design",
+          "title": "Lifecycle, Scope, and Design",
+          "description": "Establish the foundational phases of software creation, analyzing requirements, and organizing structured test rules.",
+          "estimatedEffort": "1.5 hours",
+          "lessons": [
+            {
+              "id": "sdlc-and-requirements",
+              "title": "The Lifecycle and Requirements",
+              "description": "Learn the stages of software creation and how to translate user expectations into testable rules.",
+              "terms": [
+                { "term": "SDLC (Software Development Life Cycle)", "cat": "qa" },
+                { "term": "Requirements Gathering", "cat": "qa" }
+              ]
+            },
+            {
+              "id": "plans-and-cases",
+              "title": "Test Planning and Cases",
+              "description": "Formulate a systematic strategy and detailed step-by-step verification flows.",
+              "terms": [
+                { "term": "Test Plan", "cat": "qa" },
+                { "term": "Test Case", "cat": "qa" }
+              ]
+            }
+          ],
+          "checkpoint": {
+            "id": "checkpoint-qa-design",
+            "title": "Module 1 Review: QA Planning and Analysis",
+            "description": "Demonstrate understanding of requirement parsing and basic test planning structure.",
+            "completionRequirements": {
+              "type": "self_assessment",
+              "description": "Complete a mock review of a test plan document against user requirements."
+            }
+          }
+        },
+        {
+          "id": "qa-verification-levels",
+          "title": "Testing Levels and Verification Scope",
+          "description": "Study the multi-tiered pyramid of testing, from early functional units up to actual end-user expectations.",
+          "estimatedEffort": "2 hours",
+          "lessons": [
+            {
+              "id": "low-and-mid-level-tests",
+              "title": "Unit, Integration, and Regression Verification",
+              "description": "Understand how code isolations and system compositions are validated, and how to verify old features don't break.",
+              "terms": [
+                { "term": "Unit Test", "cat": "qa" },
+                { "term": "Integration Test", "cat": "qa" },
+                { "term": "Regression Test", "cat": "qa" }
+              ]
+            },
+            {
+              "id": "high-level-and-fringe",
+              "title": "Smoke, Acceptance, and Fringe Conditions",
+              "description": "Conduct rapid sanity tests, coordinate final user signs-offs, and target tricky off-limit variables.",
+              "terms": [
+                { "term": "Smoke Test", "cat": "qa" },
+                { "term": "UAT (User Acceptance Testing)", "cat": "qa" },
+                { "term": "Edge Case", "cat": "qa" }
+              ]
+            }
+          ],
+          "checkpoint": {
+            "id": "checkpoint-qa-levels",
+            "title": "Module 2 Review: Levels & Scope",
+            "description": "A quiz measuring understanding of unit tests versus UAT, regression impacts, and edge cases.",
+            "completionRequirements": {
+              "type": "quiz",
+              "description": "Score 85% or higher on the Testing Levels Quiz.",
+              "minScore": 85
+            }
+          }
+        },
+        {
+          "id": "qa-defect-management",
+          "title": "Defect Management and Triage",
+          "description": "Master how to spot deviations from expected results, triage their severity, and write reproducible steps.",
+          "estimatedEffort": "1 hour",
+          "lessons": [
+            {
+              "id": "bugs-and-reproduction",
+              "title": "Bugs and Replication Paths",
+              "description": "Understand what constitutes a defect and how to construct unambiguous paths to expose them.",
+              "terms": [
+                { "term": "Bug", "cat": "qa" },
+                { "term": "Reproduction Steps", "cat": "qa" }
+              ]
+            },
+            {
+              "id": "triage-severity-priority",
+              "title": "Triage and Priority Assessment",
+              "description": "Learn to separate technical functional severity from business priority and timelines.",
+              "terms": [
+                { "term": "Severity vs. Priority", "cat": "qa" }
+              ]
+            }
+          ],
+          "checkpoint": {
+            "id": "checkpoint-qa-defects",
+            "title": "Module 3 Review: Bug Logging and Priority Triaging",
+            "description": "Simulated exercise logging a defect and assigning realistic severity/priority ratings.",
+            "completionRequirements": {
+              "type": "self_assessment",
+              "description": "Assess a mock bug report and verify it contains clear, repeatable reproduction steps."
+            }
+          }
+        },
+        {
+          "id": "qa-agile-delivery",
+          "title": "Agile Delivery and Collaboration",
+          "description": "Integrate software testing into standard collaborative Agile teams, sprint cycles, and standup channels.",
+          "estimatedEffort": "1.5 hours",
+          "lessons": [
+            {
+              "id": "sprints-and-backlogs",
+              "title": "Sprints and Backlog Management",
+              "description": "Discover how quality goals fit into fixed-duration delivery sprints and product backlogs.",
+              "terms": [
+                { "term": "Sprint", "cat": "qa" },
+                { "term": "Backlog", "cat": "qa" }
+              ]
+            },
+            {
+              "id": "standups-and-retros",
+              "title": "Daily Alignment and Retrospectives",
+              "description": "Participate in quick daily status alignments and post-sprint reflection loops.",
+              "terms": [
+                { "term": "Standup", "cat": "qa" },
+                { "term": "Retrospective (Retro)", "cat": "qa" }
+              ]
+            }
+          ]
+        }
+      ],
+      "finalCheckpoint": {
+        "id": "final-checkpoint-testing",
+        "title": "Quality Assurance Specialist Examination",
+        "description": "A final evaluation testing your core QA knowledge from specifications analysis through to agile team shipping.",
+        "completionRequirements": {
+          "type": "quiz",
+          "description": "Achieve a minimum score of 90% on the Software Testing cumulative final examination.",
+          "minScore": 90
+        }
+      }
+    },
+    {
+      "id": "intro-to-philosophy",
+      "title": "Introduction to Philosophy",
+      "description": "Explore the history of classical thought, ancient moral pathways, the foundational structure of arguments, and critical thinking fallacies.",
+      "estimatedEffort": "10 hours",
+      "outcome": "Analyze classical philosophical frameworks, apply stoic concepts of control, and spot logical fallacies in real-world arguments.",
+      "prerequisites": [
+        "Open-mindedness and willingness to challenge preconceptions"
+      ],
+      "modules": [
+        {
+          "id": "phil-classical-roots",
+          "title": "Classical Foundations and Virtues",
+          "description": "Step into ancient Athens to explore Plato's idealism, Aristotle's ethical balance, and Socrates' inquiry methods.",
+          "estimatedEffort": "3.5 hours",
+          "lessons": [
+            {
+              "id": "socratic-and-platonic",
+              "title": "Socratic Method, Platonic Forms, and the Cave",
+              "description": "Learn to query assumptions using guided questioning, investigate the Theory of Forms, and escape the cognitive cave.",
+              "terms": [
+                { "term": "Socrates", "cat": "philosophers" },
+                { "term": "Plato", "cat": "philosophers" },
+                { "term": "Socratic Method", "cat": "ancient" },
+                { "term": "Theory of Forms", "cat": "ancient" },
+                { "term": "Allegory of the Cave", "cat": "ancient" }
+              ]
+            },
+            {
+              "id": "aristotelian-ethics",
+              "title": "Aristotelian Ethics and the Mean",
+              "description": "Study character development, virtue systems, and finding balance in human action.",
+              "terms": [
+                { "term": "Aristotle", "cat": "philosophers" },
+                { "term": "Virtue Ethics", "cat": "ancient" },
+                { "term": "The Golden Mean", "cat": "ancient" }
+              ]
+            }
+          ],
+          "checkpoint": {
+            "id": "checkpoint-phil-ancient",
+            "title": "Module 1 Review: The Classical Athenian Legacy",
+            "description": "Test your mastery of Platonic Forms, Socratic inquiry, and Aristotle's ethics.",
+            "completionRequirements": {
+              "type": "quiz",
+              "description": "Score 85% or higher on the Athenian Foundations quiz.",
+              "minScore": 85
+            }
+          }
+        },
+        {
+          "id": "phil-stoic-philosophy",
+          "title": "Stoicism and Practical Resilience",
+          "description": "Examine how Stoicism equips individuals to maintain focus, handle misfortune, and achieve tranquil resilience.",
+          "estimatedEffort": "3 hours",
+          "lessons": [
+            {
+              "id": "control-and-resilience",
+              "title": "The Dichotomy of Control and Acceptance",
+              "description": "Partition inputs into those under your control versus those that are not, and practice mental resilience.",
+              "terms": [
+                { "term": "Stoicism", "cat": "stoicism" },
+                { "term": "Dichotomy of Control", "cat": "stoicism" },
+                { "term": "Amor Fati", "cat": "stoicism" }
+              ]
+            },
+            {
+              "id": "stoic-practices",
+              "title": "Stoic Meditations on Mortality and Risk",
+              "description": "Explore practical exercises like contemplating mortality and pre-visualizing worst-case risks.",
+              "terms": [
+                { "term": "Memento Mori", "cat": "stoicism" },
+                { "term": "Premeditatio Malorum", "cat": "stoicism" }
+              ]
+            }
+          ],
+          "checkpoint": {
+            "id": "checkpoint-phil-stoicism",
+            "title": "Module 2 Review: Stoic Praxis",
+            "description": "An interactive exercise where you apply Stoic principles to modern stressors and challenges.",
+            "completionRequirements": {
+              "type": "self_assessment",
+              "description": "Complete the 'Modern Stoic Response' reflection journal to identify things within your sphere of control."
+            }
+          }
+        },
+        {
+          "id": "phil-logic-and-fallacies",
+          "title": "Critical Logic and Fallacies",
+          "description": "Acquire the formal tools of deductive arguments, learn structural validity, and dissect common cognitive fallacies.",
+          "estimatedEffort": "3.5 hours",
+          "lessons": [
+            {
+              "id": "argument-structures",
+              "title": "Argument Syllogisms, Validity, and Soundness",
+              "description": "Construct valid logical deductions and separate valid structures from factual truths.",
+              "terms": [
+                { "term": "Syllogism", "cat": "logic_rhetoric" },
+                { "term": "Premise vs. Conclusion", "cat": "logic_rhetoric" },
+                { "term": "Sound vs. Valid Argument", "cat": "logic_rhetoric" }
+              ]
+            },
+            {
+              "id": "common-logical-fallacies",
+              "title": "Identifying Logical Fallacies",
+              "description": "Learn to detect and avoid ad hominem personal attacks, straw man caricatures, false choices, and slippery slopes.",
+              "terms": [
+                { "term": "Ad Hominem", "cat": "fallacies" },
+                { "term": "Straw Man", "cat": "fallacies" },
+                { "term": "False Dilemma", "cat": "fallacies" },
+                { "term": "Slippery Slope", "cat": "fallacies" }
+              ]
+            }
+          ]
+        }
+      ],
+      "finalCheckpoint": {
+        "id": "final-checkpoint-philosophy",
+        "title": "Philosophical Synthesis & Critical Thinking Review",
+        "description": "Evaluate arguments for sound deductive logic, identify underlying moral theories, and demonstrate practical application of ancient frameworks.",
+        "completionRequirements": {
+          "type": "quiz",
+          "description": "Complete the Introduction to Philosophy Comprehensive Exam with at least an 80% passing grade.",
+          "minScore": 80
+        }
+      }
+    }
+  ]
+}
