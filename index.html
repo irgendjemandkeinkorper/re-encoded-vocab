@@ -97,6 +97,28 @@
 
   *{ box-sizing: border-box; }
 
+  .sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
+
+  :is(button, input):focus-visible{
+    outline: 3px solid var(--amber);
+    outline-offset: 3px;
+  }
+
+  .card-inner:focus-visible{
+    outline: 3px solid var(--amber);
+    outline-offset: 4px;
+  }
+
   body{
     margin:0;
     background:
@@ -939,15 +961,16 @@
 <div class="controls">
   <div class="tabs" id="subjectTabs" style="margin-bottom:4px;"></div>
   <div class="search-row">
+    <label class="sr-only" for="search">Search vocabulary</label>
     <input id="search" type="text" placeholder="Search a term or keyword…" autocomplete="off">
-    <button class="mode-btn" id="studyToggle">Study Mode</button>
-    <button class="mode-btn" id="quizToggle">Quiz Mode</button>
-    <button class="mode-btn" id="codeLabToggle">Code Lab</button>
+    <button class="mode-btn" id="studyToggle" aria-pressed="false">Study Mode</button>
+    <button class="mode-btn" id="quizToggle" aria-pressed="false">Quiz Mode</button>
+    <button class="mode-btn" id="codeLabToggle" aria-pressed="false">Code Lab</button>
   </div>
   <div class="tabs" id="tabs"></div>
   <div class="tabs" id="lensChips"></div>
   <div class="toolbar-row">
-    <button class="icon-btn" id="starredToggle">☆ Starred only</button>
+    <button class="icon-btn" id="starredToggle" aria-pressed="false">☆ Starred only</button>
     <button class="icon-btn" id="exportBtn">⬇ Export starred (JSON)</button>
     <button class="icon-btn" id="importBtn">⬆ Import list</button>
     <button class="icon-btn" id="leaderboardBtnMain">🏆 Leaderboard</button>
@@ -999,6 +1022,7 @@
   <div class="quiz-name-screen" id="quizNameScreen">
     <p class="quiz-name-intro">Enter a name to join the shared leaderboard for this session (it's cleared when you close the tab).</p>
     <div class="quiz-answer-row">
+      <label class="sr-only" for="quizNameInput">Leaderboard name</label>
       <input id="quizNameInput" type="text" placeholder="Your name…" autocomplete="off" maxlength="40">
       <button class="mode-btn" id="quizNameStart">Start Quiz</button>
     </div>
@@ -1008,6 +1032,7 @@
     <div class="quiz-progress" id="quizProgress"></div>
     <div class="quiz-card" id="quizCardEl"></div>
     <div class="quiz-answer-row" id="quizAnswerRow">
+      <label class="sr-only" for="quizInput">Quiz answer</label>
       <input id="quizInput" type="text" placeholder="Type the term…" autocomplete="off">
       <button class="mode-btn" id="quizSubmit">Submit</button>
     </div>
@@ -1037,10 +1062,10 @@
 </div>
 
 <div class="leaderboard-overlay" id="leaderboardOverlay">
-  <div class="leaderboard-panel">
+  <div class="leaderboard-panel" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
     <div class="leaderboard-header">
-      <h3>🏆 Leaderboard</h3>
-      <button class="icon-btn" id="leaderboardClose">✕ Close</button>
+      <h3 id="leaderboardTitle">🏆 Leaderboard</h3>
+      <button class="icon-btn" id="leaderboardClose" aria-label="Close leaderboard">✕ Close</button>
     </div>
     <div class="tabs" id="leaderboardSubjectTabs" style="margin-bottom:14px;"></div>
     <div id="leaderboardList">Loading…</div>
@@ -1362,7 +1387,6 @@ const DATA = [
 const SUBJECTS = [
   {key:'coding', label:'💻 Coding & QA'},
   {key:'philosophy', label:'🏛️ Philosophy'},
-  {key:'school', label:'🎓 School Subjects'},
 
 ];
 
@@ -1547,6 +1571,7 @@ function buildLensChipsInto(container){
     const chip = document.createElement('button');
     const active = selectedLenses.has(l.key);
     chip.className = 'lens-chip' + (active ? ' active' : '');
+    chip.setAttribute('aria-pressed', String(active));
     chip.style.setProperty('--chip-color', l.color);
     chip.innerHTML = `<span class="dot"></span>${l.icon} ${l.label}`;
     chip.onclick = () => {
@@ -1586,7 +1611,7 @@ function buildLensStackHTML(d){
   return order.map(l => `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
-      <div class="lens-text">${getLensText(d, l.key)}</div>
+      <div class="lens-text">${escHtml(getLensText(d, l.key))}</div>
     </div>
   `).join('');
 }
@@ -1605,22 +1630,39 @@ function renderGrid(){
     card.className = 'card';
     const isStarred = starred.has(d.term);
     card.innerHTML = `
-      <button class="star-btn ${isStarred ? 'starred' : ''}" title="Star to study later">${isStarred ? '★' : '☆'}</button>
+      <button class="star-btn ${isStarred ? 'starred' : ''}" title="Star to study later" aria-label="${isStarred ? 'Remove' : 'Add'} ${escHtml(d.term)} ${isStarred ? 'from' : 'to'} starred terms" aria-pressed="${isStarred}">${isStarred ? '★' : '☆'}</button>
       <div class="card-inner">
         <div class="face ${colorClass(d.cat)}">
-          <div class="tag">${d.sub}</div>
-          <div class="term">${d.term}</div>
-          <div class="def">${d.def}</div>
+          <div class="tag">${escHtml(d.sub)}</div>
+          <div class="term">${escHtml(d.term)}</div>
+          <div class="def">${escHtml(d.def)}</div>
           <div class="flip-hint">tap to flip</div>
         </div>
         <div class="face back ${colorClass(d.cat)}">
           <div class="lens-stack">${buildLensStackHTML(d)}</div>
-          ${d.ex ? `<div class="example">${d.ex}</div>` : ''}
+          ${d.ex ? `<div class="example">${escHtml(d.ex)}</div>` : ''}
         </div>
       </div>
     `;
-    card.querySelector('.card-inner').onclick = () => card.classList.toggle('flipped');
-    card.querySelector('.star-btn').onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
+    const inner = card.querySelector('.card-inner');
+    const starBtn = card.querySelector('.star-btn');
+    const updateFlipState = (flipped) => {
+      card.classList.toggle('flipped', flipped);
+      inner.setAttribute('aria-pressed', String(flipped));
+      inner.setAttribute('aria-label', flipped ? `Hide translations for ${d.term}` : `Show translations for ${d.term}`);
+    };
+    inner.setAttribute('role', 'button');
+    inner.setAttribute('tabindex', '0');
+    inner.setAttribute('aria-pressed', 'false');
+    inner.setAttribute('aria-label', `Show translations for ${d.term}`);
+    inner.onclick = () => updateFlipState(!card.classList.contains('flipped'));
+    inner.onkeydown = (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        updateFlipState(!card.classList.contains('flipped'));
+      }
+    };
+    starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
     fragment.appendChild(card);
   });
 
@@ -1636,6 +1678,7 @@ starredToggle.addEventListener('click', () => {
   starredOnly = !starredOnly;
   starredToggle.textContent = starredOnly ? '★ Starred only' : '☆ Starred only';
   starredToggle.classList.toggle('active-toggle', starredOnly);
+  starredToggle.setAttribute('aria-pressed', String(starredOnly));
   renderGrid();
 });
 
@@ -1695,11 +1738,24 @@ function shuffle(arr){
   return a;
 }
 
+function getFilteredOrShowEmpty(modeLabel){
+  const filtered = getFiltered();
+  if(filtered.length) return filtered;
+  renderGrid();
+  emptyEl.textContent = `No cards match the current filters, so ${modeLabel} cannot start yet.`;
+  emptyEl.style.display = 'block';
+  return null;
+}
+
 function enterStudy(){
-  if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; }
-  if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; }
+  const filtered = getFilteredOrShowEmpty('Study Mode');
+  if(!filtered) return;
+  if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; quizToggle.setAttribute('aria-pressed', 'false'); }
+  if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; codeLabToggle.setAttribute('aria-pressed', 'false'); }
   studyMode = true;
-  studyDeck = shuffle(getFiltered().length ? getFiltered() : DATA);
+  studyToggle.textContent = 'Exit Study Mode';
+  studyToggle.setAttribute('aria-pressed', 'true');
+  studyDeck = shuffle(filtered);
   studyIndex = 0;
   document.querySelector('.controls').style.display = 'none';
   countEl.style.display = 'none';
@@ -1711,6 +1767,7 @@ function enterStudy(){
 
 function exitStudy(){
   studyMode = false;
+  studyToggle.setAttribute('aria-pressed', 'false');
   document.querySelector('.controls').style.display = 'flex';
   countEl.style.display = 'block';
   grid.style.display = 'grid';
@@ -1724,7 +1781,12 @@ function renderStudyCard(){
   if(!studyDeck.length) return;
   const d = studyDeck[studyIndex];
   const card = document.getElementById('studyCard');
+  const inner = card.querySelector('.card-inner');
   card.classList.remove('flipped');
+  inner.setAttribute('role', 'button');
+  inner.setAttribute('tabindex', '0');
+  inner.setAttribute('aria-pressed', 'false');
+  inner.setAttribute('aria-label', `Show translations for ${d.term}`);
   const front = document.getElementById('studyFront');
   const back = document.getElementById('studyBack');
   front.className = 'face ' + colorClass(d.cat);
@@ -1743,19 +1805,34 @@ function renderStudyCard(){
   const isStarred = starred.has(d.term);
   starBtn.className = 'star-btn' + (isStarred ? ' starred' : '');
   starBtn.title = 'Star to study later';
+  starBtn.setAttribute('aria-label', `${isStarred ? 'Remove' : 'Add'} ${d.term} ${isStarred ? 'from' : 'to'} starred terms`);
+  starBtn.setAttribute('aria-pressed', String(isStarred));
   starBtn.textContent = isStarred ? '★' : '☆';
   starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
   card.appendChild(starBtn);
 }
 
-document.getElementById('studyCard').querySelector('.card-inner').addEventListener('click', function(){
-  document.getElementById('studyCard').classList.toggle('flipped');
+function toggleStudyCard(){
+  const card = document.getElementById('studyCard');
+  const inner = card.querySelector('.card-inner');
+  const flipped = !card.classList.contains('flipped');
+  card.classList.toggle('flipped', flipped);
+  inner.setAttribute('aria-pressed', String(flipped));
+  inner.setAttribute('aria-label', flipped ? 'Hide translations' : 'Show translations');
+}
+
+document.getElementById('studyCard').querySelector('.card-inner').addEventListener('click', toggleStudyCard);
+document.getElementById('studyCard').querySelector('.card-inner').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter' || e.key === ' '){
+    e.preventDefault();
+    toggleStudyCard();
+  }
 });
 
 document.getElementById('backToGlossary').addEventListener('click', exitStudy);
 
 studyToggle.addEventListener('click', () => {
-  if(studyMode){ exitStudy(); } else { studyToggle.textContent = 'Exit Study Mode'; enterStudy(); }
+  if(studyMode){ exitStudy(); } else { enterStudy(); }
 });
 
 document.getElementById('prevBtn').addEventListener('click', () => {
@@ -1945,9 +2022,12 @@ function setSessionName(name){
 }
 
 function enterQuiz(){
-  if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; }
-  if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; }
+  if(!getFilteredOrShowEmpty('Quiz Mode')) return;
+  if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; studyToggle.setAttribute('aria-pressed', 'false'); }
+  if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; codeLabToggle.setAttribute('aria-pressed', 'false'); }
   quizMode = true;
+  quizToggle.textContent = 'Exit Quiz Mode';
+  quizToggle.setAttribute('aria-pressed', 'true');
   document.querySelector('.controls').style.display = 'none';
   countEl.style.display = 'none';
   grid.style.display = 'none';
@@ -1969,7 +2049,11 @@ function startQuizSession(){
   document.getElementById('quizNameScreen').style.display = 'none';
   document.getElementById('quizBody').style.display = 'block';
   resetQuizCardStructure();
-  const pool = getFiltered().length ? getFiltered() : DATA.filter(d => d.subject === activeSubject);
+  const pool = getFiltered();
+  if(!pool.length){
+    exitQuiz();
+    return;
+  }
   quizDeck = shuffle(pool);
   // Cache the full word bank for this quiz session to avoid reconstructing it on every single submission
   quizWordBank = buildWordBank(quizDeck);
@@ -1983,6 +2067,7 @@ function startQuizSession(){
 
 function exitQuiz(){
   quizMode = false;
+  quizToggle.setAttribute('aria-pressed', 'false');
   document.querySelector('.controls').style.display = 'flex';
   countEl.style.display = 'block';
   grid.style.display = 'grid';
@@ -2083,6 +2168,7 @@ function showQuizSummary(){
 // ---- Leaderboard viewing ----
 const leaderboardOverlay = document.getElementById('leaderboardOverlay');
 let leaderboardSubject = 'coding';
+let leaderboardReturnFocus = null;
 
 function renderLeaderboardSubjectTabs(){
   const el = document.getElementById('leaderboardSubjectTabs');
@@ -2135,19 +2221,46 @@ async function fetchAndRenderLeaderboard(){
 function openLeaderboard(){
   // default the modal's subject to whichever subject is currently active on the page,
   // but the in-modal tabs let you switch freely from there
+  leaderboardReturnFocus = document.activeElement;
   leaderboardSubject = activeSubject;
   renderLeaderboardSubjectTabs();
   leaderboardOverlay.classList.add('active');
+  document.getElementById('leaderboardClose').focus();
   fetchAndRenderLeaderboard();
+}
+
+function closeLeaderboard(){
+  leaderboardOverlay.classList.remove('active');
+  if(leaderboardReturnFocus && typeof leaderboardReturnFocus.focus === 'function'){
+    leaderboardReturnFocus.focus();
+  }
+  leaderboardReturnFocus = null;
 }
 
 document.getElementById('leaderboardBtn').addEventListener('click', openLeaderboard);
 document.getElementById('leaderboardBtnMain').addEventListener('click', openLeaderboard);
-document.getElementById('leaderboardClose').addEventListener('click', () => {
-  leaderboardOverlay.classList.remove('active');
-});
+document.getElementById('leaderboardClose').addEventListener('click', closeLeaderboard);
 leaderboardOverlay.addEventListener('click', (e) => {
-  if(e.target === leaderboardOverlay) leaderboardOverlay.classList.remove('active');
+  if(e.target === leaderboardOverlay) closeLeaderboard();
+});
+leaderboardOverlay.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){
+    e.preventDefault();
+    closeLeaderboard();
+    return;
+  }
+  if(e.key !== 'Tab') return;
+  const focusable = [...leaderboardOverlay.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')];
+  if(!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if(e.shiftKey && document.activeElement === first){
+    e.preventDefault();
+    last.focus();
+  } else if(!e.shiftKey && document.activeElement === last){
+    e.preventDefault();
+    first.focus();
+  }
 });
 
 document.getElementById('quizNameStart').addEventListener('click', () => {
@@ -2161,7 +2274,7 @@ document.getElementById('quizNameInput').addEventListener('keydown', (e) => {
 });
 
 quizToggle.addEventListener('click', () => {
-  if(quizMode){ exitQuiz(); } else { quizToggle.textContent = 'Exit Quiz Mode'; enterQuiz(); }
+  if(quizMode){ exitQuiz(); } else { enterQuiz(); }
 });
 document.getElementById('backToGlossaryQuiz').addEventListener('click', exitQuiz);
 document.getElementById('quizSubmit').addEventListener('click', submitQuizAnswer);
@@ -2625,7 +2738,7 @@ function buildSegLensStackHTML(seg){
     return `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
-      <div class="lens-text">${txt ? txt : '<span style="opacity:.55">translation coming soon</span>'}</div>
+      <div class="lens-text">${txt ? escHtml(txt) : '<span style="opacity:.55">translation coming soon</span>'}</div>
     </div>`;
   }).join('');
 }
@@ -2669,10 +2782,11 @@ function renderCodePanel(){
 }
 
 function enterCodeLab(){
-  if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; }
-  if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; }
+  if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; studyToggle.setAttribute('aria-pressed', 'false'); }
+  if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; quizToggle.setAttribute('aria-pressed', 'false'); }
   codeLabMode = true;
   codeLabToggle.textContent = 'Exit Code Lab';
+  codeLabToggle.setAttribute('aria-pressed', 'true');
   document.querySelector('.controls').style.display = 'none';
   countEl.style.display = 'none';
   grid.style.display = 'none';
@@ -2687,6 +2801,7 @@ function enterCodeLab(){
 function exitCodeLab(){
   codeLabMode = false;
   codeLabToggle.textContent = 'Code Lab';
+  codeLabToggle.setAttribute('aria-pressed', 'false');
   codeWrap.classList.remove('active');
   document.querySelector('.controls').style.display = 'flex';
   countEl.style.display = 'block';
