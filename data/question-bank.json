@@ -1,0 +1,1755 @@
+{
+  "version": "1.0.0",
+  "questions": [
+    {
+      "id": "coding-variable-mc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "easy",
+      "term_references": [
+        "Variable"
+      ],
+      "cognitive_format": "definition-recall",
+      "prompt": "Which of the following best describes the programming concept of a 'Variable'?",
+      "explanation": "A variable acts as a labeled container in memory. Its value can be updated and referenced throughout the program's lifecycle.",
+      "options": [
+        {
+          "id": "A",
+          "text": "A named container in memory that holds a value which can be updated during program execution.",
+          "is_correct": true,
+          "explanation": "Correct! This is the fundamental definition of a variable."
+        },
+        {
+          "id": "B",
+          "text": "A fixed value that can never be changed once the program begins running.",
+          "is_correct": false,
+          "explanation": "Incorrect. A fixed, unchangeable value is called a constant, not a variable."
+        },
+        {
+          "id": "C",
+          "text": "A special keyword used exclusively to declare a brand new class in Python.",
+          "is_correct": false,
+          "explanation": "Incorrect. In Python, class declarations use the 'class' keyword, which is distinct from variables."
+        },
+        {
+          "id": "D",
+          "text": "A debugging tool used to pause the execution of code at a specific breakpoint.",
+          "is_correct": false,
+          "explanation": "Incorrect. Pausing code at a breakpoint is a feature of a debugger, not a variable."
+        }
+      ]
+    },
+    {
+      "id": "coding-data-type-cc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "easy",
+      "term_references": [
+        "Data Type",
+        "Variable"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "When comparing 'Variable' and 'Data Type' in Python, which statement is correct?",
+      "explanation": "A variable is the named storage container, while the data type determines what kind of data is being stored in that container (e.g., int, str, bool).",
+      "options": [
+        {
+          "id": "A",
+          "text": "A Variable is a named container for a value, whereas a Data Type specifies what kind of value that container holds.",
+          "is_correct": true,
+          "explanation": "Correct! This perfectly describes their relationship."
+        },
+        {
+          "id": "B",
+          "text": "A Variable can only store strings, while a Data Type is required only when storing numeric integer values.",
+          "is_correct": false,
+          "explanation": "Incorrect. Variables can store any data type, including integers, booleans, and floats."
+        },
+        {
+          "id": "C",
+          "text": "Python is statically typed, meaning you must explicitly declare the Data Type of a Variable before assigning a value.",
+          "is_correct": false,
+          "explanation": "Incorrect. Python is dynamically typed; variables are assigned values without prior type declarations."
+        },
+        {
+          "id": "D",
+          "text": "Data Type is a category of loop control structures, while Variable is a category of data storage.",
+          "is_correct": false,
+          "explanation": "Incorrect. Loop control structures are keywords like 'for' and 'while', not data types."
+        }
+      ]
+    },
+    {
+      "id": "coding-string-app",
+      "type": "term-recall",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "easy",
+      "term_references": [
+        "String"
+      ],
+      "cognitive_format": "application",
+      "prompt": "In a medical database, you need to store free-text clinical notes such as 'Patient reports persistent headache'. What basic Python data type should be used to represent this sequence of text characters?",
+      "explanation": "In Python, any sequence of text characters wrapped in quotes is represented as a String (str).",
+      "acceptable_answers": [
+        "String",
+        "strings",
+        "str"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Convert input to lowercase, strip surrounding quotes and whitespace, and allow short name 'str' or plural 'strings'."
+      }
+    },
+    {
+      "id": "coding-boolean-sc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "easy",
+      "term_references": [
+        "Boolean"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "You are building a triage decision path. A flag needs to record whether a patient is currently fasting or not. There are only two possible states. What data type is most appropriate for this flag?",
+      "explanation": "A boolean data type represents exactly one of two states: True or False, making it perfect for binary status flags.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Boolean",
+          "is_correct": true,
+          "explanation": "Correct! A boolean's binary nature (True/False) matches the fasting status perfectly."
+        },
+        {
+          "id": "B",
+          "text": "String",
+          "is_correct": false,
+          "explanation": "Incorrect. While a string like 'yes' or 'no' could be used, it is inefficient and more prone to spelling/input errors than a binary boolean."
+        },
+        {
+          "id": "C",
+          "text": "Tuple",
+          "is_correct": false,
+          "explanation": "Incorrect. A tuple is an immutable ordered collection, not a binary primitive state."
+        },
+        {
+          "id": "D",
+          "text": "Dictionary",
+          "is_correct": false,
+          "explanation": "Incorrect. A dictionary is a key-value data structure, which is overly complex for a simple binary flag."
+        }
+      ]
+    },
+    {
+      "id": "coding-list-cc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "medium",
+      "term_references": [
+        "List",
+        "Tuple"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "How does a Python 'List' differ fundamentally from a 'Tuple'?",
+      "explanation": "The fundamental difference is mutability. Lists are mutable (can be added to, edited, or reordered), whereas Tuples are immutable and locked once created.",
+      "options": [
+        {
+          "id": "A",
+          "text": "A List is mutable (can be changed after creation), whereas a Tuple is immutable (cannot be modified after creation).",
+          "is_correct": true,
+          "explanation": "Correct! Mutability is the primary distinguishing factor between Lists and Tuples."
+        },
+        {
+          "id": "B",
+          "text": "A List can only store integers, while a Tuple can store any arbitrary data type.",
+          "is_correct": false,
+          "explanation": "Incorrect. Both lists and tuples can store any mixture of data types in Python."
+        },
+        {
+          "id": "C",
+          "text": "A List is completely unordered, while a Tuple keeps its elements in a strict, predictable sequence.",
+          "is_correct": false,
+          "explanation": "Incorrect. Both lists and tuples are ordered sequences."
+        },
+        {
+          "id": "D",
+          "text": "A List is indexed starting at 1, while a Tuple indexes starting at 0.",
+          "is_correct": false,
+          "explanation": "Incorrect. Both lists and tuples use zero-based indexing in Python."
+        }
+      ]
+    },
+    {
+      "id": "coding-dictionary-sc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "medium",
+      "term_references": [
+        "Dictionary"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "You are designing a database cache to look up patient records instantly by their unique medical record number (MRN) without scanning through the entire collection sequentially. Which Python data structure is designed for this key-value lookup pattern?",
+      "explanation": "A Python dictionary stores data in key-value pairs, allowing for O(1) constant-time lookups using keys (such as MRNs) rather than positional indices.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Dictionary",
+          "is_correct": true,
+          "explanation": "Correct! A dictionary matches key-value pairs (MRN -> Patient Record) perfectly for instant lookups."
+        },
+        {
+          "id": "B",
+          "text": "List",
+          "is_correct": false,
+          "explanation": "Incorrect. A list requires scanning sequentially (O(N) time) to find a record by a specific field, unless you know its exact index."
+        },
+        {
+          "id": "C",
+          "text": "Tuple",
+          "is_correct": false,
+          "explanation": "Incorrect. Like a list, a tuple requires sequential scanning to search for values and is also immutable."
+        },
+        {
+          "id": "D",
+          "text": "String",
+          "is_correct": false,
+          "explanation": "Incorrect. A string represents a flat piece of text, not a structured key-value mapping."
+        }
+      ]
+    },
+    {
+      "id": "coding-tuple-cc",
+      "type": "term-recall",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "medium",
+      "term_references": [
+        "Tuple"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "If you need to store a patient's date of birth as a fixed, ordered sequence of integers (Year, Month, Day) that should never be altered or modified during runtime, what immutable Python data structure should you use?",
+      "explanation": "A Tuple is an ordered, immutable collection, making it the perfect data structure for read-only values like a static birthdate.",
+      "acceptable_answers": [
+        "Tuple",
+        "tuples"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": false,
+        "description": "Convert input to lowercase and strip surrounding whitespace; allow plural form."
+      }
+    },
+    {
+      "id": "coding-function-app",
+      "type": "term-recall",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "easy",
+      "term_references": [
+        "Function"
+      ],
+      "cognitive_format": "application",
+      "prompt": "To avoid repeating the same clinical dosage calculation logic across multiple files in your application, you should bundle those lines of code into what reusable block?",
+      "explanation": "A function is a reusable block of code that performs a specific task when called, allowing for clean, DRY (Don't Repeat Yourself) code.",
+      "acceptable_answers": [
+        "Function",
+        "functions",
+        "def"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Accept 'function', 'functions', or the Python declaration keyword 'def'."
+      }
+    },
+    {
+      "id": "coding-parameter-argument-cc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "medium",
+      "term_references": [
+        "Parameter / Argument",
+        "Function"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "What is the difference between a 'Parameter' and an 'Argument' in programming?",
+      "explanation": "A parameter is the placeholder variable defined in the function's signature, while an argument is the actual value passed to that parameter during execution.",
+      "options": [
+        {
+          "id": "A",
+          "text": "A parameter is the variable defined in the function's declaration, while an argument is the actual value passed to the function when it is called.",
+          "is_correct": true,
+          "explanation": "Correct! Parameters are the templates, and arguments are the actual values supplied."
+        },
+        {
+          "id": "B",
+          "text": "An argument is defined inside the function signature, whereas a parameter is passed in from the calling scope.",
+          "is_correct": false,
+          "explanation": "Incorrect. This is the exact opposite of the correct definitions."
+        },
+        {
+          "id": "C",
+          "text": "Parameters are used only in object-oriented programming, whereas arguments are used only in functional programming.",
+          "is_correct": false,
+          "explanation": "Incorrect. Both terms are fundamental to almost all programming styles and function calls."
+        },
+        {
+          "id": "D",
+          "text": "There is no difference; the terms are entirely synonymous and interchangeable in all programming languages.",
+          "is_correct": false,
+          "explanation": "Incorrect. While colloquially swapped, they have distinct, formal technical definitions."
+        }
+      ]
+    },
+    {
+      "id": "coding-conditional-app",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "easy",
+      "term_references": [
+        "Conditional (if / elif / else)"
+      ],
+      "cognitive_format": "application",
+      "prompt": "Which control flow structure allows a triage script to execute different blocks of code based on a patient's blood pressure readings (e.g., high, elevated, normal)?",
+      "explanation": "Conditionals (if, elif, else) evaluate boolean expressions and branch the program's execution down different paths accordingly.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Conditional (if / elif / else)",
+          "is_correct": true,
+          "explanation": "Correct! Conditionals enable logical branching."
+        },
+        {
+          "id": "B",
+          "text": "For Loop",
+          "is_correct": false,
+          "explanation": "Incorrect. A for loop repeats a task over a collection of items rather than making a branching decision."
+        },
+        {
+          "id": "C",
+          "text": "Try / Except",
+          "is_correct": false,
+          "explanation": "Incorrect. A try/except block is used for error handling and catching exceptions, not for standard logical branching."
+        },
+        {
+          "id": "D",
+          "text": "Import / Module",
+          "is_correct": false,
+          "explanation": "Incorrect. Imports are used to include external code libraries, not to branch execution flow."
+        }
+      ]
+    },
+    {
+      "id": "coding-for-loop-sc",
+      "type": "term-recall",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "medium",
+      "term_references": [
+        "For Loop"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "A nurse needs to go through a list of 10 patients one by one, executing a vitals check on each, and stopping automatically after the last patient has been checked. What type of control flow structure is most appropriate here?",
+      "explanation": "A For Loop is designed to iterate over a finite collection of items (like a list of patients) once for each item, stopping automatically.",
+      "acceptable_answers": [
+        "For Loop",
+        "for loops",
+        "for-loop",
+        "for"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Convert input to lowercase, allow plural forms, and accept the single keyword 'for'."
+      }
+    },
+    {
+      "id": "coding-while-loop-sc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "medium",
+      "term_references": [
+        "While Loop"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "A bedside monitor needs to continuously sound an alarm as long as a patient's heart rate remains above 120 beats per minute, without knowing in advance how many seconds or minutes this condition will persist. Which loop structure is best suited for this?",
+      "explanation": "A While Loop continues executing a block of code repeatedly as long as its conditional expression remains True, making it ideal for indeterminate looping.",
+      "options": [
+        {
+          "id": "A",
+          "text": "While Loop",
+          "is_correct": true,
+          "explanation": "Correct! A while loop runs continuously based on a condition rather than a fixed collection size."
+        },
+        {
+          "id": "B",
+          "text": "For Loop",
+          "is_correct": false,
+          "explanation": "Incorrect. A for loop is designed to iterate over a pre-determined, finite collection of items rather than open-ended conditions."
+        },
+        {
+          "id": "C",
+          "text": "Try / Except",
+          "is_correct": false,
+          "explanation": "Incorrect. Try/except handles runtime exceptions rather than controlling looping structures."
+        },
+        {
+          "id": "D",
+          "text": "Class / Object",
+          "is_correct": false,
+          "explanation": "Incorrect. Classes and objects are structural code templates, not looping flow structures."
+        }
+      ]
+    },
+    {
+      "id": "coding-class-object-cc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "hard",
+      "term_references": [
+        "Class / Object"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "In object-oriented programming, how do a 'Class' and an 'Object' relate to each other?",
+      "explanation": "A Class defines the template, structure, and methods, whereas an Object is a concrete, individual instance created in memory that fills in that template.",
+      "options": [
+        {
+          "id": "A",
+          "text": "A Class is a blueprint or template, while an Object is a specific instance built from that blueprint.",
+          "is_correct": true,
+          "explanation": "Correct! This is the fundamental paradigm of OOP."
+        },
+        {
+          "id": "B",
+          "text": "An Object is a template for code, while a Class is the final compiled executable file on disk.",
+          "is_correct": false,
+          "explanation": "Incorrect. An object is not a template, and classes do not represent compiled executable files."
+        },
+        {
+          "id": "C",
+          "text": "Classes can only contain data, whereas Objects can only contain executable functions and methods.",
+          "is_correct": false,
+          "explanation": "Incorrect. Classes define both properties (data fields) and methods (functions), which are instantiated inside objects."
+        },
+        {
+          "id": "D",
+          "text": "There is no difference; Python uses Class and Object completely interchangeably to refer to variables.",
+          "is_correct": false,
+          "explanation": "Incorrect. They represent distinct concepts (blueprint vs. instance)."
+        }
+      ]
+    },
+    {
+      "id": "coding-try-except-sc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "python",
+      "difficulty": "medium",
+      "term_references": [
+        "Try / Except"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "During a dosage calculation, a potential division-by-zero error could cause the entire program to crash. Which block structure should you use to attempt the calculation and gracefully handle the error if it occurs?",
+      "explanation": "A try/except block allows a program to test a block of code for errors (try) and execute a fallback safety response if an error is raised (except) rather than crashing.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Try / Except",
+          "is_correct": true,
+          "explanation": "Correct! Try/except is the standard error-handling block structure in Python."
+        },
+        {
+          "id": "B",
+          "text": "Conditional (if / elif / else)",
+          "is_correct": false,
+          "explanation": "Incorrect. While you can sometimes check inputs using if-statements, try/except explicitly catches and handles exceptions raised at runtime."
+        },
+        {
+          "id": "C",
+          "text": "While Loop",
+          "is_correct": false,
+          "explanation": "Incorrect. A while loop is for repeating actions, not handling unexpected runtime exceptions."
+        },
+        {
+          "id": "D",
+          "text": "Import / Module",
+          "is_correct": false,
+          "explanation": "Incorrect. Import statements pull in external files, they do not handle internal errors."
+        }
+      ]
+    },
+    {
+      "id": "coding-sdlc-dr",
+      "type": "term-recall",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "easy",
+      "term_references": [
+        "SDLC (Software Development Life Cycle)"
+      ],
+      "cognitive_format": "definition-recall",
+      "prompt": "What is the industry term for the structured, multi-phase methodology that software takes from initial planning and requirements gathering, through building, testing, deploying, and maintaining?",
+      "explanation": "The SDLC (Software Development Life Cycle) describes the entire end-to-end process of planning, creating, testing, delivering, and maintaining software.",
+      "acceptable_answers": [
+        "SDLC",
+        "Software Development Life Cycle",
+        "Software Development Lifecycle"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Accept the standard abbreviation SDLC or its expanded form with spelling variants."
+      }
+    },
+    {
+      "id": "coding-test-case-app",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "easy",
+      "term_references": [
+        "Test Case"
+      ],
+      "cognitive_format": "application",
+      "prompt": "What do we call a single, specified scenario designed to verify whether a particular application feature behaves correctly under a specific input condition?",
+      "explanation": "A Test Case outlines specific inputs, execution steps, and expected results to verify a single behavior of an application.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Test Case",
+          "is_correct": true,
+          "explanation": "Correct! A single scenario with inputs, actions, and expected outcomes is a test case."
+        },
+        {
+          "id": "B",
+          "text": "Test Plan",
+          "is_correct": false,
+          "explanation": "Incorrect. A test plan is a high-level document laying out the overall strategy, schedule, scope, and resources for an entire testing cycle."
+        },
+        {
+          "id": "C",
+          "text": "Backlog",
+          "is_correct": false,
+          "explanation": "Incorrect. A backlog is a prioritized list of tasks and requirements to be worked on, not a scenario for verification."
+        },
+        {
+          "id": "D",
+          "text": "Sprint",
+          "is_correct": false,
+          "explanation": "Incorrect. A sprint is a fixed block of development time (usually 1-4 weeks) rather than an explicit testing artifact."
+        }
+      ]
+    },
+    {
+      "id": "coding-unit-test-cc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "medium",
+      "term_references": [
+        "Unit Test",
+        "Integration Test"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "How does a 'Unit Test' differ from an 'Integration Test'?",
+      "explanation": "A unit test checks a tiny, isolated chunk of code (like a single function) in complete isolation from external services, while an integration test checks how multiple components interact.",
+      "options": [
+        {
+          "id": "A",
+          "text": "A Unit Test checks a single, isolated component of code in complete isolation, whereas an Integration Test checks that multiple components work correctly together.",
+          "is_correct": true,
+          "explanation": "Correct! Isolation vs. interaction is the key difference."
+        },
+        {
+          "id": "B",
+          "text": "A Unit Test is executed manually by end users, whereas an Integration Test is fully automated by developers.",
+          "is_correct": false,
+          "explanation": "Incorrect. Both unit and integration tests are typically automated by developers, while user testing is called UAT."
+        },
+        {
+          "id": "C",
+          "text": "A Unit Test focuses solely on security vulnerabilities, whereas an Integration Test focuses solely on performance speeds.",
+          "is_correct": false,
+          "explanation": "Incorrect. Both test types check general functional correctness, though security and performance tests can exist at either level."
+        },
+        {
+          "id": "D",
+          "text": "There is no difference; unit tests are simply integration tests that are run on a developer's local machine.",
+          "is_correct": false,
+          "explanation": "Incorrect. They represent structurally distinct stages of the testing pyramid."
+        }
+      ]
+    },
+    {
+      "id": "coding-integration-test-cc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "medium",
+      "term_references": [
+        "Integration Test",
+        "Unit Test"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "If you want to verify that your front-end login form correctly transmits credentials to your back-end authentication server and successfully updates the user database, which level of testing are you conducting?",
+      "explanation": "Because you are checking the joint execution and communication between distinct systems (frontend, backend, database), you are running an Integration Test.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Integration Test",
+          "is_correct": true,
+          "explanation": "Correct! Verifying components working together is integration testing."
+        },
+        {
+          "id": "B",
+          "text": "Unit Test",
+          "is_correct": false,
+          "explanation": "Incorrect. A unit test would mock out the backend and database completely to test only the frontend form rendering logic in absolute isolation."
+        },
+        {
+          "id": "C",
+          "text": "Smoke Test",
+          "is_correct": false,
+          "explanation": "Incorrect. A smoke test is a shallow, high-level verification of whether the app launches at all, rather than a targeted functional verification of full multi-system flows."
+        },
+        {
+          "id": "D",
+          "text": "Regression Test",
+          "is_correct": false,
+          "explanation": "Incorrect. While it could be part of a regression suite, verifying a new multi-component flow for the first time is specifically an integration test."
+        }
+      ]
+    },
+    {
+      "id": "coding-regression-test-sc",
+      "type": "term-recall",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "medium",
+      "term_references": [
+        "Regression Test"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "After fixing a critical bug in the checkout flow, you run your entire suite of existing tests to ensure that the bug fix has not accidentally broken any other parts of the system that previously worked. What type of testing is this?",
+      "explanation": "Regression testing is the process of re-running old tests to confirm that recent code changes or bug fixes have not introduced new unintended defects.",
+      "acceptable_answers": [
+        "Regression Test",
+        "Regression Testing",
+        "regression tests"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Convert input to lowercase, allow trailing 'ing' suffix or plural forms."
+      }
+    },
+    {
+      "id": "coding-smoke-test-sc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "easy",
+      "term_references": [
+        "Smoke Test"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "Before deploying a massive software release to production, you run a 5-minute suite of basic checks to confirm that the app boots, the database connects, and the landing page loads. What is this quick check called?",
+      "explanation": "A smoke test is a rapid, non-exhaustive subset of tests that validates that the most critical, basic functions of an application work, before investing time in deep, exhaustive testing.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Smoke Test",
+          "is_correct": true,
+          "explanation": "Correct! Checking the absolute basics to see if the system is stable enough for deeper testing is smoke testing."
+        },
+        {
+          "id": "B",
+          "text": "UAT (User Acceptance Testing)",
+          "is_correct": false,
+          "explanation": "Incorrect. UAT is the final, comprehensive phase of testing done by real users, which takes significantly more time and is not a quick 5-minute basic verification."
+        },
+        {
+          "id": "C",
+          "text": "Unit Test",
+          "is_correct": false,
+          "explanation": "Incorrect. A unit test isolates specific methods or functions, while a smoke test is an end-to-end sanity check of the whole deployed system."
+        },
+        {
+          "id": "D",
+          "text": "Edge Case",
+          "is_correct": false,
+          "explanation": "Incorrect. An edge case is an unusual boundary scenario, not a testing phase or suite of sanity checks."
+        }
+      ]
+    },
+    {
+      "id": "coding-uat-sc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "medium",
+      "term_references": [
+        "UAT (User Acceptance Testing)"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "A team of real clinical users is invited to test a new EHR module in a staging environment to confirm it meets their actual daily workflows before the module is officially released. What is this phase of testing called?",
+      "explanation": "User Acceptance Testing (UAT) is the final stage of the testing lifecycle where real users validate that the system works in real-world scenarios and meets business needs.",
+      "options": [
+        {
+          "id": "A",
+          "text": "UAT (User Acceptance Testing)",
+          "is_correct": true,
+          "explanation": "Correct! Real-user validation is UAT."
+        },
+        {
+          "id": "B",
+          "text": "Regression Test",
+          "is_correct": false,
+          "explanation": "Incorrect. Regression testing is re-running old tests to check for regressions, usually executed automatically by scripts, not manually by users."
+        },
+        {
+          "id": "C",
+          "text": "Integration Test",
+          "is_correct": false,
+          "explanation": "Incorrect. Integration testing is technical testing to verify communication between code structures, performed by developers or QA engineers."
+        },
+        {
+          "id": "D",
+          "text": "Unit Test",
+          "is_correct": false,
+          "explanation": "Incorrect. Unit testing targets tiny code methods in isolation, written and run by developers."
+        }
+      ]
+    },
+    {
+      "id": "coding-edge-case-app",
+      "type": "term-recall",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "medium",
+      "term_references": [
+        "Edge Case"
+      ],
+      "cognitive_format": "application",
+      "prompt": "When writing tests for a birth year input field, you test extreme inputs like a negative year, a year in the future, or a non-numeric string. What is the technical term for these unusual scenarios at the extreme boundaries?",
+      "explanation": "An Edge Case represents a rare, non-standard scenario at the extreme boundaries of input validation that can easily trigger unhandled exceptions if neglected.",
+      "acceptable_answers": [
+        "Edge Case",
+        "edge cases",
+        "edge-case"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Convert input to lowercase, allow plural forms, and tolerate hyphens."
+      }
+    },
+    {
+      "id": "coding-bug-dr",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "easy",
+      "term_references": [
+        "Bug"
+      ],
+      "cognitive_format": "definition-recall",
+      "prompt": "What is the technical term for an error, flaw, or failure in a software program that causes it to produce an incorrect or unexpected behavior?",
+      "explanation": "A bug is any defect or flaw in code that causes an application to fail or deviate from its expected behavior.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Bug",
+          "is_correct": true,
+          "explanation": "Correct! This is the standard term for a software defect."
+        },
+        {
+          "id": "B",
+          "text": "Feature",
+          "is_correct": false,
+          "explanation": "Incorrect. A feature is an intended, correctly functioning capability of the software."
+        },
+        {
+          "id": "C",
+          "text": "Sprint",
+          "is_correct": false,
+          "explanation": "Incorrect. A sprint is a timed development cycle, not a software defect."
+        },
+        {
+          "id": "D",
+          "text": "Deploy",
+          "is_correct": false,
+          "explanation": "Incorrect. To deploy is to move code to an environment (like staging or production)."
+        }
+      ]
+    },
+    {
+      "id": "coding-severity-priority-cc",
+      "type": "multiple-choice",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "hard",
+      "term_references": [
+        "Severity vs. Priority",
+        "Bug"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "In QA defect management, how do severity and priority differ?",
+      "explanation": "Severity measures the technical impact of a bug on the application's functionality (how broken is it?), whereas Priority measures the urgency of fixing it based on business timelines (when must it be fixed?).",
+      "options": [
+        {
+          "id": "A",
+          "text": "Severity measures the technical impact of a bug on the system, while Priority measures how quickly the business needs the bug to be fixed.",
+          "is_correct": true,
+          "explanation": "Correct! This is the fundamental distinction in defect management."
+        },
+        {
+          "id": "B",
+          "text": "Severity measures the cost of a bug fix, while Priority measures how many users have complained about it.",
+          "is_correct": false,
+          "explanation": "Incorrect. Fix costs do not dictate severity classifications, and priority is set by strategic urgency, not raw support ticket counts alone."
+        },
+        {
+          "id": "C",
+          "text": "Priority is assigned automatically by compiler tools, while Severity is determined by a vote of the development team.",
+          "is_correct": false,
+          "explanation": "Incorrect. Both are assessed and assigned by QA managers, engineers, and product owners."
+        },
+        {
+          "id": "D",
+          "text": "There is no difference; they are interchangeable terms representing how critical a bug is.",
+          "is_correct": false,
+          "explanation": "Incorrect. A bug can have high severity and low priority (e.g. a complete system crash on a rare, deprecated browser) or low severity and high priority (e.g. a misspelled company logo on the homepage)."
+        }
+      ]
+    },
+    {
+      "id": "coding-backlog-sc",
+      "type": "term-recall",
+      "subject": "coding",
+      "category": "qa",
+      "difficulty": "easy",
+      "term_references": [
+        "Backlog"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "What is the prioritized, running list of all outstanding tasks, bugs, and feature requests that are waiting to be scheduled for future development cycles?",
+      "explanation": "A backlog acts as a queue of uncompleted tasks, helping product owners and development teams track what needs to be built next.",
+      "acceptable_answers": [
+        "Backlog",
+        "backlogs"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": false,
+        "description": "Convert to lowercase and strip whitespace."
+      }
+    },
+    {
+      "id": "philosophy-socratic-method-sc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "ancient",
+      "difficulty": "medium",
+      "term_references": [
+        "Socratic Method"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "A teacher leads a class not by lecturing, but by asking a continuous series of guided questions that force students to examine their assumptions and uncover contradictions in their own logic. What philosophical teaching method is this?",
+      "explanation": "The Socratic Method, pioneered by Socrates, relies on dialogue and questioning to provoke critical thinking and expose false certainties.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Socratic Method",
+          "is_correct": true,
+          "explanation": "Correct! Asking questions to dissect assumptions is the core of the Socratic Method."
+        },
+        {
+          "id": "B",
+          "text": "Theory of Forms",
+          "is_correct": false,
+          "explanation": "Incorrect. The Theory of Forms is Plato's metaphysical belief about a perfect abstract realm of ideas, not a dialogic teaching style."
+        },
+        {
+          "id": "C",
+          "text": "Ancient Skepticism",
+          "is_correct": false,
+          "explanation": "Incorrect. Skepticism is a general philosophical attitude of doubting all dogmatic knowledge claims, not a structured question-and-answer teaching style."
+        },
+        {
+          "id": "D",
+          "text": "Stoicism",
+          "is_correct": false,
+          "explanation": "Incorrect. Stoicism is a school of ethics focusing on self-control, reason, and emotional resilience, not a questioning methodology."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-theory-of-forms-cc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "ancient",
+      "difficulty": "medium",
+      "term_references": [
+        "Theory of Forms"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "According to Plato's Theory of Forms, how does the physical world relate to the world of Forms?",
+      "explanation": "Plato's metaphysics splits reality: the physical world is a material, constantly changing shadow of a perfect, timeless, and unchanging abstract world of Forms or Ideas.",
+      "options": [
+        {
+          "id": "A",
+          "text": "The physical world consists of imperfect, changing copies of perfect, eternal, and unchanging ideas or Forms.",
+          "is_correct": true,
+          "explanation": "Correct! Plato asserts that physical objects are mere 'shadows' of their perfect Forms."
+        },
+        {
+          "id": "B",
+          "text": "The world of Forms is an illusion created by our senses, while the physical world is the only objective reality.",
+          "is_correct": false,
+          "explanation": "Incorrect. Plato argues the exact opposite\u2014the physical world is the lesser reality, and the Forms are the ultimate truth."
+        },
+        {
+          "id": "C",
+          "text": "The physical world and the world of Forms are identical, meaning perfect Forms exist physically inside all material objects.",
+          "is_correct": false,
+          "explanation": "Incorrect. Platonic dualism holds that the physical and intelligible realms are distinct and separate."
+        },
+        {
+          "id": "D",
+          "text": "The world of Forms is exclusively ruled by Greek gods, while the physical world is ruled by human reason.",
+          "is_correct": false,
+          "explanation": "Incorrect. This mixes up Platonic philosophy with literal Greek mythology."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-virtue-ethics-sc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "ancient",
+      "difficulty": "medium",
+      "term_references": [
+        "Virtue Ethics"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "When faced with an ethical dilemma, an individual asks, 'What would a person of outstanding moral character do in this situation?' rather than calculating utility or following absolute rules. This thinking represents which ethical framework?",
+      "explanation": "Virtue Ethics, championed by Aristotle, focuses on developing excellent character and moral virtues rather than applying rigid behavioral rules or calculating outcome ratios.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Virtue Ethics",
+          "is_correct": true,
+          "explanation": "Correct! Concentrating on character and what a virtuous person would do is the core of Virtue Ethics."
+        },
+        {
+          "id": "B",
+          "text": "Utilitarianism",
+          "is_correct": false,
+          "explanation": "Incorrect. Utilitarianism focuses entirely on the outcomes of actions, seeking the greatest happiness for the greatest number."
+        },
+        {
+          "id": "C",
+          "text": "Deontology",
+          "is_correct": false,
+          "explanation": "Incorrect. Deontology focuses on adhering to absolute rules and duties, regardless of character or outcomes."
+        },
+        {
+          "id": "D",
+          "text": "Nihilism",
+          "is_correct": false,
+          "explanation": "Incorrect. Nihilism rejects ethics entirely, claiming that no objective moral truth or meaning exists."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-golden-mean-app",
+      "type": "term-recall",
+      "subject": "philosophy",
+      "category": "ancient",
+      "difficulty": "medium",
+      "term_references": [
+        "The Golden Mean"
+      ],
+      "cognitive_format": "application",
+      "prompt": "In Aristotle's ethics, courage is defined as the desirable middle ground between the deficiency of cowardice and the excess of rashness. What is the term for this desirable middle path between extremes?",
+      "explanation": "The Golden Mean is Aristotle's moral formula: virtues lie as a balanced path between deficiency and excess.",
+      "acceptable_answers": [
+        "The Golden Mean",
+        "Golden Mean",
+        "golden mean"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Convert input to lowercase, allow omission of the article 'The', and strip spacing."
+      }
+    },
+    {
+      "id": "philosophy-allegory-cave-sc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "ancient",
+      "difficulty": "medium",
+      "term_references": [
+        "Allegory of the Cave"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "In a famous philosophical thought experiment, prisoners mistake shadows projected on a wall for reality, unaware of the real objects casting them or the sunlit world outside. What is this allegory called?",
+      "explanation": "The Allegory of the Cave is Plato's metaphorical illustration of human ignorance, the journey of education, and the discovery of the true intelligible realm of Forms.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Allegory of the Cave",
+          "is_correct": true,
+          "explanation": "Correct! This is the classic name of Plato's cave metaphor."
+        },
+        {
+          "id": "B",
+          "text": "The Trolley Problem",
+          "is_correct": false,
+          "explanation": "Incorrect. The Trolley Problem is a modern ethical experiment about utilitarian vs. deontological action, not an allegory about perception and education."
+        },
+        {
+          "id": "C",
+          "text": "State of Nature",
+          "is_correct": false,
+          "explanation": "Incorrect. The State of Nature is a political thought experiment about humans before organized societies, not Plato's cavern allegory."
+        },
+        {
+          "id": "D",
+          "text": "Dichotomy of Control",
+          "is_correct": false,
+          "explanation": "Incorrect. The Dichotomy of Control is a core Stoic ethical principle, not a Platonic story."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-stoicism-dr",
+      "type": "term-recall",
+      "subject": "philosophy",
+      "category": "stoicism",
+      "difficulty": "easy",
+      "term_references": [
+        "Stoicism"
+      ],
+      "cognitive_format": "definition-recall",
+      "prompt": "What Hellenistic school of philosophy teaches that the path to tranquility lies in accepting fate, mastering one's desires, and distinguishing between things we can control and things we cannot?",
+      "explanation": "Stoicism teaches that wisdom and peace come from mastering our reactions, controlling our choices, and aligning our actions with virtue while calmly accepting external fate.",
+      "acceptable_answers": [
+        "Stoicism",
+        "stoic philosophy",
+        "stoic"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Convert input to lowercase and accept common variations like 'stoic'."
+      }
+    },
+    {
+      "id": "philosophy-dichotomy-control-app",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "stoicism",
+      "difficulty": "easy",
+      "term_references": [
+        "Dichotomy of Control"
+      ],
+      "cognitive_format": "application",
+      "prompt": "A student is anxious about their final grade. They decide to focus entirely on their own study habits while accepting that the professor's grading scale is completely out of their hands. This decision directly applies which Stoic concept?",
+      "explanation": "The Dichotomy of Control is the foundational Stoic principle of separating life into what is within our power (our thoughts, actions, desires) and what is not (external events, other people's behavior).",
+      "options": [
+        {
+          "id": "A",
+          "text": "Dichotomy of Control",
+          "is_correct": true,
+          "explanation": "Correct! Focusing only on study habits (controllable) and accepting the grading scale (uncontrollable) is a perfect application of this dichotomy."
+        },
+        {
+          "id": "B",
+          "text": "Theory of Forms",
+          "is_correct": false,
+          "explanation": "Incorrect. Plato's Theory of Forms is about a metaphysical world of ideal shapes, not an ethical rule of action."
+        },
+        {
+          "id": "C",
+          "text": "Socratic Method",
+          "is_correct": false,
+          "explanation": "Incorrect. The Socratic Method is a process of argumentative dialogue, not an internal coping framework."
+        },
+        {
+          "id": "D",
+          "text": "Utilitarianism",
+          "is_correct": false,
+          "explanation": "Incorrect. Utilitarianism is about maximizing happiness for the group, not managing individual anxiety via control thresholds."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-amor-fati-sc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "stoicism",
+      "difficulty": "medium",
+      "term_references": [
+        "Amor Fati"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "An individual faces a series of severe personal setbacks but chooses to welcome and embrace these difficulties as necessary and meaningful components of their life journey. This attitude reflects which Stoic concept?",
+      "explanation": "Amor Fati ('love of fate') is the Stoic and Nietzschean attitude of not merely tolerating but actively loving and welcoming everything that happens in life as necessary.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Amor Fati",
+          "is_correct": true,
+          "explanation": "Correct! Actively loving one's fate is Amor Fati."
+        },
+        {
+          "id": "B",
+          "text": "Memento Mori",
+          "is_correct": false,
+          "explanation": "Incorrect. Memento Mori means 'remember you must die', which reminds us of our mortality rather than loving our fate."
+        },
+        {
+          "id": "C",
+          "text": "Socratic Method",
+          "is_correct": false,
+          "explanation": "Incorrect. This is a dialogic questioning method, completely unrelated to loving one's fate."
+        },
+        {
+          "id": "D",
+          "text": "Tabula Rasa",
+          "is_correct": false,
+          "explanation": "Incorrect. Tabula Rasa is the epistemological concept of a blank slate mind, not an ethical attitude toward life's events."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-rationalism-cc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "rationalism_empiricism",
+      "difficulty": "medium",
+      "term_references": [
+        "Rationalism",
+        "Empiricism"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "How do 'Rationalism' and 'Empiricism' differ regarding the primary source of human knowledge?",
+      "explanation": "Rationalism argues that reason and intellectual deduction are the primary source of knowledge, while Empiricism argues that all knowledge stems entirely from sensory observation and experiences.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Rationalism asserts that reason and innate ideas are the primary source of knowledge, while Empiricism asserts that knowledge is derived entirely from sensory experience.",
+          "is_correct": true,
+          "explanation": "Correct! This represents the classic philosophical divide between these schools."
+        },
+        {
+          "id": "B",
+          "text": "Rationalism claims that all knowledge is subjective, while Empiricism claims that knowledge can only be obtained through divine revelation.",
+          "is_correct": false,
+          "explanation": "Incorrect. Neither school makes these claims as their core premise; rationalists believe in objective truths derived through reason."
+        },
+        {
+          "id": "C",
+          "text": "Empiricism is the study of ancient texts, whereas Rationalism is the study of modern computer code.",
+          "is_correct": false,
+          "explanation": "Incorrect. Both are core, traditional branches of human epistemology dating back centuries."
+        },
+        {
+          "id": "D",
+          "text": "Rationalism rejects the concept of free will, while Empiricism rejects the existence of a physical reality.",
+          "is_correct": false,
+          "explanation": "Incorrect. The epistemological debate is about how we gain knowledge, not about determinism or the physical existence of the universe."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-empiricism-cc",
+      "type": "term-recall",
+      "subject": "philosophy",
+      "category": "rationalism_empiricism",
+      "difficulty": "medium",
+      "term_references": [
+        "Empiricism"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "Which epistemological view holds that the mind is a blank slate at birth, and that all knowledge must be acquired through sensory observation and experimental evidence?",
+      "explanation": "Empiricism is the view that all knowledge is derived from sensory experience and experimental evidence, famously developed by figures like John Locke and David Hume.",
+      "acceptable_answers": [
+        "Empiricism",
+        "empiricist",
+        "empiricists"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Convert input to lowercase, allow trailing suffixes, and ignore punctuation."
+      }
+    },
+    {
+      "id": "philosophy-tabula-rasa-dr",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "rationalism_empiricism",
+      "difficulty": "easy",
+      "term_references": [
+        "Tabula Rasa"
+      ],
+      "cognitive_format": "definition-recall",
+      "prompt": "John Locke famously compared the newborn human mind to a blank slate, upon which experience writes. What is the Latin term for this concept?",
+      "explanation": "Tabula Rasa translates literally to 'scraped tablet' or 'blank slate', representing the empiricist view of a mind without pre-existing innate ideas.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Tabula Rasa",
+          "is_correct": true,
+          "explanation": "Correct! Locke's blank slate is called Tabula Rasa."
+        },
+        {
+          "id": "B",
+          "text": "Cogito Ergo Sum",
+          "is_correct": false,
+          "explanation": "Incorrect. Cogito Ergo Sum means 'I think, therefore I am', Cartesian rationalism."
+        },
+        {
+          "id": "C",
+          "text": "Amor Fati",
+          "is_correct": false,
+          "explanation": "Incorrect. Amor Fati is the Stoic 'love of fate', not Locke's blank slate."
+        },
+        {
+          "id": "D",
+          "text": "Memento Mori",
+          "is_correct": false,
+          "explanation": "Incorrect. Memento Mori means 'remember you must die'."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-cogito-ergo-sum-dr",
+      "type": "term-recall",
+      "subject": "philosophy",
+      "category": "rationalism_empiricism",
+      "difficulty": "easy",
+      "term_references": [
+        "Cogito Ergo Sum"
+      ],
+      "cognitive_format": "definition-recall",
+      "prompt": "Which famous Latin philosophical phrase represents Ren\u00e9 Descartes' foundational conclusion that the very act of doubting one's own existence proves that a thinking mind exists?",
+      "explanation": "Descartes' rationalist axiom is 'Cogito, ergo sum' (I think, therefore I am).",
+      "acceptable_answers": [
+        "Cogito Ergo Sum",
+        "Cogito, ergo sum",
+        "I think, therefore I am"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Allow either the Latin phrase or its standard English translation."
+      }
+    },
+    {
+      "id": "philosophy-existentialism-dr",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "existentialism",
+      "difficulty": "easy",
+      "term_references": [
+        "Existentialism"
+      ],
+      "cognitive_format": "definition-recall",
+      "prompt": "Which modern philosophical movement, associated with Sartre and Camus, explores themes of personal freedom, the search for meaning, and individual responsibility in an inherently indifferent universe?",
+      "explanation": "Existentialism focuses on individual agency, subjective meaning-making, and freedom in a meaningless, absurd universe.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Existentialism",
+          "is_correct": true,
+          "explanation": "Correct! This movement centers on human existence, choice, and freedom."
+        },
+        {
+          "id": "B",
+          "text": "Stoicism",
+          "is_correct": false,
+          "explanation": "Incorrect. While Stoicism shares ideas of personal resilience, it belongs to the ancient Hellenistic era and posits a rationally ordered cosmos, unlike existentialism."
+        },
+        {
+          "id": "C",
+          "text": "Confucianism",
+          "is_correct": false,
+          "explanation": "Incorrect. Confucianism is an ancient Chinese tradition focusing on social hierarchies, duties, and relational harmony rather than individual absolute freedom."
+        },
+        {
+          "id": "D",
+          "text": "Utilitarianism",
+          "is_correct": false,
+          "explanation": "Incorrect. Utilitarianism is an ethical calculus of pleasure and pain, not a metaphysical view of individual existence."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-existence-precedes-essence-cc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "existentialism",
+      "difficulty": "hard",
+      "term_references": [
+        "Existence Precedes Essence"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "What does Jean-Paul Sartre's claim 'Existence precedes essence' mean for human beings?",
+      "explanation": "In existentialism, humans are not born with a pre-defined biological or divine blueprint (essence). We exist first, and then must build our own identity through our decisions.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Humans exist first, and must actively define their own purpose and identity through their choices, rather than being born with an inherent nature.",
+          "is_correct": true,
+          "explanation": "Correct! This is Sartre's core existential thesis."
+        },
+        {
+          "id": "B",
+          "text": "We are born with a fixed destiny or soul (essence) that we spend our physical lives (existence) trying to discover.",
+          "is_correct": false,
+          "explanation": "Incorrect. This is 'essence precedes existence', which existentialism rejects."
+        },
+        {
+          "id": "C",
+          "text": "Physical matter (existence) is a lesser, corrupt copy of an ideal spiritual soul (essence).",
+          "is_correct": false,
+          "explanation": "Incorrect. This sounds like Platonic dualism or Christian metaphysics, not existentialism."
+        },
+        {
+          "id": "D",
+          "text": "Human intelligence (essence) cannot exist without a physical body (existence) because there is no spiritual mind.",
+          "is_correct": false,
+          "explanation": "Incorrect. While materialistic, this does not capture Sartre's point about radical freedom and self-creation."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-bad-faith-sc",
+      "type": "term-recall",
+      "subject": "philosophy",
+      "category": "existentialism",
+      "difficulty": "medium",
+      "term_references": [
+        "Bad Faith"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "A person dislikes their job but tells themselves they have absolutely no choice but to stay, pretending they are a passive victim of circumstances rather than acknowledging their freedom to choose. In Sartre's existentialism, what is this self-deception called?",
+      "explanation": "Bad Faith (mauvaise foi) is Sartre's term for self-deception, where individuals pretend they lack freedom to escape the anxiety of choice.",
+      "acceptable_answers": [
+        "Bad Faith",
+        "bad faith"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": false,
+        "description": "Convert input to lowercase and strip whitespace."
+      }
+    },
+    {
+      "id": "philosophy-absurdism-cc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "existentialism",
+      "difficulty": "hard",
+      "term_references": [
+        "Absurdism",
+        "Nihilism"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "How does Camus' 'Absurdism' differ from extreme 'Nihilism' when confronting a meaningless universe?",
+      "explanation": "Nihilism suggests that since life has no meaning, nothing matters, often leading to despair or passivity. Absurdism, however, suggests we should accept the meaningless nature of life and defiantly live with passion and rebellion anyway.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Absurdism encourages us to defiantly live and find joy in the struggle itself, whereas Nihilism asserts that because nothing has meaning, no action or effort matters.",
+          "is_correct": true,
+          "explanation": "Correct! Camus' Sisyphus is the ultimate absurdist hero, pushing the boulder defiantly."
+        },
+        {
+          "id": "B",
+          "text": "Absurdism claims we must commit suicide to escape a meaningless life, while Nihilism claims we must build a perfect society.",
+          "is_correct": false,
+          "explanation": "Incorrect. Camus explicitly rejects physical suicide as a cop-out."
+        },
+        {
+          "id": "C",
+          "text": "Nihilism is an ancient Eastern philosophy, while Absurdism is a modern European computer architecture.",
+          "is_correct": false,
+          "explanation": "Incorrect. Both are prominent schools of Western philosophy."
+        },
+        {
+          "id": "D",
+          "text": "There is no difference; they are exactly identical terms used by different authors for the same book.",
+          "is_correct": false,
+          "explanation": "Incorrect. They represent distinct attitudes toward meaninglessness (passivity vs. defiant rebellion)."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-utilitarianism-sc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "ethics",
+      "difficulty": "medium",
+      "term_references": [
+        "Utilitarianism"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "A city council must decide whether to build a new public park or a highway. They choose the park because their impact study shows it will bring joy and health to 90% of the citizens, maximizing overall happiness. Which ethical theory does this choice align with?",
+      "explanation": "Utilitarianism holds that the morally correct action is the one that produces the greatest happiness or utility for the greatest number of people.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Utilitarianism",
+          "is_correct": true,
+          "explanation": "Correct! Maximizing net happiness or well-being across a population is utilitarianism."
+        },
+        {
+          "id": "B",
+          "text": "Deontology",
+          "is_correct": false,
+          "explanation": "Incorrect. Deontology focuses on following duty and rules, not optimizing demographic happiness."
+        },
+        {
+          "id": "C",
+          "text": "Stoicism",
+          "is_correct": false,
+          "explanation": "Incorrect. Stoicism focuses on personal virtue, self-control, and emotional mastership, not public-policy optimization."
+        },
+        {
+          "id": "D",
+          "text": "Absurdism",
+          "is_correct": false,
+          "explanation": "Incorrect. Absurdism is an existentialist viewpoint about personal meaning, not an ethical system."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-deontology-cc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "ethics",
+      "difficulty": "medium",
+      "term_references": [
+        "Deontology",
+        "Utilitarianism"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "How does 'Deontology' differ from 'Utilitarianism'?",
+      "explanation": "Deontology assesses the morality of an action based on rules, duties, and the act itself, whereas Utilitarianism assesses actions solely based on their consequences and the utility they generate.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Deontology judges actions based on moral duties and absolute rules regardless of outcomes, while Utilitarianism judges actions solely by their consequences.",
+          "is_correct": true,
+          "explanation": "Correct! Duty-based vs. consequence-based is the key divide."
+        },
+        {
+          "id": "B",
+          "text": "Utilitarianism is about the rights of individual property owners, while Deontology is about the common distribution of wealth.",
+          "is_correct": false,
+          "explanation": "Incorrect. These are political economic discussions, not the basic ethical definitions of these frameworks."
+        },
+        {
+          "id": "C",
+          "text": "Deontology was created by John Locke, whereas Utilitarianism was created by ancient Roman Stoics.",
+          "is_correct": false,
+          "explanation": "Incorrect. Deontology is famously associated with Immanuel Kant, and Utilitarianism was formulated by Jeremy Bentham and John Stuart Mill."
+        },
+        {
+          "id": "D",
+          "text": "There is no difference; they are synonymous names for the same theory of moral relativism.",
+          "is_correct": false,
+          "explanation": "Incorrect. They are opposing normative ethical theories, and both generally reject moral relativism."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-categorical-imperative-app",
+      "type": "term-recall",
+      "subject": "philosophy",
+      "category": "ethics",
+      "difficulty": "hard",
+      "term_references": [
+        "Categorical Imperative"
+      ],
+      "cognitive_format": "application",
+      "prompt": "Before deciding to lie to avoid a difficult conversation, you ask yourself: 'What if everyone in the world lied whenever a conversation became difficult?' This moral test is an application of which Kantian principle?",
+      "explanation": "The Categorical Imperative is Immanuel Kant's test of universalizability: you should act only on rules that you could logically will to become universal laws for everyone.",
+      "acceptable_answers": [
+        "Categorical Imperative",
+        "Kantian Categorical Imperative",
+        "categorical imperatives"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Convert input to lowercase and strip spacing. Tolerate leading 'Kantian' or plural forms."
+      }
+    },
+    {
+      "id": "philosophy-consequentialism-cc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "ethics",
+      "difficulty": "easy",
+      "term_references": [
+        "Consequentialism"
+      ],
+      "cognitive_format": "compare-contrast",
+      "prompt": "Which ethical umbrella term describes any theory that judges the morality of an action entirely by its resulting outcomes, rather than its alignment with a duty or rule?",
+      "explanation": "Consequentialism is the broad category of normative ethics holding that the consequences of one's conduct are the ultimate basis for any judgment about its rightness.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Consequentialism",
+          "is_correct": true,
+          "explanation": "Correct! Any outcome-based ethical theory falls under consequentialism."
+        },
+        {
+          "id": "B",
+          "text": "Deontology",
+          "is_correct": false,
+          "explanation": "Incorrect. Deontology explicitly rejects consequentialism, arguing that actions are inherently right or wrong regardless of outcomes."
+        },
+        {
+          "id": "C",
+          "text": "Nihilism",
+          "is_correct": false,
+          "explanation": "Incorrect. Nihilism rejects morality entirely rather than structuring it around consequences."
+        },
+        {
+          "id": "D",
+          "text": "Stoicism",
+          "is_correct": false,
+          "explanation": "Incorrect. Stoic ethics is a form of virtue ethics, where intentions and alignment with reason/nature are key, not outcome consequences."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-trolley-problem-sc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "ethics",
+      "difficulty": "easy",
+      "term_references": [
+        "Trolley Problem"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "A famous ethical thought experiment asks whether you should pull a lever to redirect a runaway trolley, saving five people on the main track but actively causing the death of one person on a sidetrack. What is this scenario called?",
+      "explanation": "The Trolley Problem is a classic thought experiment in ethics that pits utilitarian calculations (saving 5 lives vs 1) against deontological restrictions (actively causing harm vs letting harm happen).",
+      "options": [
+        {
+          "id": "A",
+          "text": "Trolley Problem",
+          "is_correct": true,
+          "explanation": "Correct! This is the Trolley Problem."
+        },
+        {
+          "id": "B",
+          "text": "Allegory of the Cave",
+          "is_correct": false,
+          "explanation": "Incorrect. Plato's Allegory of the Cave is about cognitive education, shadows, and true reality, not a trolley dilemma."
+        },
+        {
+          "id": "C",
+          "text": "Socratic Method",
+          "is_correct": false,
+          "explanation": "Incorrect. This is a questioning teaching style, not an ethical dilemma."
+        },
+        {
+          "id": "D",
+          "text": "State of Nature",
+          "is_correct": false,
+          "explanation": "Incorrect. This describes a hypothetical pre-social human state, not a specific ethical lever experiment."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-occams-razor-app",
+      "type": "term-recall",
+      "subject": "philosophy",
+      "category": "metaphysics_epistemology",
+      "difficulty": "easy",
+      "term_references": [
+        "Occam's Razor"
+      ],
+      "cognitive_format": "application",
+      "prompt": "A physician hears hoofbeats outside the clinic window. Instead of assuming an exotic zebra has escaped from the local zoo, they assume it is a common horse. Which philosophical principle of choosing the simplest explanation are they applying?",
+      "explanation": "Occam's Razor is the principle that when presented with competing hypotheses, we should select the one that makes the fewest assumptions.",
+      "acceptable_answers": [
+        "Occam's Razor",
+        "Occams Razor",
+        "occam's razor"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Convert input to lowercase, allow omission of the apostrophe, and strip spacing."
+      }
+    },
+    {
+      "id": "philosophy-ad-hominem-app",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "fallacies",
+      "difficulty": "easy",
+      "term_references": [
+        "Ad Hominem"
+      ],
+      "cognitive_format": "application",
+      "prompt": "During a public debate, a panelist dismisses a scientist's research on climate trends by saying, 'We shouldn't trust this research because this scientist is always grumpy and unpleasant.' What logical fallacy is this?",
+      "explanation": "An Ad Hominem fallacy occurs when someone attacks the speaker's personal character rather than evaluating the logical substance of their argument.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Ad Hominem",
+          "is_correct": true,
+          "explanation": "Correct! Personal character attacks instead of addressing facts is Ad Hominem."
+        },
+        {
+          "id": "B",
+          "text": "Straw Man",
+          "is_correct": false,
+          "explanation": "Incorrect. A straw man fallacy exaggerates or distorts the opponent's argument to make it easier to attack, rather than directly abusing the person's character."
+        },
+        {
+          "id": "C",
+          "text": "False Dilemma",
+          "is_correct": false,
+          "explanation": "Incorrect. A false dilemma forces an artificial choice between only two options."
+        },
+        {
+          "id": "D",
+          "text": "Slippery Slope",
+          "is_correct": false,
+          "explanation": "Incorrect. A slippery slope asserts that a small first action will lead to a chain of catastrophic events without justification."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-straw-man-sc",
+      "type": "multiple-choice",
+      "subject": "philosophy",
+      "category": "fallacies",
+      "difficulty": "medium",
+      "term_references": [
+        "Straw Man"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "Person A says: 'We should increase funding for public schools.' Person B replies: 'So you want to bankrupt our city and shut down our police department!' What logical fallacy is Person B committing by distorting A's position?",
+      "explanation": "A Straw Man fallacy is committed when an opponent distorts, oversimplifies, or misrepresents an argument to make it easier to knock down.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Straw Man",
+          "is_correct": true,
+          "explanation": "Correct! Person B fabricated a weak caricature of A's claim."
+        },
+        {
+          "id": "B",
+          "text": "Ad Hominem",
+          "is_correct": false,
+          "explanation": "Incorrect. B did not attack A's personal character, but rather distorted A's policy position."
+        },
+        {
+          "id": "C",
+          "text": "Circular Reasoning",
+          "is_correct": false,
+          "explanation": "Incorrect. Circular reasoning restates the premise as the conclusion, which is not what B did here."
+        },
+        {
+          "id": "D",
+          "text": "No True Scotsman",
+          "is_correct": false,
+          "explanation": "Incorrect. No True Scotsman is a way of protecting a generalization from counterexamples by excluding them, which doesn't apply here."
+        }
+      ]
+    },
+    {
+      "id": "philosophy-false-dilemma-sc",
+      "type": "term-recall",
+      "subject": "philosophy",
+      "category": "fallacies",
+      "difficulty": "medium",
+      "term_references": [
+        "False Dilemma"
+      ],
+      "cognitive_format": "scenario",
+      "prompt": "A politician claims: 'Either we pass this strict surveillance bill, or the terrorists win.' What logical fallacy is committed by presenting only two extreme options when other possibilities exist?",
+      "explanation": "A False Dilemma (or false dichotomy) artificially limits the available choices to two extremes, ignoring intermediate compromises or other realistic options.",
+      "acceptable_answers": [
+        "False Dilemma",
+        "false dilemma",
+        "either-or fallacy",
+        "false dichotomy"
+      ],
+      "normalization_rules": {
+        "case_sensitive": false,
+        "trim_whitespace": true,
+        "ignore_punctuation": true,
+        "ignore_articles": true,
+        "synonyms_allowed": true,
+        "description": "Convert input to lowercase. Accept common synonyms like 'either-or fallacy' or 'false dichotomy'."
+      }
+    }
+  ]
+}

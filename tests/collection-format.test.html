@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Collection Format Test Suite</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-color: #2c3e50;
+      --border-color: #dcdfe6;
+      --success-color: #2ecc71;
+      --error-color: #e74c3c;
+      --warn-color: #f1c40f;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      margin: 0 0 10px 0;
+      font-size: 2rem;
+    }
+
+    .summary-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .summary-stat {
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 5px;
+    }
+
+    .status-pass { color: var(--success-color); }
+    .status-fail { color: var(--error-color); }
+
+    .test-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .test-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-left: 5px solid #bdc3c7;
+      border-radius: 6px;
+      padding: 15px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      transition: transform 0.2s ease;
+    }
+
+    .test-card.passed {
+      border-left-color: var(--success-color);
+    }
+
+    .test-card.failed {
+      border-left-color: var(--error-color);
+    }
+
+    .test-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .test-name {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .test-badge {
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+
+    .badge-pass {
+      background-color: rgba(46, 204, 113, 0.15);
+      color: #27ae60;
+    }
+
+    .badge-fail {
+      background-color: rgba(231, 76, 60, 0.15);
+      color: #c0392b;
+    }
+
+    .test-description {
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      margin: 8px 0;
+    }
+
+    .test-error {
+      background: #fdf2f2;
+      border: 1px solid #f5b7b1;
+      border-radius: 4px;
+      color: var(--error-color);
+      font-family: monospace;
+      padding: 10px;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      margin-top: 10px;
+    }
+
+    .test-details {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      font-family: monospace;
+      padding: 10px;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      margin-top: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Collection Format Test Suite</h1>
+    <p>Comprehensive client-side verification for validation, parsing, normalization, and serialization logic.</p>
+  </header>
+
+  <section class="summary-card">
+    <div class="summary-stat">
+      <div class="stat-val" id="total-tests">0</div>
+      <div class="stat-label">Total Tests</div>
+    </div>
+    <div class="summary-stat">
+      <div class="stat-val status-pass" id="passed-tests">0</div>
+      <div class="stat-label">Passed</div>
+    </div>
+    <div class="summary-stat">
+      <div class="stat-val status-fail" id="failed-tests">0</div>
+      <div class="stat-label">Failed</div>
+    </div>
+    <div class="summary-stat">
+      <div class="stat-val" id="pass-percentage">0%</div>
+      <div class="stat-label">Pass Rate</div>
+    </div>
+  </section>
+
+  <main class="test-list" id="test-results-container">
+    <!-- Test cards will be rendered here dynamically -->
+  </main>
+
+  <script type="module">
+    import { validate, normalize, serialize, parse, escHtml } from '../src/collection-format.js';
+
+    // Helper to generate ISO strings
+    const getISOString = () => new Date().toISOString().split('.')[0] + 'Z';
+
+    // Base valid collection object
+    const createValidCollection = () => ({
+      version: '1.0.0',
+      id: 'web-dev-basics',
+      title: 'Web Development Basics',
+      description: 'An interactive collection explaining core frontend development terms.',
+      author: 'Jane Doe',
+      created: '2026-07-31T12:00:00Z',
+      modified: '2026-07-31T15:30:00Z',
+      license: 'CC-BY-4.0',
+      provenance: {
+        sourceUrl: 'https://example.com/vocab-source',
+        originalAuthor: 'Original Dev Team'
+      },
+      categories: [
+        { key: 'html', label: 'HTML structure' },
+        { key: 'css', label: 'CSS styling' }
+      ],
+      terms: [
+        {
+          id: 'term-div',
+          term: 'div',
+          cat: 'html',
+          sub: 'Structure',
+          def: 'A generic block-level container element.',
+          analogy: 'A plain cardboard shipping box — can hold anything but provides no details of contents.',
+          ex: '<div>Hello World</div>',
+          lenses: {
+            cooking: 'An empty food storage container — can hold leftover soup or dry rice alike.',
+            sports: 'A standard multi-purpose gym locker.'
+          }
+        },
+        {
+          id: 'term-flexbox',
+          term: 'flexbox',
+          cat: 'css',
+          sub: 'Layout',
+          def: 'A layout model for laying out items in one-dimensional rows or columns.',
+          analogy: 'A smart conveyor belt system that rearranges boxes of varying sizes neatly.',
+          lenses: {
+            cooking: 'A smart spice rack that expands and contracts dynamically as jars are added.'
+          }
+        }
+      ]
+    });
+
+    const testSuite = [];
+
+    function addTest(name, description, runFn) {
+      testSuite.push({ name, description, run: runFn });
+    }
+
+    // 1. Valid collection round-trip
+    addTest(
+      'Valid Collection Round-Trip',
+      'Verify that a valid collection structure passes validation, can be serialized, parsed back, and matches the original data.',
+      () => {
+        const original = createValidCollection();
+
+        // Validate
+        const valRes = validate(original);
+        if (!valRes.valid) {
+          throw new Error(`Validation failed unexpectedly: ${JSON.stringify(valRes.errors)}`);
+        }
+
+        // Serialize
+        const jsonStr = serialize(original);
+        if (typeof jsonStr !== 'string') {
+          throw new Error('Serialization did not return a string');
+        }
+
+        // Parse & Normalize
+        const parsedAndNormalized = parse(jsonStr);
+
+        // Assert some key properties match
+        if (parsedAndNormalized.id !== original.id) throw new Error('ID mismatch');
+        if (parsedAndNormalized.title !== original.title) throw new Error('Title mismatch');
+        if (parsedAndNormalized.terms.length !== original.terms.length) throw new Error('Terms array length mismatch');
+        if (parsedAndNormalized.terms[0].id !== original.terms[0].id) throw new Error('First term ID mismatch');
+
+        return { detail: `Serialized successfully to ${jsonStr.length} characters and parsed/normalized back successfully.` };
+      }
+    );
+
+    // 2. Missing Required Fields
+    addTest(
+      'Missing Required Fields Detection',
+      'Verify that top-level required fields like version, id, title, created, modified, categories, and terms are strictly enforced.',
+      () => {
+        const incomplete = {
+          version: '1.0.0',
+          title: 'Missing Required Fields Collection',
+          created: getISOString(),
+          modified: getISOString()
+          // id, categories, terms are missing
+        };
+
+        const res = validate(incomplete);
+        if (res.valid) {
+          throw new Error('Validation succeeded despite missing critical top-level fields');
+        }
+
+        const missingKeys = res.errors.map(e => e.field);
+        const expectedMissing = ['id', 'categories', 'terms'];
+
+        for (const key of expectedMissing) {
+          if (!missingKeys.includes(key)) {
+            throw new Error(`Expected missing error for field: "${key}" but it was not reported.`);
+          }
+        }
+
+        return { detail: `Validation correctly rejected the object with ${res.errors.length} errors: \n${res.errors.map(e => `- [${e.field}]: ${e.message}`).join('\n')}` };
+      }
+    );
+
+    // 3. Duplicate Category Keys Detection
+    addTest(
+      'Duplicate Category Keys',
+      'Ensure validation flags duplicate category keys, which would cause ambiguity during term mapping.',
+      () => {
+        const col = createValidCollection();
+        col.categories.push({ key: 'html', label: 'HTML Duplicate Category' });
+
+        const res = validate(col);
+        if (res.valid) {
+          throw new Error('Validation succeeded despite having duplicate category keys');
+        }
+
+        const duplicateErr = res.errors.find(e => e.field === 'categories[2].key' && e.message.includes('Duplicate category key'));
+        if (!duplicateErr) {
+          throw new Error(`Expected duplicate category key error but got: ${JSON.stringify(res.errors)}`);
+        }
+
+        return { detail: `Correctly caught duplicate category key error: "${duplicateErr.message}"` };
+      }
+    );
+
+    // 4. Duplicate Term IDs Detection
+    addTest(
+      'Duplicate Term IDs',
+      'Ensure validation flags duplicate term IDs within the terms list, preventing primary key collisions.',
+      () => {
+        const col = createValidCollection();
+        col.terms.push({
+          id: 'term-div', // duplicate id
+          term: 'another div',
+          cat: 'html',
+          def: 'Some other description',
+          analogy: 'Some other analogy'
+        });
+
+        const res = validate(col);
+        if (res.valid) {
+          throw new Error('Validation succeeded despite duplicate term IDs');
+        }
+
+        const duplicateErr = res.errors.find(e => e.field === 'terms[2].id' && e.message.includes('Duplicate term ID'));
+        if (!duplicateErr) {
+          throw new Error(`Expected duplicate term ID error but got: ${JSON.stringify(res.errors)}`);
+        }
+
+        return { detail: `Correctly caught duplicate term ID error: "${duplicateErr.message}"` };
+      }
+    );
+
+    // 5. Unsupported Schema Version
+    addTest(
+      'Unsupported Schema Version Handling',
+      'Reject unsupported schema versions (non-v1 major) with an actionable error.',
+      () => {
+        const col = createValidCollection();
+        col.version = '2.0.0'; // Major version 2 is unsupported right now
+
+        const res = validate(col);
+        if (res.valid) {
+          throw new Error('Validation succeeded with unsupported major version 2.0.0');
+        }
+
+        const versionErr = res.errors.find(e => e.field === 'version' && e.message.includes('Unsupported schema version'));
+        if (!versionErr) {
+          throw new Error(`Expected unsupported schema version error but got: ${JSON.stringify(res.errors)}`);
+        }
+
+        return { detail: `Correctly rejected unsupported version: "${versionErr.message}"` };
+      }
+    );
+
+    // 6. Oversized String Fields Detection
+    addTest(
+      'Oversized String Fields',
+      'Ensure strict field length limits are validated to protect from resource exhaustion or malformed database fields.',
+      () => {
+        const col = createValidCollection();
+        col.title = 'A'.repeat(101); // max is 100
+
+        const res = validate(col);
+        if (res.valid) {
+          throw new Error('Validation succeeded despite exceeding title max length');
+        }
+
+        const titleErr = res.errors.find(e => e.field === 'title' && (e.message.includes('exceeds') || e.message.includes('between')));
+        if (!titleErr) {
+          throw new Error(`Expected title length error but got: ${JSON.stringify(res.errors)}`);
+        }
+
+        return { detail: `Correctly caught oversized field error: "${titleErr.message}"` };
+      }
+    );
+
+    // 7. Malformed JSON Parsing
+    addTest(
+      'Malformed JSON Handling',
+      'Verify that malformed JSON input string causes parse() to throw a descriptive parsing error.',
+      () => {
+        const malformed = '{"version": "1.0.0", "id": "test", "title": "Malformed", '; // incomplete json
+
+        let threw = false;
+        try {
+          parse(malformed);
+        } catch (err) {
+          threw = true;
+          if (!err.message.includes('Malformed JSON')) {
+            throw new Error(`Error message did not mention Malformed JSON: "${err.message}"`);
+          }
+        }
+
+        if (!threw) {
+          throw new Error('parse() did not throw on malformed JSON string');
+        }
+
+        return { detail: 'Successfully intercepted malformed JSON and raised a descriptive syntax error.' };
+      }
+    );
+
+    // 8. Unsafe Markup-Like Content Mitigation
+    addTest(
+      'XSS Mitigation & HTML Escaping',
+      'Ensure all imported textual content is treated as untrusted and recursively escaped. No executable HTML (such as script tags or event handlers) must be returned.',
+      () => {
+        const unsafeInput = createValidCollection();
+        unsafeInput.title = 'My <b>Bold</b> Title';
+        unsafeInput.terms[0].term = '<script>alert("XSS")<\/script>';
+        unsafeInput.terms[0].def = 'Definition with <img src=x onerror=javascript:alert(1)> payload';
+        // Add an unknown field that is a string to verify unknown fields are recursively escaped too!
+        unsafeInput.terms[0].futureUnsafeField = '<iframe src="malicious"></iframe>';
+
+        const jsonStr = serialize(unsafeInput);
+        const normalized = parse(jsonStr);
+
+        // Assert title is escaped
+        if (normalized.title.includes('<b>')) {
+          throw new Error(`Title HTML was not escaped: ${normalized.title}`);
+        }
+        if (!normalized.title.includes('&lt;b&gt;')) {
+          throw new Error(`Title HTML escaping mismatch: ${normalized.title}`);
+        }
+
+        // Assert script tag is escaped
+        if (normalized.terms[0].term.includes('<script>')) {
+          throw new Error(`Term script tag was not escaped: ${normalized.terms[0].term}`);
+        }
+        if (!normalized.terms[0].term.includes('&lt;script&gt;')) {
+          throw new Error(`Term script tag escaping mismatch: ${normalized.terms[0].term}`);
+        }
+
+        // Assert img onerror is escaped
+        if (normalized.terms[0].def.includes('<img')) {
+          throw new Error(`Term def image tag was not escaped: ${normalized.terms[0].def}`);
+        }
+
+        // Assert unknown future field is escaped
+        if (normalized.terms[0].futureUnsafeField.includes('<iframe')) {
+          throw new Error(`Unknown future field was not escaped: ${normalized.terms[0].futureUnsafeField}`);
+        }
+
+        return {
+          detail: `Mitigated XSS successfully. Raw payloads neutralized:
+- title: "${normalized.title}"
+- term: "${normalized.terms[0].term}"
+- def: "${normalized.terms[0].def}"
+- futureUnsafeField: "${normalized.terms[0].futureUnsafeField}"`
+        };
+      }
+    );
+
+    // 9. Deterministic Serialization
+    addTest(
+      'Deterministic Serialization (Git-Friendly)',
+      'Verify that two objects with identical properties defined in different order are serialized to identical, sorted, formatted JSON.',
+      () => {
+        const objA = {
+          version: '1.0.0',
+          title: 'Test',
+          id: 'test',
+          terms: [],
+          categories: [],
+          created: '2026-07-31T12:00:00Z',
+          modified: '2026-07-31T12:00:00Z'
+        };
+
+        const objB = {
+          modified: '2026-07-31T12:00:00Z',
+          created: '2026-07-31T12:00:00Z',
+          categories: [],
+          terms: [],
+          id: 'test',
+          title: 'Test',
+          version: '1.0.0'
+        };
+
+        const strA = serialize(objA);
+        const strB = serialize(objB);
+
+        if (strA !== strB) {
+          throw new Error('Serialization outputs differ for identical items with different property order!');
+        }
+
+        // Verify key ordering in the serialized string
+        const lines = strA.split('\n');
+        const keys = lines
+          .filter(line => line.includes(':'))
+          .map(line => line.trim().split(':')[0].replace(/"/g, ''));
+
+        const sortedKeys = [...keys].sort();
+        for (let i = 0; i < keys.length; i++) {
+          if (keys[i] !== sortedKeys[i]) {
+            throw new Error(`Keys are not alphabetically sorted in serialized output: expected "${sortedKeys[i]}" but found "${keys[i]}"`);
+          }
+        }
+
+        return { detail: `Deterministic serialization confirmed. Outputs are byte-for-byte identical, beautifully formatted, and sorted alphabetically:\n${strA}` };
+      }
+    );
+
+    // 10. Large Payload Rejection
+    addTest(
+      'Oversized Payload Rejection (>1MB)',
+      'Ensure that parse() rejects any input string exceeding the 1MB file size limit to prevent Denial of Service / RAM depletion.',
+      () => {
+        // Create an oversized string (1.1MB of spaces/filler within a JSON array)
+        const size = 1.1 * 1024 * 1024;
+        const filler = 'A'.repeat(size);
+        const bigJson = `{"version": "1.0.0", "filler": "${filler}"}`;
+
+        let threw = false;
+        try {
+          parse(bigJson);
+        } catch (err) {
+          threw = true;
+          if (!err.message.includes('exceeds maximum limit of 1MB')) {
+            throw new Error(`Unexpected error message for large payload: "${err.message}"`);
+          }
+        }
+
+        if (!threw) {
+          throw new Error('parse() successfully accepted a string larger than 1MB');
+        }
+
+        return { detail: 'Correctly rejected a 1.1MB JSON payload immediately before attempting expensive JSON parsing.' };
+      }
+    );
+
+    // Run tests and render results
+    const container = document.getElementById('test-results-container');
+    let passedCount = 0;
+    let failedCount = 0;
+
+    testSuite.forEach((test, idx) => {
+      const card = document.createElement('div');
+      card.className = 'test-card';
+
+      try {
+        const result = test.run();
+        passedCount++;
+        card.classList.add('passed');
+        card.innerHTML = `
+          <div class="test-header">
+            <span class="test-name">${idx + 1}. ${test.name}</span>
+            <span class="test-badge badge-pass">PASS</span>
+          </div>
+          <div class="test-description">${test.description}</div>
+          ${result && result.detail ? `<div class="test-details">${result.detail}</div>` : ''}
+        `;
+      } catch (err) {
+        failedCount++;
+        card.classList.add('failed');
+        card.innerHTML = `
+          <div class="test-header">
+            <span class="test-name">${idx + 1}. ${test.name}</span>
+            <span class="test-badge badge-fail">FAIL</span>
+          </div>
+          <div class="test-description">${test.description}</div>
+          <div class="test-error">${err.stack || err.message}</div>
+        `;
+      }
+      container.appendChild(card);
+    });
+
+    // Update summary stats
+    const totalCount = testSuite.length;
+    document.getElementById('total-tests').textContent = totalCount;
+    document.getElementById('passed-tests').textContent = passedCount;
+    document.getElementById('failed-tests').textContent = failedCount;
+
+    const percentage = totalCount > 0 ? Math.round((passedCount / totalCount) * 100) : 0;
+    const pctElement = document.getElementById('pass-percentage');
+    pctElement.textContent = `${percentage}%`;
+
+    if (percentage === 100) {
+      pctElement.className = 'stat-val status-pass';
+    } else {
+      pctElement.className = 'stat-val status-fail';
+    }
+  </script>
+</body>
+</html>
