@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Re-Encoded Vocabulary Collection",
+  "description": "A safe, portable, and versioned file format for user-created vocabulary collections, categories, and analogy translations.",
+  "type": "object",
+  "required": ["version", "id", "title", "created", "modified", "categories", "terms"],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Semantic version of the collection schema (e.g. 1.0.0).",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the collection, useful for tracking updates and syncing.",
+      "pattern": "^[a-zA-Z0-9_.-]{1,100}$"
+    },
+    "title": {
+      "type": "string",
+      "description": "A short, descriptive title for the collection.",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "description": "An optional detailed description of what the collection covers.",
+      "maxLength": 500
+    },
+    "author": {
+      "type": "string",
+      "description": "The author or organization that compiled the collection.",
+      "maxLength": 100
+    },
+    "created": {
+      "type": "string",
+      "description": "ISO-8601 timestamp representing when the collection was originally created.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "modified": {
+      "type": "string",
+      "description": "ISO-8601 timestamp representing when the collection was last updated.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "license": {
+      "type": "string",
+      "description": "Optional copyright or open-source license string (e.g., MIT, CC-BY-4.0).",
+      "maxLength": 100
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Optional metadata detailing where this collection was sourced or adapted from.",
+      "additionalProperties": true,
+      "properties": {
+        "sourceUrl": {
+          "type": "string",
+          "maxLength": 200,
+          "pattern": "^https?:\\/\\/[^\\s\\/$.?#].[^\\s]*$"
+        },
+        "originalAuthor": {
+          "type": "string",
+          "maxLength": 100
+        }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "description": "The subject categories used to classify the vocabulary terms in this collection.",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "required": ["key", "label"],
+        "additionalProperties": true,
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z0-9_-]{1,40}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        }
+      }
+    },
+    "terms": {
+      "type": "array",
+      "description": "The list of vocabulary words, definitions, and analogy translations.",
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "required": ["id", "term", "cat", "def", "analogy"],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_.-]{1,100}$"
+          },
+          "term": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "cat": {
+            "type": "string",
+            "pattern": "^[a-z0-9_-]{1,40}$"
+          },
+          "sub": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "def": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "analogy": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "ex": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "lenses": {
+            "type": "object",
+            "description": "Analogy mappings for the interchangeable lens system.",
+            "additionalProperties": {
+              "type": "string",
+              "maxLength": 1000
+            },
+            "properties": {
+              "medical": { "type": "string", "maxLength": 1000 },
+              "sports": { "type": "string", "maxLength": 1000 },
+              "fandom": { "type": "string", "maxLength": 1000 },
+              "ttrpg": { "type": "string", "maxLength": 1000 },
+              "cooking": { "type": "string", "maxLength": 1000 },
+              "millennial": { "type": "string", "maxLength": 1000 },
+              "f1": { "type": "string", "maxLength": 1000 },
+              "gaming": { "type": "string", "maxLength": 1000 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

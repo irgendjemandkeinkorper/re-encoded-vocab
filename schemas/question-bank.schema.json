@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QuestionBank",
+  "type": "object",
+  "required": ["version", "questions"],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          { "$ref": "#/definitions/MultipleChoiceQuestion" },
+          { "$ref": "#/definitions/TermRecallQuestion" }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "BaseQuestion": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "subject",
+        "category",
+        "difficulty",
+        "term_references",
+        "cognitive_format",
+        "prompt",
+        "explanation"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_-]+$" },
+        "type": { "type": "string", "enum": ["multiple-choice", "term-recall"] },
+        "subject": { "type": "string" },
+        "category": { "type": "string" },
+        "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+        "term_references": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "cognitive_format": { "type": "string", "enum": ["definition-recall", "scenario", "application", "compare-contrast"] },
+        "prompt": { "type": "string", "minLength": 10 },
+        "explanation": { "type": "string", "minLength": 10 }
+      }
+    },
+    "MultipleChoiceQuestion": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseQuestion" },
+        {
+          "type": "object",
+          "required": ["options"],
+          "properties": {
+            "type": { "type": "string", "enum": ["multiple-choice"] },
+            "options": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "text", "is_correct", "explanation"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "text": { "type": "string" },
+                  "is_correct": { "type": "boolean" },
+                  "explanation": { "type": "string" }
+                }
+              },
+              "minItems": 3,
+              "maxItems": 6
+            }
+          }
+        }
+      ]
+    },
+    "TermRecallQuestion": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseQuestion" },
+        {
+          "type": "object",
+          "required": ["acceptable_answers", "normalization_rules"],
+          "properties": {
+            "type": { "type": "string", "enum": ["term-recall"] },
+            "acceptable_answers": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            },
+            "normalization_rules": {
+              "type": "object",
+              "required": ["case_sensitive", "trim_whitespace", "ignore_punctuation", "ignore_articles"],
+              "properties": {
+                "case_sensitive": { "type": "boolean" },
+                "trim_whitespace": { "type": "boolean" },
+                "ignore_punctuation": { "type": "boolean" },
+                "ignore_articles": { "type": "boolean" },
+                "synonyms_allowed": { "type": "boolean" },
+                "description": { "type": "string" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

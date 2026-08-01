@@ -1,0 +1,32 @@
+{
+  "name": "Re-Encoded Vocabulary",
+  "short_name": "Re-Encoded",
+  "description": "An interactive multi-subject glossary re-encoding core concepts through 8 interchangeable lenses.",
+  "start_url": "/re-encoded-vocab/",
+  "scope": "/re-encoded-vocab/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f2ede2",
+  "theme_color": "#1b3a2f",
+  "id": "/re-encoded-vocab/",
+  "icons": [
+    {
+      "src": "/re-encoded-vocab/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/re-encoded-vocab/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/re-encoded-vocab/assets/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
