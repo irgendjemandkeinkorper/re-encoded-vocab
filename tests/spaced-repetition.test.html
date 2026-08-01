@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spaced Repetition Scheduler Test Suite</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --text: #f1f5f9;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --success: #22c55e;
+      --error: #ef4444;
+      --warning: #eab308;
+      --info: #3b82f6;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      margin-top: 0;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1rem;
+    }
+    .summary {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 2rem;
+    }
+    .summary-item {
+      font-size: 1.1rem;
+    }
+    .summary-item strong {
+      font-size: 1.5rem;
+    }
+    .test-suite {
+      margin-bottom: 2rem;
+    }
+    .suite-title {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: #94a3b8;
+    }
+    .test-case {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .test-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .test-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    .badge.passed {
+      background: rgba(34, 197, 94, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+    .badge.failed {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
+    .test-details {
+      font-family: monospace;
+      font-size: 0.9rem;
+      background: #0b0f19;
+      padding: 0.75rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    .test-error {
+      color: var(--error);
+      margin-top: 0.5rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Spaced Repetition Scheduler Test Suite</h1>
+
+  <div class="summary">
+    <div class="summary-item">Total Tests: <strong id="total-count">0</strong></div>
+    <div class="summary-item" style="color: var(--success)">Passed: <strong id="passed-count">0</strong></div>
+    <div class="summary-item" style="color: var(--error)">Failed: <strong id="failed-count">0</strong></div>
+  </div>
+
+  <div id="suites-container"></div>
+
+  <script type="module">
+    import { createInitialState, validateAndMigrateState, schedule } from '../src/spaced-repetition.js';
+
+    const suites = [];
+    let currentSuite = null;
+
+    function suite(name, fn) {
+      currentSuite = { name, tests: [] };
+      suites.push(currentSuite);
+      fn();
+    }
+
+    function test(name, fn) {
+      currentSuite.tests.push({ name, fn });
+    }
+
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message || "Assertion failed");
+      }
+    }
+
+    function assertEqual(actual, expected, message) {
+      if (actual !== expected) {
+        throw new Error(message || `Expected "${expected}", but got "${actual}"`);
+      }
+    }
+
+    function assertDeepEqual(actual, expected, message) {
+      const aStr = JSON.stringify(actual);
+      const eStr = JSON.stringify(expected);
+      if (aStr !== eStr) {
+        throw new Error(message || `Expected ${eStr}, but got ${aStr}`);
+      }
+    }
+
+    // Define all test cases
+    suite("1. Initial State", () => {
+      test("should produce a valid default initial state structure", () => {
+        const state = createInitialState();
+        assertEqual(state.version, 1);
+        assertEqual(state.state, "new");
+        assertEqual(state.dueDate, null);
+        assertEqual(state.interval, 0);
+        assertEqual(state.repetitions, 0);
+        assertEqual(state.lapses, 0);
+        assertEqual(state.mastery, 2.5);
+        assertEqual(state.lastReviewed, null);
+      });
+    });
+
+    suite("2. Validation and Migration/Defaulting", () => {
+      test("should return default state when called with null/undefined", () => {
+        const s1 = validateAndMigrateState(null);
+        assertEqual(s1.state, "new");
+        assertEqual(s1.version, 1);
+
+        const s2 = validateAndMigrateState(undefined);
+        assertEqual(s2.state, "new");
+      });
+
+      test("should default invalid values but preserve valid fields", () => {
+        const malformed = {
+          version: "not-a-number",
+          state: "corrupt_state",
+          dueDate: "invalid-date",
+          interval: -10,
+          repetitions: "five",
+          lapses: -1,
+          mastery: "infinity",
+          lastReviewed: "invalid-date"
+        };
+        const healed = validateAndMigrateState(malformed);
+        assertEqual(healed.version, 1);
+        assertEqual(healed.state, "new");
+        assertEqual(healed.dueDate, null);
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 2.5);
+        assertEqual(healed.lastReviewed, null);
+      });
+
+      test("should validate and correct boundary values (e.g. mastery minimum)", () => {
+        const state = {
+          mastery: 0.5,
+          interval: 5.6
+        };
+        const healed = validateAndMigrateState(state);
+        assertEqual(healed.mastery, 1.3); // Minimum SM-2 mastery is 1.3
+        assertEqual(healed.interval, 6); // Rounded interval
+      });
+    });
+
+    suite("3. First Review Transitions (New state)", () => {
+      const now = "2026-07-31T12:00:00.000Z";
+      const start = createInitialState();
+
+      test("again: transition to learning, interval 1 min", () => {
+        const res = schedule(start, "again", now);
+        assertEqual(res.state, "learning");
+        assertEqual(res.interval, 1);
+        assertEqual(res.dueDate, new Date(Date.parse(now) + 1 * 60 * 1000).toISOString());
+      });
+
+      test("hard: transition to learning, interval 5 min", () => {
+        const res = schedule(start, "hard", now);
+        assertEqual(res.state, "learning");
+        assertEqual(res.interval, 5);
+        assertEqual(res.dueDate, new Date(Date.parse(now) + 5 * 60 * 1000).toISOString());
+      });
+
+      test("good: transition to learning, interval 10 min", () => {
+        const res = schedule(start, "good", now);
+        assertEqual(res.state, "learning");
+        assertEqual(res.interval, 10);
+        assertEqual(res.dueDate, new Date(Date.parse(now) + 10 * 60 * 1000).toISOString());
+      });
+
+      test("easy: graduate immediately to review, interval 4 days", () => {
+        const res = schedule(start, "easy", now);
+        assertEqual(res.state, "review");
+        assertEqual(res.interval, 5760); // 4 days in minutes
+        assertEqual(res.repetitions, 1);
+        assertEqual(res.dueDate, new Date(Date.parse(now) + 5760 * 60 * 1000).toISOString());
+      });
+    });
+
+    suite("4. Learning State Progressions", () => {
+      const now = "2026-07-31T12:00:00.000Z";
+
+      test("good rating on small interval stays in learning with 10 min interval", () => {
+        const state = {
+          version: 1,
+          state: "learning",
+          dueDate: now,
+          interval: 1,
+          repetitions: 0,
+          lapses: 0,
+          mastery: 2.5,
+          lastReviewed: null
+        };
+        const res = schedule(state, "good", now);
+        assertEqual(res.state, "learning");
+        assertEqual(res.interval, 10);
+      });
+
+      test("good rating on 10 min interval graduates to review with 1 day interval", () => {
+        const state = {
+          version: 1,
+          state: "learning",
+          dueDate: now,
+          interval: 10,
+          repetitions: 0,
+          lapses: 0,
+          mastery: 2.5,
+          lastReviewed: null
+        };
+        const res = schedule(state, "good", now);
+        assertEqual(res.state, "review");
+        assertEqual(res.interval, 1440); // 1 day
+        assertEqual(res.repetitions, 1);
+      });
+
+      test("easy rating in learning graduates immediately to review with 4 days interval", () => {
+        const state = {
+          version: 1,
+          state: "learning",
+          dueDate: now,
+          interval: 1,
+          repetitions: 0,
+          lapses: 0,
+          mastery: 2.5,
+          lastReviewed: null
+        };
+        const res = schedule(state, "easy", now);
+        assertEqual(res.state, "review");
+        assertEqual(res.interval, 5760); // 4 days
+        assertEqual(res.repetitions, 1);
+      });
+    });
+
+    suite("5. Review State Progressions (Interval Growth & Mastery)", () => {
+      const now = "2026-07-31T12:00:00.000Z";
+
+      test("hard rating grows conservatively and decreases mastery", () => {
+        const state = {
+          version: 1,
+          state: "review",
+          dueDate: now,
+          interval: 1440, // 1 day
+          repetitions: 1,
+          lapses: 0,
+          mastery: 2.5,
+          lastReviewed: now
+        };
+        const res = schedule(state, "hard", now);
+        assertEqual(res.state, "review");
+        assertEqual(res.interval, Math.round(1440 * 1.2)); // 1.2x conservative growth
+        assertEqual(res.mastery, 2.35); // 2.5 - 0.15
+        assertEqual(res.repetitions, 2);
+      });
+
+      test("good rating grows interval by mastery factor", () => {
+        const state = {
+          version: 1,
+          state: "review",
+          dueDate: now,
+          interval: 1440,
+          repetitions: 1,
+          lapses: 0,
+          mastery: 2.5,
+          lastReviewed: now
+        };
+        const res = schedule(state, "good", now);
+        assertEqual(res.state, "review");
+        assertEqual(res.interval, Math.round(1440 * 2.5)); // 3600
+        assertEqual(res.mastery, 2.5); // unchanged
+      });
+
+      test("easy rating grows interval by mastery * 1.3 and increases mastery", () => {
+        const state = {
+          version: 1,
+          state: "review",
+          dueDate: now,
+          interval: 1440,
+          repetitions: 1,
+          lapses: 0,
+          mastery: 2.5,
+          lastReviewed: now
+        };
+        const res = schedule(state, "easy", now);
+        assertEqual(res.state, "review");
+        assertEqual(res.interval, Math.round(1440 * 2.5 * 1.3)); // 4680
+        assertEqual(res.mastery, 2.65); // 2.5 + 0.15
+      });
+    });
+
+    suite("6. Failures & Lapses (Again in Review)", () => {
+      const now = "2026-07-31T12:00:00.000Z";
+
+      test("again rating in review state triggers relearning, increases lapses, decreases mastery", () => {
+        const state = {
+          version: 1,
+          state: "review",
+          dueDate: now,
+          interval: 5760,
+          repetitions: 3,
+          lapses: 0,
+          mastery: 2.5,
+          lastReviewed: now
+        };
+        const res = schedule(state, "again", now);
+        assertEqual(res.state, "relearning");
+        assertEqual(res.interval, 1);
+        assertEqual(res.repetitions, 0);
+        assertEqual(res.lapses, 1);
+        assertEqual(res.mastery, 2.3); // 2.5 - 0.2
+      });
+
+      test("mastery should not fall below 1.3 even after multiple lapses", () => {
+        const state = {
+          version: 1,
+          state: "review",
+          dueDate: now,
+          interval: 1440,
+          repetitions: 1,
+          lapses: 5,
+          mastery: 1.4,
+          lastReviewed: now
+        };
+        const res = schedule(state, "again", now);
+        assertEqual(res.mastery, 1.3); // capped at 1.3 minimum
+      });
+    });
+
+    suite("7. Overdue Card Calculations", () => {
+      const scheduledDue = "2026-07-30T12:00:00.000Z";
+      const actualReview = "2026-08-01T12:00:00.000Z"; // 2 days overdue (2880 mins overdue)
+
+      test("good rating on overdue card rewards user with half overdue bonus", () => {
+        const state = {
+          version: 1,
+          state: "review",
+          dueDate: scheduledDue,
+          interval: 1440, // 1 day scheduled interval
+          repetitions: 1,
+          lapses: 0,
+          mastery: 2.0,
+          lastReviewed: "2026-07-29T12:00:00.000Z" // elapsed = 3 days (4320 mins)
+        };
+        const res = schedule(state, "good", actualReview);
+        // expected basis = max(1440, (1440 + 4320) / 2) = 2880
+        // interval = basis * mastery = 2880 * 2.0 = 5760
+        assertEqual(res.interval, 5760);
+      });
+
+      test("easy rating on overdue card rewards user with full elapsed time bonus", () => {
+        const state = {
+          version: 1,
+          state: "review",
+          dueDate: scheduledDue,
+          interval: 1440,
+          repetitions: 1,
+          lapses: 0,
+          mastery: 2.0,
+          lastReviewed: "2026-07-29T12:00:00.000Z" // elapsed = 3 days (4320 mins)
+        };
+        const res = schedule(state, "easy", actualReview);
+        // expected basis = max(1440, 4320) = 4320
+        // interval = basis * mastery * 1.3 = 4320 * 2.0 * 1.3 = 11232
+        assertEqual(res.interval, 11232);
+      });
+    });
+
+    suite("8. Boundary and Parameter Rules", () => {
+      const now = "2026-07-31T12:00:00.000Z";
+
+      test("pure api does not mutate the passed state object", () => {
+        const state = createInitialState();
+        const res = schedule(state, "good", now);
+        assertEqual(state.state, "new");
+        assertEqual(state.dueDate, null);
+        assert(state !== res, "Should return a fresh object instance");
+      });
+
+      test("throws exception on invalid rating input", () => {
+        const state = createInitialState();
+        try {
+          schedule(state, "super_good", now);
+          assert(false, "Should have thrown an exception");
+        } catch (e) {
+          assertEqual(e.message, 'Invalid rating: "super_good". Must be one of: again, hard, good, easy.');
+        }
+      });
+
+      test("throws exception on invalid currentTimestamp", () => {
+        const state = createInitialState();
+        try {
+          schedule(state, "good", "not-a-date");
+          assert(false, "Should have thrown an exception");
+        } catch (e) {
+          assertEqual(e.message, 'Invalid currentTimestamp: "not-a-date". Must be a valid Date constructor parameter.');
+        }
+      });
+    });
+
+    // Execution engine
+    let total = 0;
+    let passed = 0;
+    let failed = 0;
+
+    const container = document.getElementById("suites-container");
+
+    suites.forEach(suiteData => {
+      const suiteDiv = document.createElement("div");
+      suiteDiv.className = "test-suite";
+
+      const title = document.createElement("div");
+      title.className = "suite-title";
+      title.textContent = suiteData.name;
+      suiteDiv.appendChild(title);
+
+      suiteData.tests.forEach(testCase => {
+        total++;
+        const testDiv = document.createElement("div");
+        testDiv.className = "test-case";
+
+        const header = document.createElement("div");
+        header.className = "test-header";
+
+        const nameSpan = document.createElement("span");
+        nameSpan.className = "test-name";
+        nameSpan.textContent = testCase.name;
+        header.appendChild(nameSpan);
+
+        const badge = document.createElement("span");
+        badge.className = "badge";
+        header.appendChild(badge);
+        testDiv.appendChild(header);
+
+        const details = document.createElement("div");
+        details.className = "test-details";
+        testDiv.appendChild(details);
+
+        try {
+          testCase.fn();
+          badge.textContent = "PASSED";
+          badge.className += " passed";
+          details.textContent = "Test executed successfully without assertions breaking.";
+          passed++;
+        } catch (e) {
+          badge.textContent = "FAILED";
+          badge.className += " failed";
+          const errDiv = document.createElement("div");
+          errDiv.className = "test-error";
+          errDiv.textContent = e.toString() + "\n" + (e.stack || "");
+          details.appendChild(errDiv);
+          failed++;
+        }
+
+        suiteDiv.appendChild(testDiv);
+      });
+
+      container.appendChild(suiteDiv);
+    });
+
+    document.getElementById("total-count").textContent = total;
+    document.getElementById("passed-count").textContent = passed;
+    document.getElementById("failed-count").textContent = failed;
+
+    // Output visual status indicator for automated scripts
+    window.testsCompleted = true;
+    window.testResults = { total, passed, failed };
+    console.log("Tests Completed:", window.testResults);
+  </script>
+
+</body>
+</html>

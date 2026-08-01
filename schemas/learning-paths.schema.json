@@ -1,0 +1,230 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LearningPaths",
+  "description": "Schema for structured vocabulary-based learning paths",
+  "type": "object",
+  "required": ["$schema", "version", "paths"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "The schema URL for the learning paths format"
+    },
+    "version": {
+      "type": "string",
+      "description": "The semantic version of the learning paths format"
+    },
+    "paths": {
+      "type": "array",
+      "description": "The list of structured learning paths",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "estimatedEffort",
+          "outcome",
+          "prerequisites",
+          "modules"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$",
+            "description": "Stable, URL-safe unique identifier for the learning path"
+          },
+          "title": {
+            "type": "string",
+            "description": "The user-facing title of the learning path"
+          },
+          "description": {
+            "type": "string",
+            "description": "A high-level overview of what the learning path covers"
+          },
+          "estimatedEffort": {
+            "type": "string",
+            "description": "The total estimated time required to complete the path (e.g., '10 hours', '3 weeks')"
+          },
+          "outcome": {
+            "type": "string",
+            "description": "Clear educational goal or skill acquired upon completion"
+          },
+          "prerequisites": {
+            "type": "array",
+            "description": "Required prior knowledge, paths, or concepts needed before starting",
+            "items": {
+              "type": "string"
+            }
+          },
+          "modules": {
+            "type": "array",
+            "description": "Ordered list of modules comprising the path",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "title",
+                "description",
+                "estimatedEffort",
+                "lessons"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9-]+$",
+                  "description": "Stable, URL-safe unique identifier for the module"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "User-facing title of the module"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Summary of the module's content"
+                },
+                "estimatedEffort": {
+                  "type": "string",
+                  "description": "Estimated time to complete this module"
+                },
+                "lessons": {
+                  "type": "array",
+                  "description": "Ordered list of lessons inside the module",
+                  "items": {
+                    "type": "object",
+                    "required": ["id", "title", "description", "terms"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$",
+                        "description": "Stable, URL-safe unique identifier for the lesson"
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "User-facing title of the lesson"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Short explanation of the lesson's goal"
+                      },
+                      "terms": {
+                        "type": "array",
+                        "description": "Unambiguous references to existing glossary terms to study in this lesson",
+                        "items": {
+                          "type": "object",
+                          "required": ["term", "cat"],
+                          "additionalProperties": false,
+                          "properties": {
+                            "term": {
+                              "type": "string",
+                              "description": "The exact term name matching the glossary's 'term' field"
+                            },
+                            "cat": {
+                              "type": "string",
+                              "description": "The category code matching the glossary's 'cat' field"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "checkpoint": {
+                  "type": "object",
+                  "description": "An optional end-of-module assessment checkpoint",
+                  "required": ["id", "title", "description", "completionRequirements"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9-]+$",
+                      "description": "Stable, URL-safe unique identifier for the checkpoint"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "User-facing title of the checkpoint"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Explanation of what the checkpoint entails"
+                    },
+                    "completionRequirements": {
+                      "type": "object",
+                      "description": "Completion rules for the checkpoint",
+                      "required": ["type", "description"],
+                      "additionalProperties": false,
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": ["quiz", "test_run", "self_assessment"],
+                          "description": "The validation method for this checkpoint"
+                        },
+                        "description": {
+                          "type": "string",
+                          "description": "Actionable instructions for completion (e.g. 'Complete the Python Loops Quiz with a score >= 80%')"
+                        },
+                        "minScore": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "description": "Optional minimum percentage score required for passing"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "finalCheckpoint": {
+            "type": "object",
+            "description": "A required final assessment checkpoint for completing the entire learning path",
+            "required": ["id", "title", "description", "completionRequirements"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$",
+                "description": "Stable, URL-safe unique identifier for the final checkpoint"
+              },
+              "title": {
+                "type": "string",
+                "description": "User-facing title of the final checkpoint"
+              },
+              "description": {
+                "type": "string",
+                "description": "Explanation of the final challenge"
+              },
+              "completionRequirements": {
+                "type": "object",
+                "description": "Completion rules for the final checkpoint",
+                "required": ["type", "description"],
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["quiz", "test_run", "self_assessment"],
+                    "description": "The validation method for this checkpoint"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Actionable instructions for completion"
+                  },
+                  "minScore": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Optional minimum percentage score required for passing"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
