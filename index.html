@@ -2207,6 +2207,14 @@ document.getElementById('importBtn').addEventListener('click', () => importFile.
 importFile.addEventListener('change', (e) => {
   const file = e.target.files[0];
   if(!file) return;
+
+  // Security Enhancement: Limit file size to 1MB to prevent memory/resource exhaustion
+  if (file.size > 1 * 1024 * 1024) {
+    alert('Import failed: File exceeds the maximum size limit of 1MB.');
+    importFile.value = '';
+    return;
+  }
+
   const reader = new FileReader();
   reader.onload = (ev) => {
     try {
@@ -2214,6 +2222,12 @@ importFile.addEventListener('change', (e) => {
       if (!Array.isArray(list)) {
         throw new Error('Imported data must be a JSON array');
       }
+
+      // Security Enhancement: Limit array length to 1000 to prevent DoS/browser freezing
+      if (list.length > 1000) {
+        throw new Error('Imported list is too large (max 1000 items)');
+      }
+
       const validTerms = new Set(DATA.map(d => d.term));
       let count = 0;
       list.forEach(item => {
@@ -2518,6 +2532,10 @@ const SESSION_NAME_KEY = 'vocab_session_name';
 
 function sanitizeName(name) {
   if (typeof name !== 'string') return '';
+  // Security Enhancement: Limit input length early to prevent ReDoS / excessive resource consumption
+  if (name.length > 200) {
+    name = name.slice(0, 200);
+  }
   // Strip any HTML/XML tags
   let cleaned = name.replace(/<\/?[^>]+(>|$)/g, "");
   // Limit to safe characters: alphanumeric, spaces, hyphens, underscores, dots
