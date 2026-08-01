@@ -3263,6 +3263,90 @@ const CODE_WALKS = [
         }
       }
     ]
+  },
+  {
+    id: 'click-decline-button',
+    title: 'clickDeclineButton()',
+    summary: 'A Playwright interaction helper that iterates through candidate selectors to find and click a cookie decline/reject button.',
+    segments: [
+      {
+        code: 'async function clickDeclineButton(page, selectors) {\n  for (const selector of selectors) {\n    const btn = await page.$(selector);\n    if (btn && await btn.isVisible()) {',
+        plain: 'Iterate through a list of potential button selectors to find the first one that is present in the DOM and visible to the user.',
+        lenses: {
+          medical: 'Diagnostic triage: scan a sequence of diagnostic tests to find the first test that is active and returning clear clinical indicators.',
+          sports: 'Playbook search: scan down the list of set plays to find the first play where the defense is out of position and the receiver is open.',
+          fandom: 'Spell selection: browse your list of learned counter-spells until you find the first charm that is visible and active in your memory.',
+          ttrpg: 'Action check: check your inventory for items, filtering for the first item that is actually usable in your current location.',
+          cooking: 'Prep scanning: search your pantry shelves for ingredient substitutes until you find the first one that is fresh and ready to use.',
+          millennial: 'Contact scrolling: browse down your group chat contact list to find the first friend who has a green online bubble visible.',
+          f1: 'Tyre scanning: check your current tyre inventory for a set of dry-weather compounds that are visible and ready on the racks.',
+          gaming: 'Target lock: cycle through nearby enemies to find the first hostile target that is in your line of sight and within range.'
+        }
+      },
+      {
+        code: '      await btn.click();\n      return true;\n    }\n  }\n  return false;\n}',
+        plain: 'Click the visible button to trigger the rejection event and return true to indicate success, otherwise return false if no matching button is found.',
+        lenses: {
+          medical: 'Administer the targeted treatment to halt the symptom, marking the intake form as complete; otherwise report that no viable treatment was found.',
+          sports: 'Execute the pass to the open player for a touchdown and record a successful play, or turn over the ball if no options exist.',
+          fandom: 'Cast the selected spell to disarm the target and claim victory, or return empty-handed if no spells were cast.',
+          ttrpg: 'Use the item to successfully disarm the trap and advance the party, or trigger a failure if no suitable gear is found in your pack.',
+          cooking: 'Throw the ingredient into the pan to complete the dish and serve the customer, or cancel the order if the pantry is completely bare.',
+          millennial: 'Tap the link to send a quick DM and get an immediate reply, or close the app in defeat if no one is online.',
+          f1: 'Release the clutch to complete the pitstop and rejoin the track ahead, or abort the strategy if no suitable tyres are found.',
+          gaming: 'Press the attack button to land a critical hit and clear the objective, or return failure if no targets are lockable.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'detect-placebo-consent',
+    title: 'detectPlaceboConsent()',
+    summary: 'The core placeholder/placebo cookie auditor that records cookies before and after clicking a rejection button to verify if user choices are ignored.',
+    segments: [
+      {
+        code: 'async function detectPlaceboConsent(page, declineSelector) {\n  const beforeCookies = await page.context().cookies();\n  const beforeNames = beforeCookies.map(c => c.name);',
+        plain: 'Fetch all currently set cookies in the browser context before any action is taken, and map their names into a lookup array.',
+        lenses: {
+          medical: 'Take a baseline patient blood sample and compile a list of all pre-existing antibodies present before administering any trial medication.',
+          sports: 'Take a pre-match head count of all active players on the field and list their names on the official roster before kickoff.',
+          fandom: 'Cast an auditing spell to reveal all active enchantments on a castle, cataloging their true names before performing any counter-curses.',
+          ttrpg: 'Record your character sheet\'s active status conditions and inventory list before taking a short rest or choosing a combat action.',
+          cooking: 'Audit the current prep table and write down every ingredient already open and out of the fridge before beginning the new recipe.',
+          millennial: 'Take a screenshot of your current social media notification list to remember who is already following you before you post a controversial opinion.',
+          f1: 'Log the initial telemetry data and tire wear status of all four tires before the car leaves the pit lane for its run.',
+          gaming: 'Save a backup of your character\'s current inventory list and quest logs before talking to an untrusted NPC or merchant.'
+        }
+      },
+      {
+        code: '  await page.click(declineSelector);\n  await page.waitForTimeout(1000);',
+        plain: 'Click the decline button to officially state that you reject tracking, then wait 1 second for any asynchronous network scripts to finish running.',
+        lenses: {
+          medical: 'Administer the patient\'s refusal of treatment forms, then wait in the observation room to see if the symptoms subside.',
+          sports: 'Call a timeout to formally reject the referee\'s play ruling, then wait on the sideline while the replay booth reviews the footage.',
+          fandom: 'Slam the heavy door to reject the dark wizard\'s offer, then wait under an invisibility cloak while the magical dust settles.',
+          ttrpg: 'Formally refuse the shady merchant\'s deal, then wait in suspense while the DM rolls behind the screen to see how the guild responds.',
+          cooking: 'Decline a delivery of substandard produce from the supplier, then wait at the back door for them to load the crate back onto their truck.',
+          millennial: 'Double-tap to decline the suspicious event invite, then wait in silence for the group chat to notice your sudden absence.',
+          f1: 'Reject the pit wall\'s recommendation to change tyres, then wait one full lap to see how the track temperature behaves.',
+          gaming: 'Press the \'Decline\' button on the guild invite, then wait for the multiplayer lobby to refresh and update your status.'
+        }
+      },
+      {
+        code: '  const afterCookies = await page.context().cookies();\n  const placeboCookies = afterCookies.filter(c => !beforeNames.includes(c.name));\n  return placeboCookies.length > 0;\n}',
+        plain: 'Re-fetch the active cookies and filter for any new ones that were set after declining, returning true if any tracking cookies were set despite our rejection.',
+        lenses: {
+          medical: 'Re-test the patient\'s blood sample; if any new unapproved toxins are found after they declined treatment, return true to report a placebo form violation.',
+          sports: 'Re-count the players on the field; if new un-rostered players are found playing after you formally rejected them, report a roster violation.',
+          fandom: 'Re-scan the castle for new curses; if any new tracking charms appeared after you cast a blocking spell, return true to report a dark magic breach.',
+          ttrpg: 'Re-check your character sheet; if new hostile curses or tracking marks were added after you rolled a successful save, return true to flag a cheating DM.',
+          cooking: 'Re-inspect the prep table; if any new unapproved allergens were opened after the chef explicitly banned them, return true to report a kitchen violation.',
+          millennial: 'Re-examine your follower list; if new tracking bots appear on your feed after you blocked them, return true to report a privacy violation.',
+          f1: 'Re-analyze the telemetry; if any new unauthorized engine adjustments were made after the driver rejected them, return true to flag a paddock rule breach.',
+          gaming: 'Re-inspect your inventory; if new tracking tracking devices or debuffs appeared after you declined the quest, return true to flag a security exploit.'
+        }
+      }
+    ]
   }
 ];
 
