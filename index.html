@@ -555,6 +555,46 @@
     box-shadow: var(--focus-ring);
   }
 
+  .copy-btn {
+    position: absolute;
+    top: 12px;
+    right: 56px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 6px;
+    border-radius: 50%;
+    color: var(--very-muted-text);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  html.dark-theme .copy-btn {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .copy-btn:hover {
+    transform: scale(1.15);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: var(--shadow-md);
+  }
+
+  html.dark-theme .copy-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .copy-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
   .quiz-wrap {
     max-width: 620px;
     margin: 40px auto 0 auto;
@@ -1014,6 +1054,8 @@
     .icon-btn:active { transform: none; }
     .star-btn { transition: none; }
     .star-btn:hover { transform: none; }
+    .copy-btn { transition: none; }
+    .copy-btn:hover { transform: none; }
   }
 
   /* ---- Code Lab ---- */
@@ -2344,6 +2386,58 @@ function renderStudyCard(){
     copyToClipboard(d.term, copyBtn);
   };
   card.appendChild(copyBtn);
+}
+
+function copyToClipboard(text, btnElement) {
+  if (!text || !btnElement) return;
+
+  const originalContent = btnElement.textContent;
+  const onSuccess = () => {
+    btnElement.textContent = '✅';
+    setTimeout(() => {
+      btnElement.textContent = originalContent;
+    }, 1500);
+  };
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(onSuccess)
+      .catch((err) => {
+        console.warn('Asynchronous clipboard copy failed, falling back to execCommand.', err);
+        fallbackCopyToClipboard(text, onSuccess);
+      });
+  } else {
+    fallbackCopyToClipboard(text, onSuccess);
+  }
+}
+
+function fallbackCopyToClipboard(text, onSuccess) {
+  // Create a secure offscreen textarea element
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+
+  // Prevent scrolling and keep it completely offscreen
+  textarea.style.position = 'fixed';
+  textarea.style.top = '-9999px';
+  textarea.style.left = '-9999px';
+  textarea.setAttribute('readonly', '');
+  textarea.setAttribute('aria-hidden', 'true');
+
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  try {
+    const successful = document.execCommand('copy');
+    if (successful) {
+      onSuccess();
+    } else {
+      console.warn('fallbackCopyToClipboard execCommand was unsuccessful');
+    }
+  } catch (err) {
+    console.warn('fallbackCopyToClipboard execCommand failed:', err);
+  } finally {
+    document.body.removeChild(textarea);
+  }
 }
 
 function toggleStudyCard(){
