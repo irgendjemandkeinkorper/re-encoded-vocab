@@ -2332,6 +2332,18 @@ function renderStudyCard(){
   starBtn.textContent = isStarred ? '★' : '☆';
   starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
   card.appendChild(starBtn);
+
+  const existingCopy = card.querySelector('.copy-btn');
+  if(existingCopy) existingCopy.remove();
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'copy-btn';
+  copyBtn.title = 'Copy term';
+  copyBtn.textContent = '📋';
+  copyBtn.onclick = (e) => {
+    e.stopPropagation();
+    copyToClipboard(d.term, copyBtn);
+  };
+  card.appendChild(copyBtn);
 }
 
 function toggleStudyCard(){
