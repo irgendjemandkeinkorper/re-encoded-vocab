@@ -2099,10 +2099,16 @@ function getFiltered(){
   return DATA.filter(d => {
     const matchesSubject = d.subject === activeSubject;
     const matchesCat = activeCat === 'all' || d.cat === activeCat;
+
+    // Performance optimization: JIT lazy-cached lowercase conversion to avoid thousands of string allocations during real-time filtering
+    const termLower = d._termLower || (d._termLower = (d.term || '').toLowerCase());
+    const defLower = d._defLower || (d._defLower = (d.def || '').toLowerCase());
+    const subLower = d._subLower || (d._subLower = (d.sub || '').toLowerCase());
+
     const matchesSearch = !searchTerm ||
-      d.term.toLowerCase().includes(searchTerm) ||
-      d.def.toLowerCase().includes(searchTerm) ||
-      d.sub.toLowerCase().includes(searchTerm);
+      termLower.includes(searchTerm) ||
+      defLower.includes(searchTerm) ||
+      subLower.includes(searchTerm);
     const matchesStar = !starredOnly || starred.has(d.term);
     return matchesSubject && matchesCat && matchesSearch && matchesStar;
   });
