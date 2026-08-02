@@ -596,6 +596,7 @@
   }
 
   .quiz-wrap {
+  .quiz-wrap {
     max-width: 620px;
     margin: 40px auto 0 auto;
     padding: 0 20px;
@@ -2197,6 +2198,7 @@ function renderGrid(){
     const isStarred = starred.has(d.term);
     card.innerHTML = `
       <button class="star-btn ${isStarred ? 'starred' : ''}" title="Star to study later" aria-label="${isStarred ? 'Remove' : 'Add'} ${escHtml(d.term)} ${isStarred ? 'from' : 'to'} starred terms" aria-pressed="${isStarred}">${isStarred ? '★' : '☆'}</button>
+      <button class="copy-btn" title="Copy term">📋</button>
       <div class="card-inner">
         <div class="face ${colorClass(d.cat)}">
           <div class="tag">${escHtml(d.sub)}</div>
@@ -2250,6 +2252,10 @@ function renderGrid(){
     card.addEventListener('focusin', renderBackContent, { passive: true });
     starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
     fragment.appendChild(card);
+    card.querySelector('.copy-btn').onclick = (e) => {
+      e.stopPropagation();
+      copyToClipboard(d.term, card.querySelector('.copy-btn'));
+    };
   });
 
   grid.appendChild(fragment);
