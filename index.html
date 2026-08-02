@@ -1486,11 +1486,12 @@
     <div class="control-group">
       <div class="section-header">Search & Learning Modes</div>
       <div class="search-row">
+        <label class="sr-only" for="search">Search vocabulary</label>
         <input id="search" type="text" placeholder="Search a term or keyword…" autocomplete="off" maxlength="100">
         <div class="mode-btn-group">
-          <button class="mode-btn" id="studyToggle">Study Mode</button>
-          <button class="mode-btn" id="quizToggle">Quiz Mode</button>
-          <button class="mode-btn" id="codeLabToggle">Code Lab</button>
+          <button class="mode-btn" id="studyToggle" aria-pressed="false">Study Mode</button>
+          <button class="mode-btn" id="quizToggle" aria-pressed="false">Quiz Mode</button>
+          <button class="mode-btn" id="codeLabToggle" aria-pressed="false">Code Lab</button>
         </div>
       </div>
     </div>
@@ -1513,7 +1514,7 @@
   <div class="control-section toolbar-section">
     <div class="section-header">Actions & System Preferences</div>
     <div class="toolbar-row">
-      <button class="icon-btn" id="starredToggle">☆ Starred only</button>
+      <button class="icon-btn" id="starredToggle" aria-pressed="false">☆ Starred only</button>
       <button class="icon-btn" id="exportBtn">⬇ Export starred (JSON)</button>
       <button class="icon-btn" id="importBtn">⬆ Import list</button>
       <button class="icon-btn" id="leaderboardBtnMain">🏆 Leaderboard</button>
@@ -2229,6 +2230,7 @@ function renderGrid(){
       if (flipped) {
         renderBackContent();
       }
+    const updateFlipState = (flipped) => {
       card.classList.toggle('flipped', flipped);
       inner.setAttribute('aria-pressed', String(flipped));
       inner.setAttribute('aria-label', flipped ? `Hide translations for ${d.term}` : `Show translations for ${d.term}`);
@@ -2244,11 +2246,9 @@ function renderGrid(){
         updateFlipState(!card.classList.contains('flipped'));
       }
     };
-
     // Pre-emptively load content on hover/focus to keep the CSS 3D flip visual transition smooth and lag-free
     card.addEventListener('mouseenter', renderBackContent, { passive: true });
     card.addEventListener('focusin', renderBackContent, { passive: true });
-
     starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
     fragment.appendChild(card);
   });
