@@ -1444,7 +1444,7 @@
     <div class="control-group">
       <div class="section-header">Search & Learning Modes</div>
       <div class="search-row">
-        <input id="search" type="text" placeholder="Search a term or keyword…" autocomplete="off">
+        <input id="search" type="text" placeholder="Search a term or keyword…" autocomplete="off" maxlength="100">
         <div class="mode-btn-group">
           <button class="mode-btn" id="studyToggle">Study Mode</button>
           <button class="mode-btn" id="quizToggle">Quiz Mode</button>
@@ -1535,7 +1535,7 @@
     <div class="quiz-card" id="quizCardEl"></div>
     <div class="quiz-answer-row" id="quizAnswerRow">
       <label class="sr-only" for="quizInput">Quiz answer</label>
-      <input id="quizInput" type="text" placeholder="Type the term…" autocomplete="off">
+      <input id="quizInput" type="text" placeholder="Type the term…" autocomplete="off" maxlength="100">
       <button class="mode-btn" id="quizSubmit">Submit</button>
     </div>
     <div class="quiz-feedback" id="quizFeedback"></div>
@@ -1980,7 +1980,14 @@ const STAR_KEY = 'vocab_starred_v1';
 let starred = new Set();
 try {
   const saved = JSON.parse(localStorage.getItem(STAR_KEY) || '[]');
-  starred = new Set(saved);
+  if (Array.isArray(saved)) {
+    // Security Enhancement: Validate loaded localStorage data against static trusted terms
+    const validTerms = new Set(DATA.map(d => d.term));
+    const filtered = saved.filter(term => typeof term === 'string' && validTerms.has(term));
+    starred = new Set(filtered);
+  } else {
+    starred = new Set();
+  }
 } catch(e) { starred = new Set(); }
 
 function saveStarred(){
