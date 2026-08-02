@@ -2230,7 +2230,6 @@ function renderGrid(){
       if (flipped) {
         renderBackContent();
       }
-    const updateFlipState = (flipped) => {
       card.classList.toggle('flipped', flipped);
       inner.setAttribute('aria-pressed', String(flipped));
       inner.setAttribute('aria-label', flipped ? `Hide translations for ${d.term}` : `Show translations for ${d.term}`);
