@@ -1969,6 +1969,14 @@ const LENS_OPTIONS = [
 ];
 const LENS_MAP = Object.fromEntries(LENS_OPTIONS.map(l => [l.key, l]));
 let selectedLenses = new Set(['medical']);
+let cachedSelectedLensesList = [];
+
+// Performance Optimization: Cache active/selected lenses list to avoid repeatedly
+// filtering LENS_OPTIONS in hot execution paths (rendering loops and quiz prompts).
+function updateSelectedLensesCache() {
+  cachedSelectedLensesList = LENS_OPTIONS.filter(l => selectedLenses.has(l.key));
+}
+updateSelectedLensesCache();
 
 function getLensText(d, key){
   if(key === 'medical') return d.analogy;
@@ -2082,6 +2090,7 @@ function buildLensChipsInto(container){
       } else {
         selectedLenses.add(l.key);
       }
+      updateSelectedLensesCache();
       renderLensChips();
       if(studyMode){ renderStudyCard(); }
       else if(codeLabMode){ renderCodePanel(); }
@@ -2115,8 +2124,7 @@ function getFiltered(){
 }
 
 function buildLensStackHTML(d){
-  const order = LENS_OPTIONS.filter(l => selectedLenses.has(l.key));
-  return order.map(l => `
+  return cachedSelectedLensesList.map(l => `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
       <div class="lens-text">${escHtml(getLensText(d, l.key))}</div>
@@ -2147,14 +2155,31 @@ function renderGrid(){
           <div class="flip-hint">tap to flip</div>
         </div>
         <div class="face back ${colorClass(d.cat)}">
-          <div class="lens-stack">${buildLensStackHTML(d)}</div>
-          ${d.ex ? `<div class="example">${escHtml(d.ex)}</div>` : ''}
+          <!-- Back content is lazily populated on first interaction to optimize initial render -->
         </div>
       </div>
     `;
     const inner = card.querySelector('.card-inner');
     const starBtn = card.querySelector('.star-btn');
+    const backFace = card.querySelector('.face.back');
+    let backRendered = false;
+
+    // Performance Optimization: Lazily generate and inject card back content (nested lens blocks and formatting)
+    // only on first interaction (hover, focus, or click/flip). This reduces the initial DOM footprint,
+    // avoids hundreds of eager string replacements/allocations per render, and guarantees 60fps typing.
+    const renderBackContent = () => {
+      if (backRendered) return;
+      backFace.innerHTML = `
+        <div class="lens-stack">${buildLensStackHTML(d)}</div>
+        ${d.ex ? `<div class="example">${escHtml(d.ex)}</div>` : ''}
+      `;
+      backRendered = true;
+    };
+
     const updateFlipState = (flipped) => {
+      if (flipped) {
+        renderBackContent();
+      }
       card.classList.toggle('flipped', flipped);
       inner.setAttribute('aria-pressed', String(flipped));
       inner.setAttribute('aria-label', flipped ? `Hide translations for ${d.term}` : `Show translations for ${d.term}`);
@@ -2170,6 +2195,11 @@ function renderGrid(){
         updateFlipState(!card.classList.contains('flipped'));
       }
     };
+
+    // Pre-emptively load content on hover/focus to keep the CSS 3D flip visual transition smooth and lag-free
+    card.addEventListener('mouseenter', renderBackContent, { passive: true });
+    card.addEventListener('focusin', renderBackContent, { passive: true });
+
     starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
     fragment.appendChild(card);
   });
@@ -2634,8 +2664,7 @@ function renderQuizQuestion(){
   if(!quizDeck.length) return;
   quizAnswered = false;
   const d = quizDeck[quizIndex];
-  const pickable = LENS_OPTIONS.filter(l => selectedLenses.has(l.key));
-  const lens = pickable[Math.floor(Math.random() * pickable.length)] || LENS_MAP.medical;
+  const lens = cachedSelectedLensesList[Math.floor(Math.random() * cachedSelectedLensesList.length)] || LENS_MAP.medical;
   document.getElementById('quizTag').textContent = d.sub;
   document.getElementById('quizLensLabel').textContent = `${lens.icon} ${lens.label} translation`;
   document.getElementById('quizPrompt').textContent = getLensText(d, lens.key);
@@ -3369,8 +3398,7 @@ function escHtml(s){
 }
 
 function buildSegLensStackHTML(seg){
-  const order = LENS_OPTIONS.filter(l => selectedLenses.has(l.key));
-  return order.map(l => {
+  return cachedSelectedLensesList.map(l => {
     const txt = (seg.lenses && seg.lenses[l.key]) ? seg.lenses[l.key] : null;
     return `
     <div class="lens-block" style="--lens-color:${l.color}">
