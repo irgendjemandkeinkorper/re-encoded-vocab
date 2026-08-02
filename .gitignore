@@ -1,0 +1,19 @@
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Dependencies and generated output
+node_modules/
+coverage/
+dist/
+build/
+
+# Archives and local environment files
+*.zip
+.env
+.env.*
+!.env.example

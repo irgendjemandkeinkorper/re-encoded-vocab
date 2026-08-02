@@ -67,6 +67,18 @@ design. They are what make the reference instrument dependable.
 | Motion | Reveal, flip, and transition only when they communicate state change |
 | Controls | Compact, labeled, high-contrast, and consistent across modes |
 
+### Semantic tokens for contributors
+
+New controls should consume the existing semantic custom properties in
+`index.html` instead of introducing one-off colors. Use `--ink` or
+`--body-text` for primary text, `--muted-text` for secondary text,
+`--very-muted-text` only for unavailable decoration, `--line` for borders,
+`--card-bg`/`--panel-bg` for surfaces, `--teal` or `--amber` for selected and
+action states, and `--focus-ring` for keyboard focus. Pair every selected,
+disabled, or unavailable state with text or a semantic attribute; never rely
+on the color alone. Check both light and dark themes and the reduced-motion
+rules before adding a new token.
+
 ## Analogy writing standard
 
 An analogy should:
@@ -87,4 +99,3 @@ Before merging a new surface, term, lens, or animation, ask:
 - Can a keyboard and screen-reader user complete the same task?
 - Does it work in both themes, at narrow widths, and with reduced motion?
 - Would the addition still feel at home in a field manual five years from now?
-

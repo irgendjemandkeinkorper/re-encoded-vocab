@@ -798,6 +798,21 @@
     font-weight: 700;
     color: var(--forest);
   }
+  .run-label {
+    color: var(--muted-text);
+    font-size: 12px;
+  }
+  .leaderboard-state.loading,
+  .leaderboard-submit-status.loading { color: var(--muted-text); }
+  .leaderboard-state.error,
+  .leaderboard-submit-status.error { color: var(--rose); }
+  .leaderboard-submit-status.success { color: var(--forest); }
+  .leaderboard-submit-status { font-size: 13px; }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 
   .count {
     max-width: 920px;
@@ -1614,13 +1629,14 @@
       <button class="icon-btn" id="leaderboardClose" aria-label="Close leaderboard">✕ Close</button>
     </div>
     <div class="tabs" id="leaderboardSubjectTabs" style="margin-bottom:14px;"></div>
-    <div id="leaderboardList">Loading…</div>
+    <div id="leaderboardList" role="status" aria-live="polite" aria-busy="true">Loading…</div>
   </div>
 </div>
 
 <footer>compiled for on-call reference &middot; add new entries anytime</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!-- Supabase is pinned and integrity-checked; re-hash this asset deliberately when upgrading it. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.111.0/dist/umd/supabase.js" integrity="sha384-faMlYZUtkJj+Sh6Bmu/L0GzPcraRWN6CW+9RH3GUrK/Z0WS9tgaNNt0tHiLxsbdb" crossorigin="anonymous"></script>
 <script>
 const SUPABASE_URL = 'https://ezbkfhzddyjamndzhqxq.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6YmtmaHpkZHlqYW1uZHpocXhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4OTk1MTksImV4cCI6MjA5OTQ3NTUxOX0.tbsZ_j8RG9vYIrypj6g5iv49J_n-AF6ixyKb6abmH9Q';
@@ -2174,6 +2190,8 @@ function getFiltered(){
   });
 }
 
+// Lens rendering pipeline: turn one term plus the cached active-lens selection
+// into the safe, reusable card/study/Code Lab markup used by every view.
 function buildLensStackHTML(d){
   return cachedSelectedLensesList.map(l => `
     <div class="lens-block" style="--lens-color:${l.color}">
@@ -2746,6 +2764,7 @@ function startQuizSession(){
   quizStreak = 0;
   quizCorrectCount = 0;
   quizBestStreak = 0;
+  leaderboardSubmissionState = 'idle';
   renderQuizQuestion();
 }
 
@@ -2780,6 +2799,7 @@ function renderQuizQuestion(){
   document.getElementById('quizNext').style.display = 'none';
   quizInput.value = '';
   quizInput.disabled = false;
+  document.getElementById('quizSubmit').disabled = false;
   quizInput.focus();
   updateQuizStats();
 }
@@ -2792,6 +2812,7 @@ function submitQuizAnswer(){
   const correct = checkAnswer(quizInput.value, d.term, quizWordBank);
   quizAnswered = true;
   quizInput.disabled = true;
+  document.getElementById('quizSubmit').disabled = true;
 
   const feedbackEl = document.getElementById('quizFeedback');
   if(correct){
@@ -2812,12 +2833,32 @@ function submitQuizAnswer(){
   document.getElementById('quizNext').style.display = 'inline-block';
 }
 
+let leaderboardSubmissionState = 'idle';
+
+function setLeaderboardSubmissionStatus(message, state = '') {
+  const status = document.getElementById('leaderboardSubmitStatus');
+  if (!status) return;
+  status.textContent = message;
+  status.className = `leaderboard-submit-status ${state}`.trim();
+}
+
 async function submitScoreToLeaderboard(total, accuracy){
-  if(!supabaseClient) return;
+  if(leaderboardSubmissionState !== 'idle') return;
+  leaderboardSubmissionState = 'submitting';
+  setLeaderboardSubmissionStatus('Submitting score…', 'loading');
+  if(!supabaseClient){
+    leaderboardSubmissionState = 'unavailable';
+    setLeaderboardSubmissionStatus('Leaderboard unavailable offline; your score remains local.', 'error');
+    return;
+  }
   const name = getSessionName();
-  if(!name) return;
+  if(!name){
+    leaderboardSubmissionState = 'error';
+    setLeaderboardSubmissionStatus('Enter a name before submitting a score.', 'error');
+    return;
+  }
   try {
-    await supabaseClient.from('leaderboard').insert({
+    const { error } = await supabaseClient.from('leaderboard').insert({
       session_name: name,
       subject: activeSubject,
       score: quizScore,
@@ -2825,7 +2866,12 @@ async function submitScoreToLeaderboard(total, accuracy){
       total_questions: total,
       best_streak: quizBestStreak,
     });
+    if (error) throw error;
+    leaderboardSubmissionState = 'submitted';
+    setLeaderboardSubmissionStatus('Score submitted to the leaderboard.', 'success');
   } catch(e) {
+    leaderboardSubmissionState = 'error';
+    setLeaderboardSubmissionStatus('Could not submit the score right now; your result remains local.', 'error');
     console.warn('Could not submit score to leaderboard:', e);
   }
 }
@@ -2837,9 +2883,10 @@ function showQuizSummary(){
     <div class="quiz-summary">
       <h2>Quiz complete!</h2>
       <p>Final score: <strong>${quizScore}</strong></p>
-      <p>${quizCorrectCount} / ${total} correct (${accuracy}%)</p>
-      <p>Best streak: <strong>${quizBestStreak}</strong></p>
-    </div>
+        <p>${quizCorrectCount} / ${total} correct (${accuracy}%)</p>
+        <p>Best streak: <strong>${quizBestStreak}</strong></p>
+        <p id="leaderboardSubmitStatus" class="leaderboard-submit-status" role="status" aria-live="polite">Submitting score…</p>
+      </div>
   `;
   document.getElementById('quizAnswerRow').style.display = 'none';
   document.getElementById('quizFeedback').className = 'quiz-feedback';
@@ -2869,11 +2916,38 @@ function renderLeaderboardSubjectTabs(){
   });
 }
 
+// Keep ranking markup in one place so duplicate-name behavior is testable and
+// every value from the public database still passes through safe text escaping.
+function renderLeaderboardRows(listEl, data){
+  const nameCounts = data.reduce((counts, row) => {
+    const name = typeof row.session_name === 'string' ? row.session_name : 'Anonymous';
+    counts[name] = (counts[name] || 0) + 1;
+    return counts;
+  }, {});
+  const seenNames = {};
+  listEl.innerHTML = data.map((row, i) => {
+    const name = typeof row.session_name === 'string' ? row.session_name : 'Anonymous';
+    seenNames[name] = (seenNames[name] || 0) + 1;
+    const disambiguator = nameCounts[name] > 1 ? ` <span class="run-label">(run ${seenNames[name]})</span>` : '';
+    return `
+      <div class="leaderboard-row">
+        <span class="rank">#${i + 1}</span>
+        <span class="name">${escHtml(name)}${disambiguator}</span>
+        <span class="pts">${parseInt(row.score, 10) || 0} pts</span>
+      </div>
+    `;
+  }).join('');
+}
+
 async function fetchAndRenderLeaderboard(){
   const listEl = document.getElementById('leaderboardList');
   listEl.textContent = 'Loading…';
+  listEl.className = 'leaderboard-state loading';
+  listEl.setAttribute('aria-busy', 'true');
   if(!supabaseClient){
-    listEl.textContent = 'Leaderboard unavailable right now.';
+    listEl.textContent = 'Leaderboard unavailable offline or because the Supabase service could not be loaded.';
+    listEl.className = 'leaderboard-state error';
+    listEl.setAttribute('aria-busy', 'false');
     return;
   }
   try {
@@ -2886,18 +2960,18 @@ async function fetchAndRenderLeaderboard(){
     if(error) throw error;
     if(!data || !data.length){
       listEl.textContent = 'No scores yet for this subject — be the first!';
+      listEl.className = 'leaderboard-state empty';
+      listEl.setAttribute('aria-busy', 'false');
       return;
     }
-    listEl.innerHTML = data.map((row, i) => `
-      <div class="leaderboard-row">
-        <span class="rank">#${i + 1}</span>
-        <span class="name">${escHtml(row.session_name)}</span>
-        <span class="pts">${parseInt(row.score, 10) || 0} pts</span>
-      </div>
-    `).join('');
+    renderLeaderboardRows(listEl, data);
+    listEl.className = 'leaderboard-state loaded';
+    listEl.setAttribute('aria-busy', 'false');
   } catch(e) {
     console.warn('Leaderboard fetch failed:', e);
-    listEl.textContent = 'Could not load the leaderboard right now.';
+    listEl.textContent = 'Could not load the leaderboard right now. Please try again later.';
+    listEl.className = 'leaderboard-state error';
+    listEl.setAttribute('aria-busy', 'false');
   }
 }
 
@@ -2985,6 +3059,9 @@ document.getElementById('quizEnd').addEventListener('click', showQuizSummary);
 // ==================== CODE LAB ====================
 // Break down real functions from THIS file, segment by segment,
 // re-encoded through the same lenses used everywhere else.
+// Code Lab authoring guide: each walk mirrors a real function in this file.
+// Keep segments plain-language first, then provide all eight lens translations;
+// see README.md#adding-or-editing-code-lab-walkthroughs for the content model.
 const CODE_WALKS = [
   {
     id: 'get-lens-text',

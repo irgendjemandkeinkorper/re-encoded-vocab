@@ -51,6 +51,9 @@
       const exampleText = [...doc.querySelectorAll('.example')].map(example => example.textContent);
       report('HTML examples remain literal text', exampleText.some(text => text.includes('<form>')));
       report('examples cannot create HTML elements', !doc.querySelector('.example form, .example img, .example script'));
+      report('lens controls expose visible labels', [...doc.querySelectorAll('#lensChips button')].every(button => button.textContent.trim().length > 0));
+      const supabaseScript = [...doc.scripts].find(script => script.src.includes('supabase-js'));
+      report('Supabase CDN is pinned and integrity checked', supabaseScript && /@2\.111\.0\//.test(supabaseScript.src) && supabaseScript.integrity.startsWith('sha384-') && supabaseScript.crossOrigin === 'anonymous');
 
       const search = doc.getElementById('search');
       search.value = 'this-term-does-not-exist';
@@ -67,6 +70,15 @@
       doc.getElementById('leaderboardBtnMain').click();
       const dialog = doc.querySelector('[role="dialog"]');
       report('leaderboard exposes dialog semantics', dialog && dialog.getAttribute('aria-modal') === 'true');
+      const leaderboardList = doc.getElementById('leaderboardList');
+      report('leaderboard loading/error state is announced', leaderboardList.getAttribute('aria-live') === 'polite' && leaderboardList.hasAttribute('aria-busy'));
+      win.renderLeaderboardRows(leaderboardList, [
+        {session_name: 'Same name', score: 20},
+        {session_name: 'Same name', score: 10}
+      ]);
+      report('duplicate leaderboard names are disambiguated', /run 1/.test(leaderboardList.textContent) && /run 2/.test(leaderboardList.textContent));
+      leaderboardList.textContent = 'Leaderboard unavailable offline; your score remains local.';
+      report('leaderboard fallback state is visible', /unavailable offline/i.test(leaderboardList.textContent));
       dialog.dispatchEvent(new win.KeyboardEvent('keydown', {key: 'Escape', bubbles: true}));
       report('leaderboard closes with Escape', !doc.getElementById('leaderboardOverlay').classList.contains('active'));
 

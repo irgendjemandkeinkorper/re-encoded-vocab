@@ -4,6 +4,11 @@ An interactive multi-subject glossary that re-encodes core concepts through 8 in
 
 The application is completely self-contained within a single file (`index.html`) with no build steps required. It has a single external CDN dependency—Supabase—which is used only for the shared leaderboard; if offline or unavailable, the site degrades gracefully and continues to work perfectly.
 
+The Supabase UMD bundle is deliberately pinned to `@supabase/supabase-js@2.111.0`
+and protected with a SHA-384 integrity hash. Re-hash the exact asset whenever
+upgrading that dependency. See [the Supabase setup guide](docs/supabase-setup.md)
+for schema, RLS, and fork configuration details.
+
 You can view the live site at [https://irgendjemandkeinkorper.github.io/re-encoded-vocab/](https://irgendjemandkeinkorper.github.io/re-encoded-vocab/).
 
 ---
@@ -41,7 +46,16 @@ Since the entire application is in `index.html`, hosting is incredibly simple.
 - Under **Build and deployment → Source**, select **Deploy from a branch**.
 - Under **Branch**, select `main` and `/ (root)`, then click **Save**.
 - Wait about a minute—GitHub will provide a live URL, usually:
-  `https://yourusername.github.io/re-encoded-vocab/`
+    `https://yourusername.github.io/re-encoded-vocab/`
+
+### Setting up your own leaderboard
+
+The public demo's Supabase project is not a reusable backend for forks. Create
+your own project, run the SQL in [docs/supabase-setup.md](docs/supabase-setup.md),
+then replace `SUPABASE_URL` and `SUPABASE_ANON_KEY` in `index.html`. Keep Row
+Level Security enabled: the browser is an untrusted client and can submit
+arbitrary requests directly. The documented policies allow public reads and
+plausible inserts, but no anonymous updates or deletes.
 
 ---
 
