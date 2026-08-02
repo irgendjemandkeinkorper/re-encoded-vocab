@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://ezbkfhzddyjamndzhqxq.supabase.co wss://ezbkfhzddyjamndzhqxq.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
 <script>
   (function() {
     try {
@@ -17,37 +18,58 @@
 </script>
 <title>The Field Chart — Python &amp; QA Vocabulary</title>
 <style>
-  :root{
-    --paper: #f2ede2;
-    --paper-dark: #e8e0d0;
-    --ink: #1f2e28;
-    --forest: #1b3a2f;
-    --forest-light: #2e5546;
-    --teal: #3c7a6d;
-    --amber: #b8873a;
-    --amber-light: #d9a75c;
-    --rose: #9c4b3f;
-    --slate: #3f5d7d;
-    --plum: #6b4c7a;
-    --clay: #b5563c;
-    --line: #c9bfa8;
-    --card-bg: #fbf9f3;
-    --shadow: rgba(27,58,47,0.18);
+  :root {
+    /* Base Color Tokens */
+    --paper: #f7f5f0;          /* Soft, premium parchment cream */
+    --paper-dark: #eee9dc;     /* Shaded parchment cream for headers */
+    --ink: #1f2e28;            /* Rich deep pine for main text */
+    --forest: #1b3a2f;         /* Elegant dark forest green */
+    --forest-light: #2e5546;   /* Medium forest green */
+    --teal: #3c7a6d;           /* Calming sage/teal accent */
+    --amber: #b8873a;          /* Premium brass/amber highlight */
+    --amber-light: #d9a75c;    /* Soft amber gold */
+    --rose: #9c4b3f;           /* Terracotta red */
+    --slate: #3f5d7d;          /* Slate blue */
+    --plum: #6b4c7a;           /* Deep plum purple */
+    --clay: #b5563c;           /* Burnt clay */
+    --line: #dcd3bf;           /* Subtle linen border line */
+    --card-bg: #ffffff;        /* Pure white cards for high contrast and modern depth */
+
+    /* Elevation & Shadows */
+    --shadow-sm: 0 2px 6px rgba(27,58,47,0.04);
+    --shadow-md: 0 6px 16px rgba(27,58,47,0.07);
+    --shadow-lg: 0 12px 30px rgba(27,58,47,0.10);
+    --shadow-hover: 0 20px 40px rgba(27,58,47,0.14);
+    --shadow: var(--shadow-md); /* Backwards compatibility */
+
+    /* Typography */
     --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', Palatino, serif;
     --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 
-    /* Theme support */
-    --subtle-text: #55605a;
-    --body-text: #3c463f;
-    --muted-text: #7a8378;
-    --very-muted-text: #a3ac9d;
-    --intro-text: #5a655c;
-    --empty-text: #8a938a;
-    --example-bg: rgba(27,58,47,0.05);
-    --card-inset: rgba(27,58,47,0.06);
+    /* Theme Support Text & Content */
+    --subtle-text: #4a5751;
+    --body-text: #2f3a35;
+    --muted-text: #6b7771;
+    --very-muted-text: #96a29b;
+    --intro-text: #505e57;
+    --empty-text: #818e87;
+    --example-bg: rgba(27,58,47,0.04);
+    --card-inset: rgba(27,58,47,0.05);
+    --panel-bg: rgba(27,58,47,0.03); /* Soft grouped panel background */
 
-    /* Lens Colors */
+    /* Border Radii */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-pill: 9999px;
+
+    /* Animation Transitions */
+    --transition-fast: 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Lens Colors (Light Mode) */
     --color-medical: #3c7a6d;
     --color-sports: #c0392b;
     --color-fandom: #6b4c7a;
@@ -56,33 +78,44 @@
     --color-millennial: #d63384;
     --color-f1: #1b3a2f;
     --color-gaming: #2e5566;
+
+    /* Focus Rings */
+    --focus-ring: 0 0 0 3px rgba(60, 122, 109, 0.4);
   }
 
   html.dark-theme{
-    --paper: #121e1a;
-    --paper-dark: #0d1714;
-    --ink: #e5ede9;
-    --forest: #a6c4b9;
-    --forest-light: #cfe2da;
-    --teal: #63a99a;
-    --amber: #e0aa53;
-    --amber-light: #f0c37d;
-    --rose: #c77367;
-    --slate: #829cb8;
-    --plum: #a88cb8;
-    --clay: #cf7c65;
-    --line: #344a41;
-    --card-bg: #1b2b26;
-    --shadow: rgba(0,0,0,0.4);
+    --paper: #0f1614;          /* Rich, very dark pine-black */
+    --paper-dark: #080d0c;     /* Midnight deep pine */
+    --ink: #e2eae6;            /* Crisp pale sage */
+    --forest: #a2c2b7;         /* Bright pale sage-forest */
+    --forest-light: #cde1da;   /* Off-white sage */
+    --teal: #63a99a;           /* Soft pastel teal */
+    --amber: #e0aa53;          /* Warm pastel amber */
+    --amber-light: #f0c37d;    /* Soft pastel gold */
+    --rose: #c77367;           /* Pastel terracotta */
+    --slate: #829cb8;          /* Pastel slate blue */
+    --plum: #a88cb8;           /* Pastel violet */
+    --clay: #cf7c65;           /* Pastel clay */
+    --line: #22352e;           /* Rich dark-pine borders */
+    --card-bg: #15221e;        /* Dark forest-green card background */
 
-    --subtle-text: #99a8a1;
-    --body-text: #b2c2bc;
-    --muted-text: #84968e;
-    --very-muted-text: #6b7d76;
-    --intro-text: #99a8a1;
-    --empty-text: #84968e;
-    --example-bg: rgba(255,255,255,0.06);
-    --card-inset: rgba(255,255,255,0.06);
+    /* Dark Theme Elevation & Shadows */
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.2);
+    --shadow-md: 0 6px 18px rgba(0,0,0,0.3);
+    --shadow-lg: 0 16px 36px rgba(0,0,0,0.4);
+    --shadow-hover: 0 24px 48px rgba(0,0,0,0.5);
+    --shadow: var(--shadow-md);
+
+    /* Dark Theme Support Text & Content */
+    --subtle-text: #96a6a0;
+    --body-text: #b6c6bf;
+    --muted-text: #7e9089;
+    --very-muted-text: #63756e;
+    --intro-text: #96a6a0;
+    --empty-text: #7e9089;
+    --example-bg: rgba(255,255,255,0.05);
+    --card-inset: rgba(255,255,255,0.04);
+    --panel-bg: rgba(255,255,255,0.02);
 
     /* Theme-specific lens colors overrides to guarantee contrast in dark mode */
     --color-medical: #63a99a;
@@ -93,9 +126,34 @@
     --color-millennial: #f06292;
     --color-f1: #4ca685;
     --color-gaming: #52a3cc;
+
+    /* Focus Rings */
+    --focus-ring: 0 0 0 3px rgba(99, 169, 154, 0.4);
   }
 
   *{ box-sizing: border-box; }
+
+  .sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
+
+  :is(button, input):focus-visible{
+    outline: 3px solid var(--amber);
+    outline-offset: 3px;
+  }
+
+  .card-inner:focus-visible{
+    outline: 3px solid var(--amber);
+    outline-offset: 4px;
+  }
 
   body{
     margin:0;
@@ -151,322 +209,598 @@
     margin-right: 6px;
   }
 
-  .controls{
+  .controls {
     max-width: 920px;
-    margin: 28px auto 0 auto;
+    margin: 32px auto 0 auto;
     padding: 0 20px;
-    display:flex;
+    display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
   }
 
-  .search-row{
-    display:flex;
+  .control-section {
+    background: var(--panel-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition-normal);
+  }
+
+  .control-section:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
-    align-items:center;
   }
 
-  #search{
-    flex:1;
+  .section-header {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--muted-text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+  }
+
+  .section-header::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+    opacity: 0.45;
+  }
+
+  .search-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  #search {
+    flex: 1;
+    min-width: 280px;
     padding: 12px 16px;
-    border: 2px solid var(--line);
-    border-radius: 6px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-md);
     background: var(--card-bg);
     font-family: var(--sans);
     font-size: 15px;
     color: var(--ink);
     outline: none;
-    transition: border-color .15s ease;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+    transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
   }
-  #search:focus{ border-color: var(--teal); }
 
-  .mode-btn{
-    padding: 12px 18px;
-    border-radius: 6px;
-    border: 2px solid var(--forest);
+  #search:focus {
+    border-color: var(--teal);
+    box-shadow: var(--focus-ring);
+  }
+
+  .mode-btn-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .mode-btn {
+    padding: 10px 18px;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--forest);
     background: var(--forest);
     color: var(--paper);
     font-family: var(--sans);
     font-weight: 600;
     font-size: 13px;
-    cursor:pointer;
+    cursor: pointer;
     white-space: nowrap;
-    transition: transform .1s ease, background .15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: var(--shadow-sm);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
   }
-  .mode-btn:hover{ background: var(--forest-light); }
-  .mode-btn:active{ transform: scale(0.97); }
-  .mode-btn.secondary{
+
+  .mode-btn:hover {
+    background: var(--forest-light);
+    border-color: var(--forest-light);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .mode-btn:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .mode-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .mode-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    background: var(--very-muted-text);
+    border-color: var(--very-muted-text);
+  }
+
+  .mode-btn.secondary {
     background: transparent;
     color: var(--forest);
+    border-color: var(--line);
+    box-shadow: none;
   }
-  .mode-btn.secondary:hover{ background: var(--card-inset); }
 
-  .tabs{
-    display:flex;
+  .mode-btn.secondary:hover {
+    background: var(--card-inset);
+    border-color: var(--teal);
+    color: var(--forest);
+    transform: translateY(-1px);
+  }
+
+  .mode-btn.secondary:active {
+    transform: translateY(1px);
+  }
+
+  .tabs {
+    display: flex;
     flex-wrap: wrap;
     gap: 8px;
   }
 
-  .tab{
-    padding: 8px 14px;
-    border-radius: 999px;
+  .tab {
+    padding: 8px 16px;
+    border-radius: var(--radius-pill);
     border: 1.5px solid var(--line);
     background: var(--card-bg);
     font-size: 12.5px;
     font-family: var(--mono);
+    font-weight: 500;
     letter-spacing: 0.3px;
     cursor: pointer;
     color: var(--subtle-text);
-    transition: all .15s ease;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
   }
-  .tab.active{
+
+  .tab:hover:not(.active) {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: var(--card-bg);
+    transform: translateY(-1px);
+  }
+
+  .tab:active:not(.active) {
+    transform: translateY(1px);
+  }
+
+  .tab.active {
     background: var(--teal);
     border-color: var(--teal);
-    color: white;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
   }
-  .tab:hover:not(.active){ border-color: var(--teal); color: var(--teal); }
 
-  .lens-chip{
-    padding: 7px 12px;
-    border-radius: 999px;
+  .tab:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .lens-chip {
+    padding: 7px 14px;
+    border-radius: var(--radius-pill);
     border: 1.5px solid var(--line);
     background: var(--card-bg);
     font-size: 12px;
     font-family: var(--mono);
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--subtle-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+  }
+
+  .lens-chip .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    background: var(--chip-color, #999);
+    transition: transform var(--transition-fast), background var(--transition-fast);
+  }
+
+  .lens-chip:hover:not(.active) {
+    border-color: var(--chip-color, var(--teal));
+    color: var(--ink);
+    transform: translateY(-1px);
+  }
+
+  .lens-chip:hover:not(.active) .dot {
+    transform: scale(1.3);
+  }
+
+  .lens-chip:active:not(.active) {
+    transform: translateY(1px);
+  }
+
+  .lens-chip.active {
+    background: var(--chip-color, var(--teal));
+    border-color: var(--chip-color, var(--teal));
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
+  }
+
+  .lens-chip.active .dot {
+    background: #ffffff;
+    transform: scale(1.1);
+  }
+
+  .lens-chip:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .toolbar-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .icon-btn {
+    padding: 8px 14px;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--line);
+    background: var(--card-bg);
+    font-size: 12px;
+    font-family: var(--mono);
+    font-weight: 500;
     cursor: pointer;
     color: var(--subtle-text);
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: all .15s ease;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
   }
-  .lens-chip .dot{
-    width: 9px; height: 9px; border-radius: 50%;
-    display: inline-block;
-    background: var(--chip-color, #999);
-  }
-  .lens-chip.active{
-    background: var(--chip-color, var(--teal));
-    border-color: var(--chip-color, var(--teal));
-    color: white;
-  }
-  .lens-chip.active .dot{ background: white; }
 
-  .toolbar-row{
-    display:flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items:center;
+  .icon-btn:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
   }
-  .icon-btn{
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1.5px solid var(--line);
-    background: var(--card-bg);
-    font-size: 12px;
-    font-family: var(--mono);
-    cursor: pointer;
-    color: var(--subtle-text);
-    transition: all .15s ease;
+
+  .icon-btn:active {
+    transform: translateY(1px);
   }
-  .icon-btn:hover{ border-color: var(--teal); color: var(--teal); }
-  .icon-btn.active-toggle{
+
+  .icon-btn.active-toggle {
     background: var(--amber);
     border-color: var(--amber);
-    color: white;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
   }
 
-  .star-btn{
+  .icon-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .star-btn {
     position: absolute;
-    top: 10px; right: 10px;
+    top: 12px;
+    right: 12px;
     background: none;
     border: none;
-    font-size: 17px;
+    font-size: 18px;
     cursor: pointer;
     line-height: 1;
-    padding: 2px;
-    color: var(--line);
+    padding: 6px;
+    border-radius: 50%;
+    color: var(--very-muted-text);
     z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
   }
-  .star-btn.starred{ color: var(--amber); }
 
-  .quiz-wrap{
+  html.dark-theme .star-btn {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .star-btn:hover {
+    color: var(--amber);
+    transform: scale(1.15);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: var(--shadow-md);
+  }
+
+  html.dark-theme .star-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .star-btn.starred {
+    color: var(--amber);
+  }
+
+  .star-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 12px;
+    right: 56px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 6px;
+    border-radius: 50%;
+    color: var(--very-muted-text);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  html.dark-theme .copy-btn {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .copy-btn:hover {
+    transform: scale(1.15);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: var(--shadow-md);
+  }
+
+  html.dark-theme .copy-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .copy-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  .quiz-wrap {
     max-width: 620px;
     margin: 40px auto 0 auto;
     padding: 0 20px;
-    display:none;
+    display: none;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
   }
-  .quiz-wrap.active{ display:flex; }
-  .quiz-header{
-    display:flex;
+  .quiz-wrap.active { display: flex; }
+  .quiz-header {
+    display: flex;
     justify-content: space-between;
-    align-items:center;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
   }
-  .quiz-stats{
-    display:flex;
-    gap: 14px;
+  .quiz-stats {
+    display: flex;
+    gap: 16px;
     font-family: var(--mono);
     font-size: 13px;
     color: var(--forest);
     font-weight: 600;
   }
-  #quizMultiplier{ color: var(--rose); }
-  .quiz-progress{
+  #quizMultiplier {
+    color: var(--rose);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .quiz-progress {
     font-family: var(--mono);
     font-size: 11px;
     color: var(--muted-text);
     letter-spacing: 0.5px;
   }
-  .quiz-card{
+  .quiz-card {
     background: var(--card-bg);
+    border: 1.5px solid var(--line);
     border-left: 6px solid var(--teal);
-    border-radius: 8px;
-    padding: 26px;
-    box-shadow: 0 3px 10px var(--shadow);
-    min-height: 140px;
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow-md);
+    min-height: 150px;
   }
-  .quiz-tag{
+  .quiz-tag {
     font-family: var(--mono);
     font-size: 10px;
-    letter-spacing: 1px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     color: var(--teal);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
-  .quiz-lens-label{
+  .quiz-lens-label {
     font-family: var(--mono);
     font-size: 10px;
-    letter-spacing: 1px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     color: var(--rose);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
-  .quiz-prompt{
-    font-size: 16px;
-    line-height: 1.55;
+  .quiz-prompt {
+    font-size: 16.5px;
+    line-height: 1.6;
     color: var(--ink);
     font-style: italic;
   }
-  .quiz-answer-row{
-    display:flex;
-    gap: 10px;
+  .quiz-answer-row {
+    display: flex;
+    gap: 12px;
   }
-  #quizInput{
-    flex:1;
+  #quizInput {
+    flex: 1;
     padding: 12px 16px;
-    border: 2px solid var(--line);
-    border-radius: 6px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-md);
     background: var(--card-bg);
     font-family: var(--sans);
     font-size: 15px;
     color: var(--ink);
     outline: none;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   }
-  #quizInput:focus{ border-color: var(--teal); }
-  #quizInput:disabled{ opacity: 0.6; }
-  .quiz-feedback{
+  #quizInput:focus {
+    border-color: var(--teal);
+    box-shadow: var(--focus-ring);
+  }
+  #quizInput:disabled {
+    opacity: 0.6;
+    background: var(--panel-bg);
+  }
+  .quiz-feedback {
     font-family: var(--sans);
+    font-weight: 500;
     font-size: 14px;
-    padding: 12px 16px;
-    border-radius: 6px;
-    display:none;
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    display: none;
+    line-height: 1.5;
+    box-shadow: var(--shadow-sm);
   }
-  .quiz-feedback.correct{
-    display:block;
-    background: rgba(60,122,109,0.12);
+  .quiz-feedback.correct {
+    display: block;
+    background: rgba(60, 122, 109, 0.08);
     color: var(--forest);
-    border: 1.5px solid var(--forest);
+    border: 1.5px solid var(--teal);
   }
-  .quiz-feedback.incorrect{
-    display:block;
-    background: rgba(156,75,63,0.10);
+  .quiz-feedback.incorrect {
+    display: block;
+    background: rgba(156, 75, 63, 0.06);
     color: var(--rose);
     border: 1.5px solid var(--rose);
   }
-  .quiz-summary{
-    text-align:center;
+  .quiz-summary {
+    text-align: center;
     padding: 30px 20px;
   }
-  .quiz-summary h2{
+  .quiz-summary h2 {
     font-family: var(--serif);
     color: var(--forest);
   }
 
-  .quiz-name-screen{
+  .quiz-name-screen {
     background: var(--card-bg);
+    border: 1.5px solid var(--line);
     border-left: 6px solid var(--amber);
-    border-radius: 8px;
-    padding: 22px;
-    box-shadow: 0 3px 10px var(--shadow);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
-  .quiz-name-intro{
+  .quiz-name-intro {
     font-size: 13.5px;
     color: var(--subtle-text);
-    margin: 0 0 12px 0;
-    line-height: 1.5;
+    margin: 0;
+    line-height: 1.55;
   }
 
-  .leaderboard-overlay{
-    display:none;
+  .leaderboard-overlay {
+    display: none;
     position: fixed;
     inset: 0;
-    background: rgba(27,58,47,0.45);
+    background: rgba(15, 22, 20, 0.6);
+    backdrop-filter: blur(4px);
     z-index: 100;
-    align-items:center;
-    justify-content:center;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
   }
-  .leaderboard-overlay.active{ display:flex; }
-  .leaderboard-panel{
+  .leaderboard-overlay.active { display: flex; }
+  .leaderboard-panel {
     background: var(--paper);
-    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
     max-width: 480px;
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;
-    padding: 24px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    padding: 28px;
+    box-shadow: var(--shadow-lg);
   }
-  .leaderboard-header{
-    display:flex;
+  .leaderboard-header {
+    display: flex;
     justify-content: space-between;
-    align-items:center;
-    margin-bottom: 16px;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1.5px solid var(--line);
+    padding-bottom: 12px;
   }
-  .leaderboard-header h3{
+  .leaderboard-header h3 {
     font-family: var(--serif);
     color: var(--forest);
     margin: 0;
-    font-size: 19px;
+    font-size: 20px;
+    font-weight: 700;
   }
-  .leaderboard-row{
-    display:flex;
+  .leaderboard-row {
+    display: flex;
     justify-content: space-between;
-    align-items:center;
-    padding: 9px 0;
+    align-items: center;
+    padding: 12px 0;
     border-bottom: 1px solid var(--line);
-    font-size: 13.5px;
+    font-size: 14px;
+    color: var(--body-text);
   }
-  .leaderboard-row .rank{
+  .leaderboard-row .rank {
     font-family: var(--mono);
     color: var(--amber);
     font-weight: 700;
     width: 28px;
   }
-  .leaderboard-row .name{ flex:1; }
-  .leaderboard-row .pts{
+  .leaderboard-row .name { flex: 1; }
+  .leaderboard-row .pts {
     font-family: var(--mono);
     font-weight: 700;
     color: var(--forest);
   }
 
-  .count{
+  .count {
     max-width: 920px;
-    margin: 18px auto 0 auto;
+    margin: 24px auto 0 auto;
     padding: 0 20px;
     font-family: var(--mono);
     font-size: 12px;
@@ -474,147 +808,187 @@
     letter-spacing: 0.5px;
   }
 
-  .grid{
+  .grid {
     max-width: 920px;
-    margin: 16px auto 0 auto;
+    margin: 20px auto 0 auto;
     padding: 0 20px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 18px;
+    gap: 20px;
   }
 
-  .card{
+  .card {
     perspective: 1200px;
-    height: 230px;
+    height: 240px;
     cursor: pointer;
     position: relative;
+    transition: transform var(--transition-normal);
   }
-  .card-inner{
+
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
+  .card-inner {
     position: relative;
-    width:100%; height:100%;
-    transition: transform .5s cubic-bezier(.4,.2,.2,1);
+    width: 100%; height: 100%;
+    transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
     transform-style: preserve-3d;
   }
-  .card.flipped .card-inner{ transform: rotateY(180deg); }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
 
-  .face{
-    position:absolute; inset:0;
+  .face {
+    position: absolute; inset: 0;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    border-radius: 8px;
-    padding: 18px;
-    display:flex;
-    flex-direction:column;
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
     background: var(--card-bg);
-    box-shadow: 0 3px 10px var(--shadow), inset 0 0 0 1px var(--card-inset);
+    border: 1.5px solid var(--line);
     border-left: 6px solid var(--teal);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
+    transition: box-shadow var(--transition-normal), border-color var(--transition-normal);
   }
-  .face.back{ overflow: visible; }
+  .face.back { overflow: visible; }
 
-  .lens-stack{
+  .card:hover .face {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--teal);
+  }
+
+  .lens-stack {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     padding-right: 2px;
   }
-  .lens-block{
+  .lens-block {
     border-left: 3px solid var(--lens-color, var(--rose));
-    padding-left: 8px;
+    padding-left: 10px;
+    margin-bottom: 2px;
   }
-  .lens-block .lens-label{
+  .lens-block .lens-label {
     font-family: var(--mono);
     font-size: 9.5px;
+    font-weight: 600;
     letter-spacing: 0.8px;
     text-transform: uppercase;
     color: var(--lens-color, var(--rose));
-    margin-bottom: 3px;
+    margin-bottom: 4px;
   }
-  .lens-block .lens-text{
-    font-size: 12.5px;
-    line-height: 1.5;
+  .lens-block .lens-text {
+    font-size: 13px;
+    line-height: 1.55;
     color: var(--body-text);
     font-style: italic;
   }
-  .face.python{ border-left-color: var(--forest); }
-  .face.qa{ border-left-color: var(--amber); }
-  .face.general{ border-left-color: var(--rose); }
-  .face.teal{ border-left-color: var(--teal); }
-  .face.slate{ border-left-color: var(--slate); }
-  .face.plum{ border-left-color: var(--plum); }
-  .face.clay{ border-left-color: var(--clay); }
 
-  .back{ transform: rotateY(180deg); }
+  /* Color overrides for category tags */
+  .face.python { border-left-color: var(--forest); }
+  .face.qa { border-left-color: var(--amber); }
+  .face.general { border-left-color: var(--rose); }
+  .face.teal { border-left-color: var(--teal); }
+  .face.slate { border-left-color: var(--slate); }
+  .face.plum { border-left-color: var(--plum); }
+  .face.clay { border-left-color: var(--clay); }
 
-  .tag{
+  .card:hover .face.python { border-color: var(--forest); }
+  .card:hover .face.qa { border-color: var(--amber); }
+  .card:hover .face.general { border-color: var(--rose); }
+  .card:hover .face.teal { border-color: var(--teal); }
+  .card:hover .face.slate { border-color: var(--slate); }
+  .card:hover .face.plum { border-color: var(--plum); }
+  .card:hover .face.clay { border-color: var(--clay); }
+
+  .back { transform: rotateY(180deg); }
+
+  .tag {
     font-family: var(--mono);
     font-size: 10px;
-    letter-spacing: 1px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     color: var(--teal);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    display: inline-block;
   }
-  .face.python .tag{ color: var(--forest); }
-  .face.qa .tag{ color: var(--amber); }
-  .face.general .tag{ color: var(--rose); }
-  .face.teal .tag{ color: var(--teal); }
-  .face.slate .tag{ color: var(--slate); }
-  .face.plum .tag{ color: var(--plum); }
-  .face.clay .tag{ color: var(--clay); }
+  .face.python .tag { color: var(--forest); }
+  .face.qa .tag { color: var(--amber); }
+  .face.general .tag { color: var(--rose); }
+  .face.teal .tag { color: var(--teal); }
+  .face.slate .tag { color: var(--slate); }
+  .face.plum .tag { color: var(--plum); }
+  .face.clay .tag { color: var(--clay); }
 
-  .term{
+  .term {
     font-family: var(--serif);
     font-weight: 700;
-    font-size: 21px;
+    font-size: 22px;
     color: var(--ink);
-    margin-bottom: 8px;
-    line-height: 1.15;
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
   }
 
-  .def{
-    font-size: 13.5px;
-    line-height: 1.5;
-    color: var(--body-text);
-    overflow-y: auto;
-  }
-
-  .flip-hint{
-    margin-top: auto;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--very-muted-text);
-    letter-spacing: 0.5px;
-  }
-
-  .analogy-label{
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--rose);
-    margin-bottom: 8px;
-  }
-
-  .analogy-text{
+  .def {
     font-size: 13.5px;
     line-height: 1.55;
     color: var(--body-text);
     overflow-y: auto;
+  }
+
+  .flip-hint {
+    margin-top: auto;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--very-muted-text);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color var(--transition-fast);
+  }
+  .card:hover .flip-hint {
+    color: var(--teal);
+  }
+
+  .analogy-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 10px;
+  }
+
+  .analogy-text {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--body-text);
+    overflow-y: auto;
     font-style: italic;
   }
 
-  .example{
-    margin-top: 10px;
+  .example {
+    margin-top: 12px;
     font-family: var(--mono);
-    font-size: 11.5px;
+    font-size: 11px;
     background: var(--example-bg);
-    padding: 8px 10px;
-    border-radius: 4px;
+    border: 1px solid var(--line);
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
     color: var(--forest);
     white-space: pre-wrap;
+    overflow-x: auto;
   }
 
   .empty{
@@ -662,21 +1036,39 @@
     letter-spacing: 0.5px;
   }
 
-  @media (prefers-reduced-motion: reduce){
-    .card-inner{ transition: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .card-inner { transition: none; }
+    .card:hover { transform: none; }
+    .mode-btn { transition: none; }
+    .mode-btn:hover { transform: none; }
+    .mode-btn:active { transform: none; }
+    .tab { transition: none; }
+    .tab:hover { transform: none; }
+    .tab:active { transform: none; }
+    .lens-chip { transition: none; }
+    .lens-chip:hover { transform: none; }
+    .lens-chip .dot { transition: none; }
+    .lens-chip:hover .dot { transform: none; }
+    .icon-btn { transition: none; }
+    .icon-btn:hover { transform: none; }
+    .icon-btn:active { transform: none; }
+    .star-btn { transition: none; }
+    .star-btn:hover { transform: none; }
+    .copy-btn { transition: none; }
+    .copy-btn:hover { transform: none; }
   }
 
   /* ---- Code Lab ---- */
-  .code-wrap{
+  .code-wrap {
     max-width: 1080px;
-    margin: 28px auto 0 auto;
+    margin: 32px auto 0 auto;
     padding: 0 20px;
     display: none;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
   }
-  .code-wrap.active{ display: flex; }
-  .code-lab-intro{
+  .code-wrap.active { display: flex; }
+  .code-lab-intro {
     text-align: center;
     color: var(--intro-text);
     font-size: 13.5px;
@@ -684,69 +1076,78 @@
     max-width: 660px;
     margin: 0 auto;
   }
-  .code-walk-tabs{ justify-content: center; }
-  .code-lens-row{ justify-content: center; }
-  .code-walk-meta{ text-align: center; }
-  .code-walk-title{
+  .code-walk-tabs { justify-content: center; }
+  .code-lens-row { justify-content: center; }
+  .code-walk-meta { text-align: center; }
+  .code-walk-title {
     font-family: var(--mono);
     font-size: 17px;
     color: var(--forest);
     font-weight: 600;
   }
-  .code-walk-summary{
+  .code-walk-summary {
     font-size: 13px;
     color: var(--intro-text);
     margin-top: 3px;
     font-style: italic;
   }
-  .code-lab-layout{
+  .code-lab-layout {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
-    gap: 18px;
+    gap: 20px;
     align-items: start;
   }
-  .code-col{
-    background: #0f1c17;
-    border-radius: 8px;
-    padding: 10px;
+  .code-col {
+    background: #09100d; /* Deep obsidian green */
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 16px;
     overflow-x: auto;
-    box-shadow: 0 4px 18px var(--shadow);
+    box-shadow: var(--shadow-md);
   }
-  .code-seg{
+  .code-seg {
     display: block;
     width: 100%;
     text-align: left;
     font-family: var(--mono);
     font-size: 12.5px;
     line-height: 1.6;
-    color: #cfe6d8;
+    color: #bce3cd;
     background: transparent;
     border: none;
     border-left: 3px solid transparent;
-    padding: 5px 10px;
-    margin: 2px 0;
-    border-radius: 4px;
+    padding: 6px 12px;
+    margin: 3px 0;
+    border-radius: var(--radius-sm);
     white-space: pre;
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
   }
-  .code-seg:hover{ background: rgba(255,255,255,0.05); }
-  .code-seg.active{
-    background: rgba(216,167,92,0.16);
-    border-left-color: var(--amber-light);
+  .code-seg:hover {
+    background: rgba(255,255,255,0.04);
     color: #ffffff;
   }
-  .code-panel{
-    position: sticky;
-    top: 16px;
-    background: var(--card-bg);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 4px 18px var(--shadow);
-    min-height: 150px;
+  .code-seg.active {
+    background: rgba(216,167,92,0.14);
+    border-left-color: var(--amber);
+    color: #ffffff;
+    font-weight: 500;
   }
-  .code-panel-hint{
+  .code-panel {
+    position: sticky;
+    top: 24px;
+    background: var(--card-bg);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+    min-height: 160px;
+    transition: box-shadow var(--transition-normal);
+  }
+  .code-panel:hover {
+    box-shadow: var(--shadow-lg);
+  }
+  .code-panel-hint {
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.8px;
@@ -754,26 +1155,31 @@
     color: var(--empty-text);
     margin-bottom: 8px;
   }
-  .code-panel-plain{
+  .code-panel-plain {
     font-size: 14px;
     line-height: 1.55;
     color: var(--ink);
     margin-bottom: 14px;
   }
-  .code-panel .lens-stack{
+  .code-panel .lens-stack {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
-  @media (max-width: 760px){
-    .code-lab-layout{ grid-template-columns: 1fr; }
-    .code-panel{ position: static; }
+  @media (max-width: 760px) {
+    .code-lab-layout { grid-template-columns: 1fr; }
+    .code-panel { position: static; }
   }
 
   /* Mobile Usability & Responsiveness Adjustments */
   @media (max-width: 600px) {
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+
     body {
-      padding: 0 0 40px 0;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) calc(60px + env(safe-area-inset-bottom)) env(safe-area-inset-left);
     }
 
     header {
@@ -784,6 +1190,7 @@
       padding: 0 12px;
       gap: 12px;
       margin-top: 16px;
+      max-width: 100%;
     }
 
     /* Make search row and mode buttons fully responsive */
@@ -795,46 +1202,99 @@
 
     #search {
       width: 100%;
-      padding: 10px 14px;
+      padding: 12px 14px;
+      font-size: 16px; /* Prevents auto-zoom on iOS safari */
+      min-height: 44px;
     }
 
     /* Distribute mode buttons nicely on a row or grid */
     .search-row .mode-btn {
       width: 100%;
       text-align: center;
-      padding: 11px 14px;
-      font-size: 13px;
+      padding: 12px 18px;
+      font-size: 14px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Tabs & Lens Chips adjustments */
+    /* Tabs & Lens Chips adjustments to scroll horizontally on small screens */
     .tabs {
-      gap: 6px;
-    }
-
-    .tab {
-      padding: 6px 12px;
-      font-size: 11.5px;
-    }
-
-    .lens-chip {
-      padding: 6px 10px;
-      font-size: 11px;
-    }
-
-    /* Perfect grid/flexbox arrangement for toolbar icon buttons */
-    .toolbar-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       gap: 8px;
-      width: 100%;
+      padding: 4px 12px 8px 12px;
+      margin-left: -12px;
+      margin-right: -12px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+    }
+    .tabs::-webkit-scrollbar {
+      height: 4px;
+    }
+    .tabs::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 4px;
+    }
+
+    .tab, .lens-chip {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      padding: 10px 16px;
+      font-size: 13px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Horizontal scroll track behavior for operations toolbar button row */
+    .toolbar-row {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      gap: 8px;
+      padding: 4px 12px 8px 12px;
+      margin-left: -12px;
+      margin-right: -12px;
+      scrollbar-width: thin;
+      width: calc(100% + 24px);
+    }
+    .toolbar-row::-webkit-scrollbar {
+      height: 4px;
+    }
+    .toolbar-row::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 4px;
     }
 
     .toolbar-row .icon-btn {
+      flex: 0 0 auto;
       text-align: center;
-      padding: 10px 8px;
-      font-size: 11.5px;
+      padding: 10px 16px;
+      font-size: 13px;
       margin: 0;
-      width: 100%;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Star button touch target boosting */
+    .star-btn {
+      top: 0;
+      right: 0;
+      width: 44px;
+      height: 44px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
     }
 
     /* Glossary cards readability and size scaling */
@@ -845,7 +1305,7 @@
     }
 
     .card {
-      height: 290px;
+      height: 310px; /* added vertical room for larger text/scrolling blocks */
     }
 
     .face {
@@ -857,8 +1317,25 @@
       margin-bottom: 6px;
     }
 
-    .def, .analogy-text, .lens-block .lens-text {
+    .def {
       font-size: 13px;
+      overflow-y: auto;
+      max-height: 120px;
+    }
+
+    .lens-stack {
+      overflow-y: auto;
+      max-height: 180px;
+    }
+
+    .analogy-text, .lens-block .lens-text {
+      font-size: 13px;
+    }
+
+    .example {
+      max-width: 100%;
+      overflow-x: auto;
+      word-break: break-all;
     }
 
     /* Study Mode enhancements */
@@ -869,6 +1346,28 @@
 
     .study-card {
       height: 380px;
+    }
+
+    #studyBack {
+      overflow-y: auto;
+    }
+
+    .study-nav .mode-btn {
+      min-height: 44px;
+      padding: 12px 20px;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #shuffleBtn {
+      min-height: 44px;
+      padding: 12px 20px;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     /* Quiz Mode adjustments */
@@ -890,14 +1389,21 @@
       gap: 8px;
     }
 
-    #quizInput {
+    #quizInput, #quizNameInput {
       width: 100%;
-      padding: 11px 14px;
+      padding: 12px 14px;
+      font-size: 16px; /* Prevents iOS auto-zoom on focus */
+      min-height: 44px;
     }
 
-    #quizSubmit, #quizNameStart {
+    #quizSubmit, #quizNameStart, #quizNext, #quizEnd {
       width: 100%;
-      padding: 11px 14px;
+      padding: 12px 14px;
+      font-size: 14px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .quiz-header {
@@ -915,15 +1421,48 @@
     .code-col {
       max-height: 240px;
       overflow-y: auto;
+      overflow-x: auto; /* enable horizontal scrolling for long code blocks */
     }
 
     .code-seg {
       font-size: 11px;
-      padding: 4px 8px;
+      padding: 8px 10px; /* comfortable tap targets */
+      min-height: 36px;
     }
 
     .code-panel {
       min-height: auto;
+    }
+
+    /* Leaderboard popup optimization */
+    .leaderboard-overlay {
+      padding: calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left));
+    }
+
+    .leaderboard-panel {
+      max-height: calc(100vh - 40px);
+      max-height: calc(100dvh - 40px);
+      width: 100%;
+      margin: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #leaderboardList {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    #leaderboardClose {
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
     }
   }
 </style>
@@ -937,22 +1476,50 @@
 </header>
 
 <div class="controls">
-  <div class="tabs" id="subjectTabs" style="margin-bottom:4px;"></div>
-  <div class="search-row">
-    <input id="search" type="text" placeholder="Search a term or keyword…" autocomplete="off">
-    <button class="mode-btn" id="studyToggle">Study Mode</button>
-    <button class="mode-btn" id="quizToggle">Quiz Mode</button>
-    <button class="mode-btn" id="codeLabToggle">Code Lab</button>
+  <!-- Section 1: Navigation & Modes -->
+  <div class="control-section navigation-section">
+    <div class="control-group">
+      <div class="section-header">Subject Domain</div>
+      <div class="tabs" id="subjectTabs"></div>
+    </div>
+
+    <div class="control-group">
+      <div class="section-header">Search & Learning Modes</div>
+      <div class="search-row">
+        <input id="search" type="text" placeholder="Search a term or keyword…" autocomplete="off">
+        <div class="mode-btn-group">
+          <button class="mode-btn" id="studyToggle">Study Mode</button>
+          <button class="mode-btn" id="quizToggle">Quiz Mode</button>
+          <button class="mode-btn" id="codeLabToggle">Code Lab</button>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="tabs" id="tabs"></div>
-  <div class="tabs" id="lensChips"></div>
-  <div class="toolbar-row">
-    <button class="icon-btn" id="starredToggle">☆ Starred only</button>
-    <button class="icon-btn" id="exportBtn">⬇ Export starred (JSON)</button>
-    <button class="icon-btn" id="importBtn">⬆ Import list</button>
-    <button class="icon-btn" id="leaderboardBtnMain">🏆 Leaderboard</button>
-    <button class="icon-btn" id="themeToggle" title="Toggle Light/Dark Mode">🌓 Theme</button>
-    <input type="file" id="importFile" accept="application/json" style="display:none;">
+
+  <!-- Section 2: Filters & Lenses -->
+  <div class="control-section filter-section">
+    <div class="control-group">
+      <div class="section-header">Filter by Category</div>
+      <div class="tabs" id="tabs"></div>
+    </div>
+
+    <div class="control-group">
+      <div class="section-header">Interactive Retelling (Active Lenses)</div>
+      <div class="tabs" id="lensChips"></div>
+    </div>
+  </div>
+
+  <!-- Section 3: Actions & System Preferences -->
+  <div class="control-section toolbar-section">
+    <div class="section-header">Actions & System Preferences</div>
+    <div class="toolbar-row">
+      <button class="icon-btn" id="starredToggle">☆ Starred only</button>
+      <button class="icon-btn" id="exportBtn">⬇ Export starred (JSON)</button>
+      <button class="icon-btn" id="importBtn">⬆ Import list</button>
+      <button class="icon-btn" id="leaderboardBtnMain">🏆 Leaderboard</button>
+      <button class="icon-btn" id="themeToggle" title="Toggle Light/Dark Mode">🌓 Theme</button>
+      <input type="file" id="importFile" accept="application/json" style="display:none;">
+    </div>
   </div>
 </div>
 
@@ -999,6 +1566,7 @@
   <div class="quiz-name-screen" id="quizNameScreen">
     <p class="quiz-name-intro">Enter a name to join the shared leaderboard for this session (it's cleared when you close the tab).</p>
     <div class="quiz-answer-row">
+      <label class="sr-only" for="quizNameInput">Leaderboard name</label>
       <input id="quizNameInput" type="text" placeholder="Your name…" autocomplete="off" maxlength="40">
       <button class="mode-btn" id="quizNameStart">Start Quiz</button>
     </div>
@@ -1008,6 +1576,7 @@
     <div class="quiz-progress" id="quizProgress"></div>
     <div class="quiz-card" id="quizCardEl"></div>
     <div class="quiz-answer-row" id="quizAnswerRow">
+      <label class="sr-only" for="quizInput">Quiz answer</label>
       <input id="quizInput" type="text" placeholder="Type the term…" autocomplete="off">
       <button class="mode-btn" id="quizSubmit">Submit</button>
     </div>
@@ -1037,10 +1606,10 @@
 </div>
 
 <div class="leaderboard-overlay" id="leaderboardOverlay">
-  <div class="leaderboard-panel">
+  <div class="leaderboard-panel" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
     <div class="leaderboard-header">
-      <h3>🏆 Leaderboard</h3>
-      <button class="icon-btn" id="leaderboardClose">✕ Close</button>
+      <h3 id="leaderboardTitle">🏆 Leaderboard</h3>
+      <button class="icon-btn" id="leaderboardClose" aria-label="Close leaderboard">✕ Close</button>
     </div>
     <div class="tabs" id="leaderboardSubjectTabs" style="margin-bottom:14px;"></div>
     <div id="leaderboardList">Loading…</div>
@@ -1339,30 +1908,29 @@ const DATA = [
   {subject:"philosophy", term:"Equivocation", cat:"fallacies", sub:"Logical Fallacies", def:"Using a word with more than one meaning in a misleading way across an argument.", analogy:"Quietly switching what a word means partway through an argument to make the logic seem to work.", ex:"\"A feather is light. What is light cannot be dark. Therefore a feather cannot be dark.\"\n(switches between two meanings of 'light')", lenses:{"sports": "'A good sport plays fair. Playing to win means doing whatever it takes. Therefore a good sport does whatever it takes to win.' (switches meanings of 'fair')", "fandom": "'Dark magic is powerful. Powerful wizards are respected. Therefore dark magic makes you respected.' (slides between different senses of 'powerful')", "ttrpg": "'A cursed blade is dangerous. Dangerous things should be destroyed. Therefore the cursed blade should be destroyed.' (glosses over what kind of 'dangerous')", "cooking": "'Rich food is indulgent. Indulgence should be limited. Therefore rich food should always be limited.' (slides between senses of 'indulgent')", "millennial": "'Being real means being blunt. Blunt people hurt feelings. Therefore being real means hurting feelings.' (switches meanings of 'real')", "f1": "'Aggressive driving wins races. Aggressive driving causes crashes. Therefore winning races causes crashes.' (equivocates on 'aggressive')", "gaming": "'A toxic player is skilled at trash talk. Skilled players win games. Therefore toxic players win games.' (equivocates on 'skilled')"}},
 
   // ---------- Philosophers ----------
-  {subject:"philosophy", term:"Socrates", cat:"philosophers", sub:"Philosophers", def:"An ancient Greek philosopher who left no writings of his own, known through students like Plato, famous for relentless questioning that exposed false certainty.", analogy:"Like a senior physician who teaches residents entirely through pointed questions, never handing over the diagnosis outright.", ex:"\"I know that I know nothing.\" (paraphrased) — his famous admission that true wisdom starts with recognizing the limits of your own knowledge."},
-  {subject:"philosophy", term:"Plato", cat:"philosophers", sub:"Philosophers", def:"Socrates' student and founder of the Academy, famous for the Theory of Forms — the idea that the physical world is a flawed copy of a perfect, unchanging realm of ideas.", analogy:"Like the textbook 'ideal' presentation of a disease that no real patient ever perfectly matches, but every real case is compared against.", ex:"The Allegory of the Cave: prisoners mistake shadows on a wall for reality, until one escapes and sees the truth outside."},
-  {subject:"philosophy", term:"Aristotle", cat:"philosophers", sub:"Philosophers", def:"Plato's student and founder of the Lyceum, famous for virtue ethics — the idea that good character is built through habituated practice, not innate talent.", analogy:"Like clinical competence — built through repeated, deliberate practice, not something you're simply born with.", ex:"\"We are what we repeatedly do. Excellence, then, is not an act, but a habit.\""},
-  {subject:"philosophy", term:"Rene Descartes", cat:"philosophers", sub:"Philosophers", def:"A 17th-century French philosopher and founder of modern rationalism, famous for radical doubt and concluding that the one thing he couldn't doubt was his own thinking mind.", analogy:"Like stripping away every unreliable test result until you find the one vital sign you can actually trust completely.", ex:"\"Cogito, ergo sum\" — I think, therefore I am."},
-  {subject:"philosophy", term:"Immanuel Kant", cat:"philosophers", sub:"Philosophers", def:"An 18th-century German philosopher famous for the categorical imperative — the idea that moral actions must be based on rules you'd be willing to apply universally.", analogy:"Like a protocol so sound you'd be comfortable if every provider, everywhere, followed it exactly.", ex:"\"Act only according to that maxim whereby you can, at the same time, will that it should become a universal law.\""},
-  {subject:"philosophy", term:"John Locke", cat:"philosophers", sub:"Philosophers", def:"A 17th-century English philosopher and father of empiricism and liberalism, famous for the idea that the mind begins as a tabula rasa shaped entirely by experience.", analogy:"Like a new hire with zero assumptions, learning entirely from what they actually observe on the unit.", ex:"\"No man's knowledge here can go beyond his experience.\""},
-  {subject:"philosophy", term:"David Hume", cat:"philosophers", sub:"Philosophers", def:"An 18th-century Scottish philosopher and radical empiricist, famous for skepticism about cause and effect — arguing we only ever observe patterns, never necessity.", analogy:"Like noticing a medication always seems to lower fever, without ever directly observing the mechanism that makes it happen.", ex:"Hume's problem of induction: just because the sun has risen every day doesn't logically guarantee it will tomorrow."},
-  {subject:"philosophy", term:"Friedrich Nietzsche", cat:"philosophers", sub:"Philosophers", def:"A 19th-century German philosopher famous for critiquing traditional morality and proposing the will to power and the idea of self-overcoming.", analogy:"Like a patient who doesn't just recover from illness, but uses the experience to fundamentally redefine their own strength.", ex:"\"That which does not kill us makes us stronger.\""},
-  {subject:"philosophy", term:"Jean-Paul Sartre", cat:"philosophers", sub:"Philosophers", def:"A 20th-century French existentialist famous for 'existence precedes essence' — the idea that people create their identity through free choices, rather than being born with a fixed purpose.", analogy:"Like a new grad who isn't defined as 'a good nurse' by title alone — that identity is built entirely through the choices made on the floor.", ex:"\"Man is condemned to be free.\""},
-  {subject:"philosophy", term:"Albert Camus", cat:"philosophers", sub:"Philosophers", def:"A 20th-century French-Algerian philosopher famous for absurdism — the idea that life has no inherent meaning, met not with despair but with defiant persistence.", analogy:"Like continuing to give full effort on a shift knowing you can't save every patient — the effort itself is the point.", ex:"\"One must imagine Sisyphus happy\" — finding meaning in the struggle itself, not the outcome."},
-  {subject:"philosophy", term:"Simone de Beauvoir", cat:"philosophers", sub:"Philosophers", def:"A 20th-century French existentialist and foundational feminist philosopher, famous for arguing that womanhood is socially constructed, not biologically fixed.", analogy:"Like recognizing that a professional role's expectations are shaped by culture and history, not some fixed, unchangeable nature.", ex:"\"One is not born, but rather becomes, a woman.\""},
-  {subject:"philosophy", term:"Confucius (Philosopher)", cat:"philosophers", sub:"Philosophers", def:"An ancient Chinese philosopher whose teachings on social harmony, respect, and moral duty shaped Chinese ethics and governance for centuries.", analogy:"Like a hospital hierarchy that runs smoothly because everyone genuinely respects their role's responsibilities to the whole team.", ex:"\"By three methods we may learn wisdom: reflection, imitation, and experience.\""},
-  {subject:"philosophy", term:"Laozi", cat:"philosophers", sub:"Philosophers", def:"A semi-legendary ancient Chinese philosopher traditionally credited as the founder of Taoism, famous for the concept of wu wei, or effortless, natural action.", analogy:"Like letting a stable patient's own body do the healing, instead of over-intervening at every step.", ex:"\"Nature does not hurry, yet everything is accomplished.\""},
-  {subject:"philosophy", term:"Siddhartha Gautama (the Buddha)", cat:"philosophers", sub:"Philosophers", def:"The founder of Buddhism, famous for the Four Noble Truths — that suffering exists, has a cause, can end, and there's a path to end it.", analogy:"Like recognizing a patient's chronic pain has an identifiable cause and a genuinely treatable path forward, not just something to endure.", ex:"\"You yourself, as much as anybody in the entire universe, deserve your love and affection.\""},
-  {subject:"philosophy", term:"Karl Marx", cat:"philosophers", sub:"Philosophers", def:"A 19th-century German philosopher and economist famous for critiquing capitalism and arguing that economic class structures shape history and social conflict.", analogy:"Like recognizing that a hospital's resource allocation shapes patient outcomes far more than any individual's effort alone.", ex:"\"From each according to his ability, to each according to his need.\""},
-  {subject:"philosophy", term:"John Stuart Mill", cat:"philosophers", sub:"Philosophers", def:"A 19th-century English philosopher and major utilitarian thinker, famous for refining the greatest happiness principle and defending individual liberty.", analogy:"Like a triage system explicitly designed to produce the best overall outcome for the most patients, while still protecting individual patient rights.", ex:"\"The only purpose for which power can be rightfully exercised over any member of a civilized community, against his will, is to prevent harm to others.\""},
-  {subject:"philosophy", term:"Thomas Hobbes", cat:"philosophers", sub:"Philosophers", def:"A 17th-century English philosopher famous for describing the state of nature as 'nasty, brutish, and short,' and arguing strong central authority is needed to escape it.", analogy:"Like arguing a completely unregulated unit would descend into chaos, so clear top-down protocols are necessary for safety.", ex:"\"The life of man [in the state of nature] is solitary, poor, nasty, brutish, and short.\""},
-  {subject:"philosophy", term:"Niccolo Machiavelli", cat:"philosophers", sub:"Philosophers", def:"A 16th-century Italian political philosopher famous for 'The Prince,' arguing rulers should prioritize practical effectiveness over conventional morality to maintain power.", analogy:"Like a pragmatic charge nurse who prioritizes whatever actually keeps the unit functioning, even when it's not the 'nicest' choice.", ex:"\"It is better to be feared than loved, if you cannot be both.\""},
+  {subject:"philosophy", term:"Socrates", cat:"philosophers", sub:"Philosophers", def:"An ancient Greek philosopher who left no writings of his own, known through students like Plato, famous for relentless questioning that exposed false certainty.", analogy:"Like a senior physician who teaches residents entirely through pointed questions, never handing over the diagnosis outright.", ex:"\"I know that I know nothing.\" (paraphrased) — his famous admission that true wisdom starts with recognizing the limits of your own knowledge.", lenses:{sports:"A coach who never tells you the play directly, but walks you through film asking questions until you see your own positioning error.", fandom:"Like Dumbledore asking Harry cryptic questions to lead him to discover the truth about Voldemort\'s plan himself.", ttrpg:"A Game Master who doesn\'t tell the party where the trap is, but asks \'Are you absolutely sure you want to open that chest?\' until they inspect it properly.", cooking:"A master chef who won\'t tell you what\'s wrong with the soup, but makes you taste it and asks questions until you realize it\'s missing salt.", millennial:"That friend who, instead of giving advice, asks \'Why do you feel that way?\' until you realize your own bad relationship decisions.", f1:"A race engineer who won\'t tell the driver how to fix the understeer, but asks about tyre temps and corner entry until the driver adjusts their style.", gaming:"A puzzle game that doesn\'t provide hints, but highlights your moves with subtle questions until you deduce the correct path."}},
+  {subject:"philosophy", term:"Plato", cat:"philosophers", sub:"Philosophers", def:"Socrates\' student and founder of the Academy, famous for the Theory of Forms — the idea that the physical world is a flawed copy of a perfect, unchanging realm of ideas.", analogy:"Like the textbook \'ideal\' presentation of a disease that no real patient ever perfectly matches, but every real case is compared against.", ex:"The Allegory of the Cave: prisoners mistake shadows on a wall for reality, until one escapes and sees the truth outside.", lenses:{sports:"The perfect textbook jump shot that every player strives for, even though no actual in-game shot is ever 100% textbook.", fandom:"The concept of a perfect Patronus — a flawless silver guardian that exists in theory, while actual spells cast under pressure might be faint or unstable.", ttrpg:"The idealized \'Rules-as-Written\' version of a campaign setting, which every real-world session deviates from due to player choices and dice rolls.", cooking:"A recipe\'s perfect photograph in a high-end cookbook, which no home-cooked meal perfectly replicates but every attempt is measured against.", millennial:"The curated, filtered \'aesthetic life\' on Instagram that everyone compares their messy, real-world everyday lives to.", f1:"The perfect computer-simulated lap of a racetrack, which real drivers chase on Sunday but can never perfectly execute due to wind, tyre wear, and track temp.", gaming:"The unpatchable, pristine beta build of a game in the developer\'s vision, where every actual copy played on retail hardware has small bugs or performance dips."}},
+  {subject:"philosophy", term:"Aristotle", cat:"philosophers", sub:"Philosophers", def:"Plato\'s student and founder of the Lyceum, famous for virtue ethics — the idea that good character is built through habituated practice, not innate talent.", analogy:"Like clinical competence — built through repeated, deliberate practice, not something you\'re simply born with.", ex:"\"We are what we repeatedly do. Excellence, then, is not an act, but a habit.\"", lenses:{sports:"Elite muscle memory — a champion\'s clutch performance is built on thousands of hours of daily practice, not just natural skill.", fandom:"Wand proficiency or spell casting mastery — Harry had to practice Expelliarmus hundreds of times in the Room of Requirement to make it second nature.", ttrpg:"Levelling up your character — your high stats and abilities are earned through surviving numerous encounters, not just your starting sheet.", cooking:"Knife skills in a busy kitchen — speed and precision come from chopping thousands of onions, not just owning a high-quality chef\'s knife.", millennial:"Establishing a healthy daily routine — maintaining work-life balance is a habit you build day by day, not an inherent personality trait.", f1:"Car control in the wet — a driver\'s ability to catch a sliding car at 200 mph is a reflex honed over years of karting, not raw luck.", gaming:"Mastering a complex fighting game combo — being able to pull off a perfect 10-button sequence under pressure requires muscle memory built in training mode."}},
+  {subject:"philosophy", term:"Rene Descartes", cat:"philosophers", sub:"Philosophers", def:"A 17th-century French philosopher and founder of modern rationalism, famous for radical doubt and concluding that the one thing he couldn\'t doubt was his own thinking mind.", analogy:"Like stripping away every unreliable test result until you find the one vital sign you can actually trust completely.", ex:"\"Cogito, ergo sum\" — I think, therefore I am.", lenses:{sports:"Tearing down a failing team\'s strategy entirely to focus on the one absolute core strength they can rebuild the franchise around.", fandom:"Disbelieving every illusion cast by a dark wizard until you find the single real object that can\'t be dissolved by counter-spells.", ttrpg:"Questioning every rumor the NPCs tell the party, until you find the one undisputed, key quest item that proves what\'s actually happening.", cooking:"Stripping an over-complicated, messy recipe down to its single most basic, undeniable flavor profile that holds the dish together.", millennial:"Muting every social media feed and trend until you\'re left with just your own actual, quiet thoughts.", f1:"Stripping all aerodynamic parts and telemetry data off a car to find the absolute mechanical grip of the chassis.", gaming:"Deconstructing a buggy, heavily modded game back to its base unmodded engine to isolate the one core system that works perfectly."}},
+  {subject:"philosophy", term:"Immanuel Kant", cat:"philosophers", sub:"Philosophers", def:"An 18th-century German philosopher famous for the categorical imperative — the idea that moral actions must be based on rules you\'d be willing to apply universally.", analogy:"Like a protocol so sound you\'d be comfortable if every provider, everywhere, followed it exactly.", ex:"\"Act only according to that maxim whereby you can, at the same time, will that it should become a universal law.\"", lenses:{sports:"A fair play rule so fundamental that you\'d want every team in every league to follow it, even if it hurts your team in the short term.", fandom:"The Wizards\' Council code — a magic law so absolute that no wizard should ever break it, regardless of their house or intentions.", ttrpg:"A table rule so fair and consistent that you\'d expect every GM and player at every table in the world to abide by it.", cooking:"Food safety rules — keeping raw poultry separate from veggies is a standard you\'d expect every single kitchen on Earth to follow.", millennial:"A social etiquette rule — like \'never FaceTime without texting first\' — that you want everyone in society to adopt universally.", f1:"The sporting regulations — track limits must be applied strictly and identically to every driver on every lap, without exception or favoritism.", gaming:"Server rules against cheating — a zero-tolerance policy against exploits that must be applied to every single player to keep the game fair."}},
+  {subject:"philosophy", term:"John Locke", cat:"philosophers", sub:"Philosophers", def:"A 17th-century English philosopher and father of empiricism and liberalism, famous for the idea that the mind begins as a tabula rasa shaped entirely by experience.", analogy:"Like a new hire with zero assumptions, learning entirely from what they actually observe on the unit.", ex:"\"No man\'s knowledge here can go beyond his experience.\"", lenses:{sports:"A rookie who arrives at training camp with no preconceived habits, learning their entire playstyle from what they actually experience on the field.", fandom:"A muggle-born wizard entering Hogwarts with zero knowledge of magic, forming their entire worldview based on what they learn in class.", ttrpg:"A level 1 character starting a campaign with an empty inventory and no backstory, shaped completely by the encounters they survive.", cooking:"A clean, unseasoned cast iron skillet, starting out entirely blank and absorbing its flavor profile from the dishes you cook in it over time.", millennial:"Moving to a brand new city where you know nobody, letting your new lifestyle and friendships shape who you become from scratch.", f1:"A brand new driver academy recruit with no prior open-wheel experience, learning to drive solely from the simulator and track sessions.", gaming:"A fresh survival mode spawn on a blank server, starting with nothing and learning how the world works purely by exploring and gathering."}},
+  {subject:"philosophy", term:"David Hume", cat:"philosophers", sub:"Philosophers", def:"An 18th-century Scottish philosopher and radical empiricist, famous for skepticism about cause and effect — arguing we only ever observe patterns, never necessity.", analogy:"Like noticing a medication always seems to lower fever, without ever directly observing the mechanism that makes it happen.", ex:"Hume\'s problem of induction: just because the sun has risen every day doesn\'t logically guarantee it will tomorrow.", lenses:{sports:"Believing a certain pair of socks makes you play better because you always win when wearing them, even though there\'s no actual physical connection.", fandom:"Assuming a certain wand movement causes a spell to work just because they always happen together, even though the magic itself is invisible.", ttrpg:"Noticing that rolling a specific d20 always seems to produce high numbers, even though probability says there\'s no causal link.", cooking:"Noticing that adding a pinch of sugar always balances a tomato sauce, even if you don\'t understand the chemical interaction behind it.", millennial:"Seeing that your phone battery always dies faster on rainy days, and treating it as a pattern even if you can\'t prove why they are connected.", f1:"Noticing that a driver always qualifies better whenever their teammate has a haircut, tracking it as a pattern without any actual logical link.", gaming:"Observing that a boss always uses its ultimate attack right after a certain sound effect, reacting to the pattern without seeing the game code."}},
+  {subject:"philosophy", term:"Friedrich Nietzsche", cat:"philosophers", sub:"Philosophers", def:"A 19th-century German philosopher famous for critiquing traditional morality and proposing the will to power and the idea of self-overcoming.", analogy:"Like a patient who doesn\'t just recover from illness, but uses the experience to fundamentally redefine their own strength.", ex:"\"That which does not kill us makes us stronger.\"", lenses:{sports:"An athlete who uses a devastating injury as fuel to completely rebuild their body and mental toughness, returning stronger than before.", fandom:"A wizard who rejects both Ministry rules and Dark magic, choosing to forge their own unique and powerful magical path.", ttrpg:"A character who rejects their predetermined class alignment, rewriting their own destiny to gain power on their own terms.", cooking:"A rebel chef who breaks all classic culinary rules, discarding traditional training to create an entirely new style of cuisine.", millennial:"Leaving a soul-crushing corporate job to build your own non-traditional path, ignoring what society calls \'success\' to find your own.", f1:"A driver who ignores the team\'s safe strategy calls, taking immense risks to push themselves and the car past its absolute engineering limits.", gaming:"Refusing to follow the standard character build or \'meta\', inventing a high-risk, high-skill playstyle that dominates competitive matches."}},
+  {subject:"philosophy", term:"Jean-Paul Sartre", cat:"philosophers", sub:"Philosophers", def:"A 20th-century French existentialist famous for \'existence precedes essence\' — the idea that people create their identity through free choices, rather than being born with a fixed purpose.", analogy:"Like a new grad who isn\'t defined as \'a good nurse\' by title alone — that identity is built entirely through the choices made on the floor.", ex:"\"Man is condemned to be free.\"", lenses:{sports:"A draft pick who isn\'t defined by their college scouting report; their actual reputation is built play-by-play in the professional league.", fandom:"Sorting hat choices — you aren\'t defined by the house you are put in, but by the actual choices you make when the time comes.", ttrpg:"A blank character sheet that isn\'t defined by its class description; your character\'s true nature is decided solely by how you play them.", cooking:"An ingredient that isn\'t locked into one recipe — a potato has no fixed destiny and becomes whatever the chef chooses to make of it.", millennial:"Rejecting the idea that you are defined by your college major, realizing your career is built entirely by the jobs and projects you choose.", f1:"A driver who isn\'t defined by their famous racing family name — their status on the grid is earned lap-by-lap on Sunday.", gaming:"An open-world RPG where your character has no fixed destiny, and your moral choices and actions completely shape who you become."}},
+  {subject:"philosophy", term:"Albert Camus", cat:"philosophers", sub:"Philosophers", def:"A 20th-century French-Algerian philosopher famous for absurdism — the idea that life has no inherent meaning, met not with despair but with defiant persistence.", analogy:"Like continuing to give full effort on a shift knowing you can\'t save every patient — the effort itself is the point.", ex:"\"One must imagine Sisyphus happy\" — finding meaning in the struggle itself, not the outcome.", lenses:{sports:"Playing your heart out in the final quarter of a blowout game when you know you can\'t win, simply because you love the game.", fandom:"House elves or wizards performing daily chores and struggles against dark forces, finding joy and purpose in the small daily acts of loyalty.", ttrpg:"Venturing into an endless, shifting dungeon with no final boss, finding joy in the sheer act of exploring and fighting alongside your party.", cooking:"Prepping thousands of vegetables every day in a busy kitchen knowing they will all be gone by midnight, yet doing it with pride and care.", millennial:"Paying off rent and bills in an endless cycle, but choosing to enjoy your coffee, hobbies, and friends anyway.", f1:"Driving your absolute hardest at the back of the grid in a slow car with zero chance of scoring points, just for the thrill of racing.", gaming:"Playing an endless roguelike game where you die and lose all progress over and over, yet enjoying every run just for the gameplay."}},
+  {subject:"philosophy", term:"Simone de Beauvoir", cat:"philosophers", sub:"Philosophers", def:"A 20th-century French existentialist and foundational feminist philosopher, famous for arguing that womanhood is socially constructed, not biologically fixed.", analogy:"Like recognizing that a professional role\'s expectations are shaped by culture and history, not some fixed, unchangeable nature.", ex:"\"One is not born, but rather becomes, a woman.\"", lenses:{sports:"Realizing that what we consider a \'natural leader\' in a quarterback is shaped by team culture and media narratives, not innate biology.", fandom:"Realizing that the rivalry between houses like Gryffindor and Slytherin is a social tradition maintained by the school, not an innate trait.", ttrpg:"Recognizing that \'chaotic\' or \'lawful\' alignments are flexible social roles defined by interaction, not fixed traits of a fantasy race.", cooking:"Realizing that what we call \'gourmet\' vs \'peasant\' food is a social distinction, rather than a reflection of the actual flavor or effort.", millennial:"Understanding that \'adulting\' expectations (buying a house, getting married) are cultural norms, not mandatory milestones of human life.", f1:"Realizing that the expectation of drivers being cold and unemotional is a corporate media construct, not a requirement for being fast.", gaming:"Realizing that \'support\' vs \'carry\' playstyles are dynamic player roles shaped by the meta, not fixed attributes of the player themselves."}},
+  {subject:"philosophy", term:"Confucius (Philosopher)", cat:"philosophers", sub:"Philosophers", def:"An ancient Chinese philosopher whose teachings on social harmony, respect, and moral duty shaped Chinese ethics and governance for centuries.", analogy:"Like a hospital hierarchy that runs smoothly because everyone genuinely respects their role\'s responsibilities to the whole team.", ex:"\"By three methods we may learn wisdom: reflection, imitation, and experience.\"", lenses:{sports:"A team where every player, coach, and trainer executes their specific role with absolute dedication and mutual respect to win championships.", fandom:"Hogwarts running smoothly because prefects, teachers, and students all respect their positions and duties to the school.", ttrpg:"An adventuring party where the tank, healer, and damage dealers all coordinate perfectly, respecting each other\'s roles to survive.", cooking:"A brigade de cuisine (kitchen crew) where the executive chef, sous chef, and line cooks respect the hierarchy and execute their stations flawlessly.", millennial:"A cooperative housing community where everyone fulfills their chore wheel duties and respects quiet hours to live in perfect harmony.", f1:"A pit crew where all 20 mechanics execute their precise sub-second tasks in perfect harmony because they respect the team structure.", gaming:"A high-level raid team where every member executes their assigned mechanics and respects the raid leader\'s calls to defeat the boss."}},
+  {subject:"philosophy", term:"Laozi", cat:"philosophers", sub:"Philosophers", def:"A semi-legendary ancient Chinese philosopher traditionally credited as the founder of Taoism, famous for the concept of wu wei, or effortless, natural action.", analogy:"Like letting a stable patient\'s own body do the healing, instead of over-intervening at every step.", ex:"\"Nature does not hurry, yet everything is accomplished.\"", lenses:{sports:"Being \'in the zone\' or \'in flow\' — where an athlete stops overthinking their moves and lets their body react naturally to the game.", fandom:"Letting magic flow naturally through you, like Harry producing a patronus by focusing on a feeling rather than forcing the technique.", ttrpg:"Letting the narrative evolve naturally from player choices and dice rolls, rather than the GM railroading the party into a strict script.", cooking:"Letting high-quality ingredients speak for themselves with minimal seasoning and intervention, rather than overcomplicating the dish.", millennial:"Practicing mindfulness—stepping back from trying to control every aspect of your life and letting things fall into place naturally.", f1:"A driver who enters a state of \'flow,\’ making smooth, effortless steering inputs that save tyres while maintaining maximum speed.", gaming:"Playing a game where you stop overthinking your inputs and let muscle memory guide your hands, effortlessly dodging every attack."}},
+  {subject:"philosophy", term:"Siddhartha Gautama (the Buddha)", cat:"philosophers", sub:"Philosophers", def:"The founder of Buddhism, famous for the Four Noble Truths — that suffering exists, has a cause, can end, and there\'s a path to end it.", analogy:"Like recognizing a patient\'s chronic pain has an identifiable cause and a genuinely treatable path forward, not just something to endure.", ex:"\"You yourself, as much as anybody in the entire universe, deserve your love and affection.\"", lenses:{sports:"A team identifying that their losing streak is caused by poor communication, and implementing a specific practice regimen to fix it.", fandom:"Recognizing that Harry\'s anger is caused by his mental connection to Voldemort, and learning Occlumency to close that link and find peace.", ttrpg:"Realizing that your party\'s high casualty rate is caused by rushing into fights unprepared, and adopting strategic planning to stay alive.", cooking:"Understanding that a chef\'s frustration is caused by a messy workstation, and implementing mise en place (prep work) to run a calm kitchen.", millennial:"Identifying that your burnout is caused by a lack of digital boundaries, and committing to offline hobbies and screen-time limits.", f1:"Realizing that a car\'s poor race pace is caused by tyre overheating, and adjusting the suspension setup and driving lines to cure it.", gaming:"Realizing that your frequent in-game deaths are caused by greedily over-extending, and learning to play defensively to win matches."}},
+  {subject:"philosophy", term:"Karl Marx", cat:"philosophers", sub:"Philosophers", def:"A 19th-century German philosopher and economist famous for critiquing capitalism and arguing that economic class structures shape history and social conflict.", analogy:"Like recognizing that a hospital\'s resource allocation shapes patient outcomes far more than any individual\'s effort alone.", ex:"\"From each according to his ability, to each according to his need.\"", lenses:{sports:"Recognizing that a league\'s salary cap rules and revenue sharing determine team success far more than any single player\'s work ethic.", fandom:"Realizing that the pure-blood wizard families control the Ministry\'s resources and wealth, shaping magical society\'s history and conflicts.", ttrpg:"Realizing that the merchant guilds and wealthy lords control all the gold and magic items, driving the conflicts and quests in the campaign world.", cooking:"Recognizing that restaurant labor practices and food cost margins shape the dining industry far more than any chef\'s individual cooking talent.", millennial:"Realizing that the housing market and economic conditions shape your lifestyle milestones far more than how much avocado toast you eat.", f1:"Understanding that team budgets and wind tunnel development time determine who wins championships far more than the driver\'s raw talent.", gaming:"Realizing that the game\'s economy and microtransaction systems dictate who has the best gear, leading to conflicts between free-to-play and pay-to-win players."}},
+  {subject:"philosophy", term:"John Stuart Mill", cat:"philosophers", sub:"Philosophers", def:"A 19th-century English philosopher and major utilitarian thinker, famous for refining the greatest happiness principle and defending individual liberty.", analogy:"Like a triage system explicitly designed to produce the best overall outcome for the most patients, while still protecting individual patient rights.", ex:"\"The only purpose for which power can be rightfully exercised over any member of a civilized community, against his will, is to prevent harm to others.\"", lenses:{sports:"A coaching strategy that maximizes team chemistry and playing time for everyone, while ensuring no individual player\'s career is put at risk.", fandom:"The Order of the Phoenix making plans that protect the magical community at large, while ensuring individual wizards\' freedoms are defended.", ttrpg:"A party deciding on quests that bring prosperity to the largest number of villagers, while strictly refusing to sacrifice any party member to do so.", cooking:"Designing a menu that satisfies the maximum number of diners\' dietary needs and tastes, while ensuring every individual cook\'s working hours are respected.", millennial:"Planning a group vacation that has the best activities for the whole friend group, while respecting everyone\'s individual budgets and boundaries.", f1:"Team strategy rules that maximize the total constructor points for the team on Sunday, while allowing both drivers the freedom to race each other fairly.", gaming:"Balancing a multiplayer game to make it fun for the largest number of players, while still ensuring individual playstyles remain viable."}},
+  {subject:"philosophy", term:"Thomas Hobbes", cat:"philosophers", sub:"Philosophers", def:"A 17th-century English philosopher famous for describing the state of nature as \'nasty, brutish, and short,\’ and arguing strong central authority is needed to escape it.", analogy:"Like arguing a completely unregulated unit would descend into chaos, so clear top-down protocols are necessary for safety.", ex:"\"The life of man [in the state of nature] is solitary, poor, nasty, brutish, and short.\"", lenses:{sports:"A league requiring a strong commissioner and strict refereeing to prevent matches from turning into chaotic, dangerous brawls.", fandom:"The Ministry of Magic enforcing strict wizarding laws to prevent magical society from descending into chaotic, uncontrolled dark wizard feuds.", ttrpg:"A table needing a firm Game Master to enforce the rules, preventing players from constantly arguing and ruining the campaign.", cooking:"A kitchen requiring an authoritative head chef to direct the line cooks, otherwise the kitchen falls into chaotic ticket backups and ruined dishes.", millennial:"Establishing a clear lease agreement with house rules to prevent a shared apartment from turning into a chaotic, messy free-for-all.", f1:"The FIA governing body enforcing strict safety and sporting rules to prevent races from turning into chaotic, highly dangerous crash-fests.", gaming:"An online multiplayer sandbox requiring active server moderators and automated ban systems to keep players from griefing and ruining the game."}},
+  {subject:"philosophy", term:"Niccolo Machiavelli", cat:"philosophers", sub:"Philosophers", def:"A 16th-century Italian political philosopher famous for \'The Prince,\’ arguing rulers should prioritize practical effectiveness over conventional morality to maintain power.", analogy:"Like a pragmatic charge nurse who prioritizes whatever actually keeps the unit functioning, even when it\'s not the \'nicest\' choice.", ex:"\"It is better to be feared than loved, if you cannot be both.\"", lenses:{sports:"A coach who benches a beloved fan-favorite player or commits tactical fouls to secure a win, prioritizing actual results over being liked.", fandom:"Slytherin house strategy—using cunning, secrets, and calculated rule-bending to win the House Cup, prioritizing the victory over house points lost.", ttrpg:"A rogue who steals a crucial quest item from an ally or lies to an NPC to save the party, choosing whatever tactic guarantees survival.", cooking:"A chef who uses pre-made stocks or kitchen shortcuts to survive a massive dinner rush, prioritizing fast ticket times over culinary purity.", millennial:"A manager who makes unpopular scheduling cuts or cancelation policies to keep their small business afloat, prioritizing business survival.", f1:"A team principal who uses team orders to force a driver to let their teammate pass to win the championship, prioritizing the title over fairness.", gaming:"A competitive player who uses cheap, annoying tactics or exploits a broken game mechanic to win a tournament, prioritizing victory over fair play."}}
 ];
 
 const SUBJECTS = [
   {key:'coding', label:'💻 Coding & QA'},
   {key:'philosophy', label:'🏛️ Philosophy'},
-  {key:'school', label:'🎓 School Subjects'},
 
 ];
 
@@ -1547,6 +2115,7 @@ function buildLensChipsInto(container){
     const chip = document.createElement('button');
     const active = selectedLenses.has(l.key);
     chip.className = 'lens-chip' + (active ? ' active' : '');
+    chip.setAttribute('aria-pressed', String(active));
     chip.style.setProperty('--chip-color', l.color);
     chip.innerHTML = `<span class="dot"></span>${l.icon} ${l.label}`;
     chip.onclick = () => {
@@ -1572,10 +2141,16 @@ function getFiltered(){
   return DATA.filter(d => {
     const matchesSubject = d.subject === activeSubject;
     const matchesCat = activeCat === 'all' || d.cat === activeCat;
+
+    // Performance optimization: JIT lazy-cached lowercase conversion to avoid thousands of string allocations during real-time filtering
+    const termLower = d._termLower || (d._termLower = (d.term || '').toLowerCase());
+    const defLower = d._defLower || (d._defLower = (d.def || '').toLowerCase());
+    const subLower = d._subLower || (d._subLower = (d.sub || '').toLowerCase());
+
     const matchesSearch = !searchTerm ||
-      d.term.toLowerCase().includes(searchTerm) ||
-      d.def.toLowerCase().includes(searchTerm) ||
-      d.sub.toLowerCase().includes(searchTerm);
+      termLower.includes(searchTerm) ||
+      defLower.includes(searchTerm) ||
+      subLower.includes(searchTerm);
     const matchesStar = !starredOnly || starred.has(d.term);
     return matchesSubject && matchesCat && matchesSearch && matchesStar;
   });
@@ -1586,7 +2161,7 @@ function buildLensStackHTML(d){
   return order.map(l => `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
-      <div class="lens-text">${getLensText(d, l.key)}</div>
+      <div class="lens-text">${escHtml(getLensText(d, l.key))}</div>
     </div>
   `).join('');
 }
@@ -1605,22 +2180,39 @@ function renderGrid(){
     card.className = 'card';
     const isStarred = starred.has(d.term);
     card.innerHTML = `
-      <button class="star-btn ${isStarred ? 'starred' : ''}" title="Star to study later">${isStarred ? '★' : '☆'}</button>
+      <button class="star-btn ${isStarred ? 'starred' : ''}" title="Star to study later" aria-label="${isStarred ? 'Remove' : 'Add'} ${escHtml(d.term)} ${isStarred ? 'from' : 'to'} starred terms" aria-pressed="${isStarred}">${isStarred ? '★' : '☆'}</button>
       <div class="card-inner">
         <div class="face ${colorClass(d.cat)}">
-          <div class="tag">${d.sub}</div>
-          <div class="term">${d.term}</div>
-          <div class="def">${d.def}</div>
+          <div class="tag">${escHtml(d.sub)}</div>
+          <div class="term">${escHtml(d.term)}</div>
+          <div class="def">${escHtml(d.def)}</div>
           <div class="flip-hint">tap to flip</div>
         </div>
         <div class="face back ${colorClass(d.cat)}">
           <div class="lens-stack">${buildLensStackHTML(d)}</div>
-          ${d.ex ? `<div class="example">${d.ex}</div>` : ''}
+          ${d.ex ? `<div class="example">${escHtml(d.ex)}</div>` : ''}
         </div>
       </div>
     `;
-    card.querySelector('.card-inner').onclick = () => card.classList.toggle('flipped');
-    card.querySelector('.star-btn').onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
+    const inner = card.querySelector('.card-inner');
+    const starBtn = card.querySelector('.star-btn');
+    const updateFlipState = (flipped) => {
+      card.classList.toggle('flipped', flipped);
+      inner.setAttribute('aria-pressed', String(flipped));
+      inner.setAttribute('aria-label', flipped ? `Hide translations for ${d.term}` : `Show translations for ${d.term}`);
+    };
+    inner.setAttribute('role', 'button');
+    inner.setAttribute('tabindex', '0');
+    inner.setAttribute('aria-pressed', 'false');
+    inner.setAttribute('aria-label', `Show translations for ${d.term}`);
+    inner.onclick = () => updateFlipState(!card.classList.contains('flipped'));
+    inner.onkeydown = (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        updateFlipState(!card.classList.contains('flipped'));
+      }
+    };
+    starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
     fragment.appendChild(card);
   });
 
@@ -1636,6 +2228,7 @@ starredToggle.addEventListener('click', () => {
   starredOnly = !starredOnly;
   starredToggle.textContent = starredOnly ? '★ Starred only' : '☆ Starred only';
   starredToggle.classList.toggle('active-toggle', starredOnly);
+  starredToggle.setAttribute('aria-pressed', String(starredOnly));
   renderGrid();
 });
 
@@ -1656,6 +2249,14 @@ document.getElementById('importBtn').addEventListener('click', () => importFile.
 importFile.addEventListener('change', (e) => {
   const file = e.target.files[0];
   if(!file) return;
+
+  // Security Enhancement: Limit file size to 1MB to prevent memory/resource exhaustion
+  if (file.size > 1 * 1024 * 1024) {
+    alert('Import failed: File exceeds the maximum size limit of 1MB.');
+    importFile.value = '';
+    return;
+  }
+
   const reader = new FileReader();
   reader.onload = (ev) => {
     try {
@@ -1663,6 +2264,12 @@ importFile.addEventListener('change', (e) => {
       if (!Array.isArray(list)) {
         throw new Error('Imported data must be a JSON array');
       }
+
+      // Security Enhancement: Limit array length to 1000 to prevent DoS/browser freezing
+      if (list.length > 1000) {
+        throw new Error('Imported list is too large (max 1000 items)');
+      }
+
       const validTerms = new Set(DATA.map(d => d.term));
       let count = 0;
       list.forEach(item => {
@@ -1695,11 +2302,24 @@ function shuffle(arr){
   return a;
 }
 
+function getFilteredOrShowEmpty(modeLabel){
+  const filtered = getFiltered();
+  if(filtered.length) return filtered;
+  renderGrid();
+  emptyEl.textContent = `No cards match the current filters, so ${modeLabel} cannot start yet.`;
+  emptyEl.style.display = 'block';
+  return null;
+}
+
 function enterStudy(){
-  if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; }
-  if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; }
+  const filtered = getFilteredOrShowEmpty('Study Mode');
+  if(!filtered) return;
+  if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; quizToggle.setAttribute('aria-pressed', 'false'); }
+  if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; codeLabToggle.setAttribute('aria-pressed', 'false'); }
   studyMode = true;
-  studyDeck = shuffle(getFiltered().length ? getFiltered() : DATA);
+  studyToggle.textContent = 'Exit Study Mode';
+  studyToggle.setAttribute('aria-pressed', 'true');
+  studyDeck = shuffle(filtered);
   studyIndex = 0;
   document.querySelector('.controls').style.display = 'none';
   countEl.style.display = 'none';
@@ -1711,6 +2331,7 @@ function enterStudy(){
 
 function exitStudy(){
   studyMode = false;
+  studyToggle.setAttribute('aria-pressed', 'false');
   document.querySelector('.controls').style.display = 'flex';
   countEl.style.display = 'block';
   grid.style.display = 'grid';
@@ -1724,7 +2345,12 @@ function renderStudyCard(){
   if(!studyDeck.length) return;
   const d = studyDeck[studyIndex];
   const card = document.getElementById('studyCard');
+  const inner = card.querySelector('.card-inner');
   card.classList.remove('flipped');
+  inner.setAttribute('role', 'button');
+  inner.setAttribute('tabindex', '0');
+  inner.setAttribute('aria-pressed', 'false');
+  inner.setAttribute('aria-label', `Show translations for ${d.term}`);
   const front = document.getElementById('studyFront');
   const back = document.getElementById('studyBack');
   front.className = 'face ' + colorClass(d.cat);
@@ -1743,19 +2369,98 @@ function renderStudyCard(){
   const isStarred = starred.has(d.term);
   starBtn.className = 'star-btn' + (isStarred ? ' starred' : '');
   starBtn.title = 'Star to study later';
+  starBtn.setAttribute('aria-label', `${isStarred ? 'Remove' : 'Add'} ${d.term} ${isStarred ? 'from' : 'to'} starred terms`);
+  starBtn.setAttribute('aria-pressed', String(isStarred));
   starBtn.textContent = isStarred ? '★' : '☆';
   starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
   card.appendChild(starBtn);
+
+  const existingCopy = card.querySelector('.copy-btn');
+  if(existingCopy) existingCopy.remove();
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'copy-btn';
+  copyBtn.title = 'Copy term';
+  copyBtn.textContent = '📋';
+  copyBtn.onclick = (e) => {
+    e.stopPropagation();
+    copyToClipboard(d.term, copyBtn);
+  };
+  card.appendChild(copyBtn);
 }
 
-document.getElementById('studyCard').querySelector('.card-inner').addEventListener('click', function(){
-  document.getElementById('studyCard').classList.toggle('flipped');
+function copyToClipboard(text, btnElement) {
+  if (!text || !btnElement) return;
+
+  const originalContent = btnElement.textContent;
+  const onSuccess = () => {
+    btnElement.textContent = '✅';
+    setTimeout(() => {
+      btnElement.textContent = originalContent;
+    }, 1500);
+  };
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(onSuccess)
+      .catch((err) => {
+        console.warn('Asynchronous clipboard copy failed, falling back to execCommand.', err);
+        fallbackCopyToClipboard(text, onSuccess);
+      });
+  } else {
+    fallbackCopyToClipboard(text, onSuccess);
+  }
+}
+
+function fallbackCopyToClipboard(text, onSuccess) {
+  // Create a secure offscreen textarea element
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+
+  // Prevent scrolling and keep it completely offscreen
+  textarea.style.position = 'fixed';
+  textarea.style.top = '-9999px';
+  textarea.style.left = '-9999px';
+  textarea.setAttribute('readonly', '');
+  textarea.setAttribute('aria-hidden', 'true');
+
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  try {
+    const successful = document.execCommand('copy');
+    if (successful) {
+      onSuccess();
+    } else {
+      console.warn('fallbackCopyToClipboard execCommand was unsuccessful');
+    }
+  } catch (err) {
+    console.warn('fallbackCopyToClipboard execCommand failed:', err);
+  } finally {
+    document.body.removeChild(textarea);
+  }
+}
+
+function toggleStudyCard(){
+  const card = document.getElementById('studyCard');
+  const inner = card.querySelector('.card-inner');
+  const flipped = !card.classList.contains('flipped');
+  card.classList.toggle('flipped', flipped);
+  inner.setAttribute('aria-pressed', String(flipped));
+  inner.setAttribute('aria-label', flipped ? 'Hide translations' : 'Show translations');
+}
+
+document.getElementById('studyCard').querySelector('.card-inner').addEventListener('click', toggleStudyCard);
+document.getElementById('studyCard').querySelector('.card-inner').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter' || e.key === ' '){
+    e.preventDefault();
+    toggleStudyCard();
+  }
 });
 
 document.getElementById('backToGlossary').addEventListener('click', exitStudy);
 
 studyToggle.addEventListener('click', () => {
-  if(studyMode){ exitStudy(); } else { studyToggle.textContent = 'Exit Study Mode'; enterStudy(); }
+  if(studyMode){ exitStudy(); } else { enterStudy(); }
 });
 
 document.getElementById('prevBtn').addEventListener('click', () => {
@@ -1930,24 +2635,41 @@ function resetQuizCardStructure(){
 }
 
 const SESSION_NAME_KEY = 'vocab_session_name';
+
+function sanitizeName(name) {
+  if (typeof name !== 'string') return '';
+  // Security Enhancement: Limit input length early to prevent ReDoS / excessive resource consumption
+  if (name.length > 200) {
+    name = name.slice(0, 200);
+  }
+  // Strip any HTML/XML tags
+  let cleaned = name.replace(/<\/?[^>]+(>|$)/g, "");
+  // Limit to safe characters: alphanumeric, spaces, hyphens, underscores, dots
+  cleaned = cleaned.replace(/[^a-zA-Z0-9\s\-_.]/g, "");
+  return cleaned.trim().slice(0, 40);
+}
+
 function getSessionName(){
   try {
     const val = sessionStorage.getItem(SESSION_NAME_KEY);
-    return typeof val === 'string' ? val.trim().slice(0, 40) : '';
+    return sanitizeName(val);
   } catch(e){
     return '';
   }
 }
 function setSessionName(name){
-  if (typeof name !== 'string') return;
-  const sanitized = name.trim().slice(0, 40);
+  const sanitized = sanitizeName(name);
+  if (!sanitized) return;
   try { sessionStorage.setItem(SESSION_NAME_KEY, sanitized); } catch(e){}
 }
 
 function enterQuiz(){
-  if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; }
-  if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; }
+  if(!getFilteredOrShowEmpty('Quiz Mode')) return;
+  if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; studyToggle.setAttribute('aria-pressed', 'false'); }
+  if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; codeLabToggle.setAttribute('aria-pressed', 'false'); }
   quizMode = true;
+  quizToggle.textContent = 'Exit Quiz Mode';
+  quizToggle.setAttribute('aria-pressed', 'true');
   document.querySelector('.controls').style.display = 'none';
   countEl.style.display = 'none';
   grid.style.display = 'none';
@@ -1969,7 +2691,11 @@ function startQuizSession(){
   document.getElementById('quizNameScreen').style.display = 'none';
   document.getElementById('quizBody').style.display = 'block';
   resetQuizCardStructure();
-  const pool = getFiltered().length ? getFiltered() : DATA.filter(d => d.subject === activeSubject);
+  const pool = getFiltered();
+  if(!pool.length){
+    exitQuiz();
+    return;
+  }
   quizDeck = shuffle(pool);
   // Cache the full word bank for this quiz session to avoid reconstructing it on every single submission
   quizWordBank = buildWordBank(quizDeck);
@@ -1983,6 +2709,7 @@ function startQuizSession(){
 
 function exitQuiz(){
   quizMode = false;
+  quizToggle.setAttribute('aria-pressed', 'false');
   document.querySelector('.controls').style.display = 'flex';
   countEl.style.display = 'block';
   grid.style.display = 'grid';
@@ -2083,6 +2810,7 @@ function showQuizSummary(){
 // ---- Leaderboard viewing ----
 const leaderboardOverlay = document.getElementById('leaderboardOverlay');
 let leaderboardSubject = 'coding';
+let leaderboardReturnFocus = null;
 
 function renderLeaderboardSubjectTabs(){
   const el = document.getElementById('leaderboardSubjectTabs');
@@ -2135,25 +2863,57 @@ async function fetchAndRenderLeaderboard(){
 function openLeaderboard(){
   // default the modal's subject to whichever subject is currently active on the page,
   // but the in-modal tabs let you switch freely from there
+  leaderboardReturnFocus = document.activeElement;
   leaderboardSubject = activeSubject;
   renderLeaderboardSubjectTabs();
   leaderboardOverlay.classList.add('active');
+  document.getElementById('leaderboardClose').focus();
   fetchAndRenderLeaderboard();
+}
+
+function closeLeaderboard(){
+  leaderboardOverlay.classList.remove('active');
+  if(leaderboardReturnFocus && typeof leaderboardReturnFocus.focus === 'function'){
+    leaderboardReturnFocus.focus();
+  }
+  leaderboardReturnFocus = null;
 }
 
 document.getElementById('leaderboardBtn').addEventListener('click', openLeaderboard);
 document.getElementById('leaderboardBtnMain').addEventListener('click', openLeaderboard);
-document.getElementById('leaderboardClose').addEventListener('click', () => {
-  leaderboardOverlay.classList.remove('active');
-});
+document.getElementById('leaderboardClose').addEventListener('click', closeLeaderboard);
 leaderboardOverlay.addEventListener('click', (e) => {
-  if(e.target === leaderboardOverlay) leaderboardOverlay.classList.remove('active');
+  if(e.target === leaderboardOverlay) closeLeaderboard();
+});
+leaderboardOverlay.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){
+    e.preventDefault();
+    closeLeaderboard();
+    return;
+  }
+  if(e.key !== 'Tab') return;
+  const focusable = [...leaderboardOverlay.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')];
+  if(!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if(e.shiftKey && document.activeElement === first){
+    e.preventDefault();
+    last.focus();
+  } else if(!e.shiftKey && document.activeElement === last){
+    e.preventDefault();
+    first.focus();
+  }
 });
 
 document.getElementById('quizNameStart').addEventListener('click', () => {
   const name = document.getElementById('quizNameInput').value.trim();
-  if(!name){ document.getElementById('quizNameInput').focus(); return; }
-  setSessionName(name);
+  const sanitized = sanitizeName(name);
+  if(!sanitized){
+    alert("Please enter a valid name (alphanumeric, spaces, hyphens, underscores, and dots only).");
+    document.getElementById('quizNameInput').focus();
+    return;
+  }
+  setSessionName(sanitized);
   startQuizSession();
 });
 document.getElementById('quizNameInput').addEventListener('keydown', (e) => {
@@ -2161,7 +2921,7 @@ document.getElementById('quizNameInput').addEventListener('keydown', (e) => {
 });
 
 quizToggle.addEventListener('click', () => {
-  if(quizMode){ exitQuiz(); } else { quizToggle.textContent = 'Exit Quiz Mode'; enterQuiz(); }
+  if(quizMode){ exitQuiz(); } else { enterQuiz(); }
 });
 document.getElementById('backToGlossaryQuiz').addEventListener('click', exitQuiz);
 document.getElementById('quizSubmit').addEventListener('click', submitQuizAnswer);
@@ -2597,6 +3357,90 @@ const CODE_WALKS = [
         }
       }
     ]
+  },
+  {
+    id: 'click-decline-button',
+    title: 'clickDeclineButton()',
+    summary: 'A Playwright interaction helper that iterates through candidate selectors to find and click a cookie decline/reject button.',
+    segments: [
+      {
+        code: 'async function clickDeclineButton(page, selectors) {\n  for (const selector of selectors) {\n    const btn = await page.$(selector);\n    if (btn && await btn.isVisible()) {',
+        plain: 'Iterate through a list of potential button selectors to find the first one that is present in the DOM and visible to the user.',
+        lenses: {
+          medical: 'Diagnostic triage: scan a sequence of diagnostic tests to find the first test that is active and returning clear clinical indicators.',
+          sports: 'Playbook search: scan down the list of set plays to find the first play where the defense is out of position and the receiver is open.',
+          fandom: 'Spell selection: browse your list of learned counter-spells until you find the first charm that is visible and active in your memory.',
+          ttrpg: 'Action check: check your inventory for items, filtering for the first item that is actually usable in your current location.',
+          cooking: 'Prep scanning: search your pantry shelves for ingredient substitutes until you find the first one that is fresh and ready to use.',
+          millennial: 'Contact scrolling: browse down your group chat contact list to find the first friend who has a green online bubble visible.',
+          f1: 'Tyre scanning: check your current tyre inventory for a set of dry-weather compounds that are visible and ready on the racks.',
+          gaming: 'Target lock: cycle through nearby enemies to find the first hostile target that is in your line of sight and within range.'
+        }
+      },
+      {
+        code: '      await btn.click();\n      return true;\n    }\n  }\n  return false;\n}',
+        plain: 'Click the visible button to trigger the rejection event and return true to indicate success, otherwise return false if no matching button is found.',
+        lenses: {
+          medical: 'Administer the targeted treatment to halt the symptom, marking the intake form as complete; otherwise report that no viable treatment was found.',
+          sports: 'Execute the pass to the open player for a touchdown and record a successful play, or turn over the ball if no options exist.',
+          fandom: 'Cast the selected spell to disarm the target and claim victory, or return empty-handed if no spells were cast.',
+          ttrpg: 'Use the item to successfully disarm the trap and advance the party, or trigger a failure if no suitable gear is found in your pack.',
+          cooking: 'Throw the ingredient into the pan to complete the dish and serve the customer, or cancel the order if the pantry is completely bare.',
+          millennial: 'Tap the link to send a quick DM and get an immediate reply, or close the app in defeat if no one is online.',
+          f1: 'Release the clutch to complete the pitstop and rejoin the track ahead, or abort the strategy if no suitable tyres are found.',
+          gaming: 'Press the attack button to land a critical hit and clear the objective, or return failure if no targets are lockable.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'detect-placebo-consent',
+    title: 'detectPlaceboConsent()',
+    summary: 'The core placeholder/placebo cookie auditor that records cookies before and after clicking a rejection button to verify if user choices are ignored.',
+    segments: [
+      {
+        code: 'async function detectPlaceboConsent(page, declineSelector) {\n  const beforeCookies = await page.context().cookies();\n  const beforeNames = beforeCookies.map(c => c.name);',
+        plain: 'Fetch all currently set cookies in the browser context before any action is taken, and map their names into a lookup array.',
+        lenses: {
+          medical: 'Take a baseline patient blood sample and compile a list of all pre-existing antibodies present before administering any trial medication.',
+          sports: 'Take a pre-match head count of all active players on the field and list their names on the official roster before kickoff.',
+          fandom: 'Cast an auditing spell to reveal all active enchantments on a castle, cataloging their true names before performing any counter-curses.',
+          ttrpg: 'Record your character sheet\'s active status conditions and inventory list before taking a short rest or choosing a combat action.',
+          cooking: 'Audit the current prep table and write down every ingredient already open and out of the fridge before beginning the new recipe.',
+          millennial: 'Take a screenshot of your current social media notification list to remember who is already following you before you post a controversial opinion.',
+          f1: 'Log the initial telemetry data and tire wear status of all four tires before the car leaves the pit lane for its run.',
+          gaming: 'Save a backup of your character\'s current inventory list and quest logs before talking to an untrusted NPC or merchant.'
+        }
+      },
+      {
+        code: '  await page.click(declineSelector);\n  await page.waitForTimeout(1000);',
+        plain: 'Click the decline button to officially state that you reject tracking, then wait 1 second for any asynchronous network scripts to finish running.',
+        lenses: {
+          medical: 'Administer the patient\'s refusal of treatment forms, then wait in the observation room to see if the symptoms subside.',
+          sports: 'Call a timeout to formally reject the referee\'s play ruling, then wait on the sideline while the replay booth reviews the footage.',
+          fandom: 'Slam the heavy door to reject the dark wizard\'s offer, then wait under an invisibility cloak while the magical dust settles.',
+          ttrpg: 'Formally refuse the shady merchant\'s deal, then wait in suspense while the DM rolls behind the screen to see how the guild responds.',
+          cooking: 'Decline a delivery of substandard produce from the supplier, then wait at the back door for them to load the crate back onto their truck.',
+          millennial: 'Double-tap to decline the suspicious event invite, then wait in silence for the group chat to notice your sudden absence.',
+          f1: 'Reject the pit wall\'s recommendation to change tyres, then wait one full lap to see how the track temperature behaves.',
+          gaming: 'Press the \'Decline\' button on the guild invite, then wait for the multiplayer lobby to refresh and update your status.'
+        }
+      },
+      {
+        code: '  const afterCookies = await page.context().cookies();\n  const placeboCookies = afterCookies.filter(c => !beforeNames.includes(c.name));\n  return placeboCookies.length > 0;\n}',
+        plain: 'Re-fetch the active cookies and filter for any new ones that were set after declining, returning true if any tracking cookies were set despite our rejection.',
+        lenses: {
+          medical: 'Re-test the patient\'s blood sample; if any new unapproved toxins are found after they declined treatment, return true to report a placebo form violation.',
+          sports: 'Re-count the players on the field; if new un-rostered players are found playing after you formally rejected them, report a roster violation.',
+          fandom: 'Re-scan the castle for new curses; if any new tracking charms appeared after you cast a blocking spell, return true to report a dark magic breach.',
+          ttrpg: 'Re-check your character sheet; if new hostile curses or tracking marks were added after you rolled a successful save, return true to flag a cheating DM.',
+          cooking: 'Re-inspect the prep table; if any new unapproved allergens were opened after the chef explicitly banned them, return true to report a kitchen violation.',
+          millennial: 'Re-examine your follower list; if new tracking bots appear on your feed after you blocked them, return true to report a privacy violation.',
+          f1: 'Re-analyze the telemetry; if any new unauthorized engine adjustments were made after the driver rejected them, return true to flag a paddock rule breach.',
+          gaming: 'Re-inspect your inventory; if new tracking tracking devices or debuffs appeared after you declined the quest, return true to flag a security exploit.'
+        }
+      }
+    ]
   }
 ];
 
@@ -2625,7 +3469,7 @@ function buildSegLensStackHTML(seg){
     return `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
-      <div class="lens-text">${txt ? txt : '<span style="opacity:.55">translation coming soon</span>'}</div>
+      <div class="lens-text">${txt ? escHtml(txt) : '<span style="opacity:.55">translation coming soon</span>'}</div>
     </div>`;
   }).join('');
 }
@@ -2669,10 +3513,11 @@ function renderCodePanel(){
 }
 
 function enterCodeLab(){
-  if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; }
-  if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; }
+  if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; studyToggle.setAttribute('aria-pressed', 'false'); }
+  if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; quizToggle.setAttribute('aria-pressed', 'false'); }
   codeLabMode = true;
   codeLabToggle.textContent = 'Exit Code Lab';
+  codeLabToggle.setAttribute('aria-pressed', 'true');
   document.querySelector('.controls').style.display = 'none';
   countEl.style.display = 'none';
   grid.style.display = 'none';
@@ -2687,6 +3532,7 @@ function enterCodeLab(){
 function exitCodeLab(){
   codeLabMode = false;
   codeLabToggle.textContent = 'Code Lab';
+  codeLabToggle.setAttribute('aria-pressed', 'false');
   codeWrap.classList.remove('active');
   document.querySelector('.controls').style.display = 'flex';
   countEl.style.display = 'block';
@@ -2704,6 +3550,19 @@ if (themeToggleBtn) {
   themeToggleBtn.addEventListener('click', toggleTheme);
 }
 updateThemeButton();
+
+// Mobile keyboard usability: scroll focused inputs into view to ensure they remain visible above software keyboard
+const inputsToScroll = ['search', 'quizNameInput', 'quizInput'];
+inputsToScroll.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('focus', (e) => {
+      setTimeout(() => {
+        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    });
+  }
+});
 
 renderSubjectTabs();
 renderTabs();
