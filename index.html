@@ -2923,8 +2923,8 @@ function renderLeaderboardRows(listEl, data){
     const name = typeof row.session_name === 'string' ? row.session_name : 'Anonymous';
     counts[name] = (counts[name] || 0) + 1;
     return counts;
-  }, {});
-  const seenNames = {};
+  }, Object.create(null));
+  const seenNames = Object.create(null);
   listEl.innerHTML = data.map((row, i) => {
     const name = typeof row.session_name === 'string' ? row.session_name : 'Anonymous';
     seenNames[name] = (seenNames[name] || 0) + 1;
