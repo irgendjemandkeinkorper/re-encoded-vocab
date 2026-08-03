@@ -2173,21 +2173,37 @@ function renderLensChips(){
 
 function getFiltered(){
   return DATA.filter(d => {
-    const matchesSubject = d.subject === activeSubject;
-    const matchesCat = activeCat === 'all' || d.cat === activeCat;
+    // Early Return Optimization: Avoid all cache lookups, object mutations, and string
+    // matching completely if the category, subject, or starred status filters do not match.
+    if (d.subject !== activeSubject) return false;
+    if (activeCat !== 'all' && d.cat !== activeCat) return false;
+    if (starredOnly && !starred.has(d.term)) return false;
+
+    // If search term is empty, we match immediately with zero overhead.
+    if (!searchTerm) return true;
 
     // Performance optimization: JIT lazy-cached lowercase conversion to avoid thousands of string allocations during real-time filtering
     const termLower = d._termLower || (d._termLower = (d.term || '').toLowerCase());
     const defLower = d._defLower || (d._defLower = (d.def || '').toLowerCase());
     const subLower = d._subLower || (d._subLower = (d.sub || '').toLowerCase());
 
-    const matchesSearch = !searchTerm ||
-      termLower.includes(searchTerm) ||
+    return termLower.includes(searchTerm) ||
       defLower.includes(searchTerm) ||
       subLower.includes(searchTerm);
-    const matchesStar = !starredOnly || starred.has(d.term);
-    return matchesSubject && matchesCat && matchesSearch && matchesStar;
   });
+}
+
+// JIT Caching of HTML-escaped text to completely eliminate regex-replace overhead in hot paths
+function getEscapedField(d, field) {
+  const cacheKey = `_esc_${field}`;
+  if (d[cacheKey] !== undefined) return d[cacheKey];
+  return d[cacheKey] = escHtml(d[field] || '');
+}
+
+function getEscapedLensText(d, key) {
+  if (!d._escLenses) d._escLenses = {};
+  if (d._escLenses[key] !== undefined) return d._escLenses[key];
+  return d._escLenses[key] = escHtml(getLensText(d, key));
 }
 
 // Lens rendering pipeline: turn one term plus the cached active-lens selection
@@ -2196,7 +2212,7 @@ function buildLensStackHTML(d){
   return cachedSelectedLensesList.map(l => `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
-      <div class="lens-text">${escHtml(getLensText(d, l.key))}</div>
+      <div class="lens-text">${getEscapedLensText(d, l.key)}</div>
     </div>
   `).join('');
 }
@@ -2215,13 +2231,13 @@ function renderGrid(){
     card.className = 'card';
     const isStarred = starred.has(d.term);
     card.innerHTML = `
-      <button class="star-btn ${isStarred ? 'starred' : ''}" title="Star to study later" aria-label="${isStarred ? 'Remove' : 'Add'} ${escHtml(d.term)} ${isStarred ? 'from' : 'to'} starred terms" aria-pressed="${isStarred}">${isStarred ? '★' : '☆'}</button>
+      <button class="star-btn ${isStarred ? 'starred' : ''}" title="Star to study later" aria-label="${isStarred ? 'Remove' : 'Add'} ${getEscapedField(d, 'term')} ${isStarred ? 'from' : 'to'} starred terms" aria-pressed="${isStarred}">${isStarred ? '★' : '☆'}</button>
       <button class="copy-btn" title="Copy term">📋</button>
       <div class="card-inner">
         <div class="face ${colorClass(d.cat)}">
-          <div class="tag">${escHtml(d.sub)}</div>
-          <div class="term">${escHtml(d.term)}</div>
-          <div class="def">${escHtml(d.def)}</div>
+          <div class="tag">${getEscapedField(d, 'sub')}</div>
+          <div class="term">${getEscapedField(d, 'term')}</div>
+          <div class="def">${getEscapedField(d, 'def')}</div>
           <div class="flip-hint">tap to flip</div>
         </div>
         <div class="face back ${colorClass(d.cat)}">
@@ -2241,7 +2257,7 @@ function renderGrid(){
       if (backRendered) return;
       backFace.innerHTML = `
         <div class="lens-stack">${buildLensStackHTML(d)}</div>
-        ${d.ex ? `<div class="example">${escHtml(d.ex)}</div>` : ''}
+        ${d.ex ? `<div class="example">${getEscapedField(d, 'ex')}</div>` : ''}
       `;
       backRendered = true;
     };
@@ -3580,13 +3596,26 @@ function escHtml(s){
     .replace(/'/g, '&#39;');
 }
 
+// JIT Caching for Code Lab segment translations to avoid redundant HTML-escaping overhead
+function getEscapedSegText(seg, key) {
+  if (!seg._escLenses) seg._escLenses = {};
+  if (seg._escLenses[key] !== undefined) return seg._escLenses[key];
+  const txt = (seg.lenses && seg.lenses[key]) ? seg.lenses[key] : null;
+  return seg._escLenses[key] = txt ? escHtml(txt) : null;
+}
+
+function getEscapedSegCode(seg) {
+  if (seg._escCode !== undefined) return seg._escCode;
+  return seg._escCode = escHtml(seg.code);
+}
+
 function buildSegLensStackHTML(seg){
   return cachedSelectedLensesList.map(l => {
-    const txt = (seg.lenses && seg.lenses[l.key]) ? seg.lenses[l.key] : null;
+    const txtEscaped = getEscapedSegText(seg, l.key);
     return `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
-      <div class="lens-text">${txt ? escHtml(txt) : '<span style="opacity:.55">translation coming soon</span>'}</div>
+      <div class="lens-text">${txtEscaped !== null ? txtEscaped : '<span style="opacity:.55">translation coming soon</span>'}</div>
     </div>`;
   }).join('');
 }
@@ -3612,7 +3641,7 @@ function renderCodeWalk(){
   w.segments.forEach((seg, i) => {
     const btn = document.createElement('button');
     btn.className = 'code-seg' + (i === activeSeg ? ' active' : '');
-    btn.innerHTML = escHtml(seg.code);
+    btn.innerHTML = getEscapedSegCode(seg);
     btn.onclick = () => { activeSeg = i; renderCodePanel(); };
     codeColEl.appendChild(btn);
   });
