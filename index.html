@@ -2173,20 +2173,22 @@ function renderLensChips(){
 
 function getFiltered(){
   return DATA.filter(d => {
-    const matchesSubject = d.subject === activeSubject;
-    const matchesCat = activeCat === 'all' || d.cat === activeCat;
+    // Early-return pattern: immediately discard non-matching terms to bypass unnecessary string allocation and processing
+    if (d.subject !== activeSubject) return false;
+    if (activeCat !== 'all' && d.cat !== activeCat) return false;
+    if (starredOnly && !starred.has(d.term)) return false;
 
-    // Performance optimization: JIT lazy-cached lowercase conversion to avoid thousands of string allocations during real-time filtering
+    // If no search term is entered, bypass all lowercase caches and search checks entirely
+    if (!searchTerm) return true;
+
+    // JIT lazy-cached lowercase conversion to avoid thousands of string allocations during real-time filtering
     const termLower = d._termLower || (d._termLower = (d.term || '').toLowerCase());
     const defLower = d._defLower || (d._defLower = (d.def || '').toLowerCase());
     const subLower = d._subLower || (d._subLower = (d.sub || '').toLowerCase());
 
-    const matchesSearch = !searchTerm ||
-      termLower.includes(searchTerm) ||
-      defLower.includes(searchTerm) ||
-      subLower.includes(searchTerm);
-    const matchesStar = !starredOnly || starred.has(d.term);
-    return matchesSubject && matchesCat && matchesSearch && matchesStar;
+    return termLower.includes(searchTerm) ||
+           defLower.includes(searchTerm) ||
+           subLower.includes(searchTerm);
   });
 }
 
