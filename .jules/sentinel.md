@@ -18,3 +18,8 @@
 **Vulnerability:** The application invoked an undefined `copyToClipboard` function on clipboard actions, representing a functional gap and security risk if developers implemented insecure, custom inline alternatives (e.g. using unsafe DOM parsing or `innerHTML` elements for offscreen copying fallbacks).
 **Learning:** Standard copy-to-clipboard patterns can fail in insecure contexts or restricted frames. Providing a single, centralized, secure utility prevents insecure ad-hoc solutions. Secure copying must utilize `navigator.clipboard` when available under `isSecureContext`, with a robust fallback to a temporary offscreen `<textarea>` using safe value assignment (`textarea.value = text`) rather than unsafe `innerHTML` to prevent DOM/XSS injection.
 **Prevention:** Provide a standard utility for copy operations that enforces secure context verification and strictly uses safe text value assignments on temporary offscreen elements during sync fallbacks.
+
+## 2026-08-02 - [Prototype Pollution and Prototype Collision in Leaderboard Frequency Accumulation]
+**Vulnerability:** Accumulating username frequencies or counting occurrences using plain JavaScript objects (`{}`) can be exploited or crashed if a user registers/submits a username matching a built-in prototype property (e.g., `__proto__`, `toString`, `hasOwnProperty`).
+**Learning:** For application features that accumulate, index, or group data by user-controlled keys, using a standard object `{}` introduces a risk where property resolution falls back to the prototype chain, causing logical errors, NaNs, or crashes.
+**Prevention:** Always initialize accumulator or frequency-counter maps using `Object.create(null)` instead of `{}` to completely sever inheritance from `Object.prototype`.
