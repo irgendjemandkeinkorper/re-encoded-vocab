@@ -48,6 +48,13 @@
       firstInner.dispatchEvent(new win.KeyboardEvent('keydown', {key: ' ', bubbles: true}));
       report('cards flip from the keyboard', firstCard.classList.contains('flipped') && firstInner.getAttribute('aria-pressed') === 'true');
 
+      // Programmatically trigger lazy back-face rendering for all cards in tests/smoke.html
+      // by dispatching mouseenter events to all cards, ensuring automated smoke tests can correctly
+      // locate lazily-rendered elements (such as examples containing HTML tags).
+      doc.querySelectorAll('#grid > .card').forEach(card => {
+        card.dispatchEvent(new win.Event('mouseenter', { bubbles: true }));
+      });
+
       const exampleText = [...doc.querySelectorAll('.example')].map(example => example.textContent);
       report('HTML examples remain literal text', exampleText.some(text => text.includes('<form>')));
       report('examples cannot create HTML elements', !doc.querySelector('.example form, .example img, .example script'));
