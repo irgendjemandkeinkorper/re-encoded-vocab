@@ -48,6 +48,11 @@
       firstInner.dispatchEvent(new win.KeyboardEvent('keydown', {key: ' ', bubbles: true}));
       report('cards flip from the keyboard', firstCard.classList.contains('flipped') && firstInner.getAttribute('aria-pressed') === 'true');
 
+      // Programmatically trigger mouseenter events on all cards to force lazy back-face rendering before querying examples
+      doc.querySelectorAll('#grid > .card').forEach(card => {
+        card.dispatchEvent(new win.Event('mouseenter'));
+      });
+
       const exampleText = [...doc.querySelectorAll('.example')].map(example => example.textContent);
       report('HTML examples remain literal text', exampleText.some(text => text.includes('<form>')));
       report('examples cannot create HTML elements', !doc.querySelector('.example form, .example img, .example script'));
