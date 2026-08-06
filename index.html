@@ -2173,20 +2173,27 @@ function renderLensChips(){
 
 function getFiltered(){
   return DATA.filter(d => {
-    const matchesSubject = d.subject === activeSubject;
-    const matchesCat = activeCat === 'all' || d.cat === activeCat;
+    // Performance optimization: Short-circuiting pipeline.
+    // 1. Fast, non-allocating early returns for non-matching subject, category, or star filters.
+    // This immediately discards hundreds of mismatching entries before doing any string operations.
+    if (d.subject !== activeSubject) return false;
+    if (activeCat !== 'all' && d.cat !== activeCat) return false;
+    if (starredOnly && !starred.has(d.term)) return false;
 
-    // Performance optimization: JIT lazy-cached lowercase conversion to avoid thousands of string allocations during real-time filtering
+    // 2. If search is empty, match everything else instantly.
+    // Completely bypasses retrieving/computing lowercase strings for a 100% reduction in search overhead.
+    if (!searchTerm) return true;
+
+    // 3. Lazy, short-circuited evaluation for term/definition/subject-group search matching.
+    // JIT lazy-cached lowercase conversion is queried/computed only as needed, avoiding redundant checks.
     const termLower = d._termLower || (d._termLower = (d.term || '').toLowerCase());
-    const defLower = d._defLower || (d._defLower = (d.def || '').toLowerCase());
-    const subLower = d._subLower || (d._subLower = (d.sub || '').toLowerCase());
+    if (termLower.includes(searchTerm)) return true;
 
-    const matchesSearch = !searchTerm ||
-      termLower.includes(searchTerm) ||
-      defLower.includes(searchTerm) ||
-      subLower.includes(searchTerm);
-    const matchesStar = !starredOnly || starred.has(d.term);
-    return matchesSubject && matchesCat && matchesSearch && matchesStar;
+    const defLower = d._defLower || (d._defLower = (d.def || '').toLowerCase());
+    if (defLower.includes(searchTerm)) return true;
+
+    const subLower = d._subLower || (d._subLower = (d.sub || '').toLowerCase());
+    return subLower.includes(searchTerm);
   });
 }
 
