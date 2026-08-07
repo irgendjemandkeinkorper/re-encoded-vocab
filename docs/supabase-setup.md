@@ -40,10 +40,43 @@ create policy "anonymous users can submit plausible scores"
   );
 ```
 
+For a basic database-side abuse guard, add a short cooldown per displayed
+session name. This is intentionally only a backstop: anonymous clients can
+choose a different name, so a production deployment should move submission to
+an Edge Function with a server-issued challenge or authenticated identity.
+
+```sql
+create or replace function public.reject_rapid_leaderboard_submissions()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if exists (
+    select 1
+    from public.leaderboard
+    where session_name = new.session_name
+      and created_at > now() - interval '10 seconds'
+  ) then
+    raise exception 'please wait before submitting another score';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists leaderboard_submission_cooldown on public.leaderboard;
+create trigger leaderboard_submission_cooldown
+  before insert on public.leaderboard
+  for each row execute function public.reject_rapid_leaderboard_submissions();
+```
+
 Do not create `update` or `delete` policies for the anonymous role. For a
 production leaderboard, prefer an Edge Function or authenticated server-side
-write path with rate limiting; client-side score values cannot be trusted.
-Issue #54 tracks that stronger abuse-protection boundary.
+write path with rate limiting; client-side score values cannot be trusted. The
+browser also applies a 10-second cooldown to normal submissions, but that is a
+user-experience guard rather than a security boundary. Issue #54 tracks the
+stronger server-side abuse-protection boundary.
 
 ## Configure a fork
 

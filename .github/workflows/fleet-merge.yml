@@ -4,8 +4,9 @@
 name: Fleet Merge
 
 on:
-  schedule:
-    - cron: '0 */3 * * *'
+  # Automatic scheduled merges are intentionally disabled. Merging generated
+  # code into the live Pages branch requires an explicit human dispatch after
+  # the smoke workflow has passed.
   workflow_dispatch:
     inputs:
       mode:

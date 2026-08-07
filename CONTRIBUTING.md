@@ -13,10 +13,11 @@ The repository uses named automation roles:
 - **Sentinel** handles security hardening.
 
 `.github/workflows/fleet-analyze.yml` analyzes the current goal,
-`fleet-dispatch.yml` requests bounded work, `fleet-label.yml` applies the
-repository's existing routing labels, and `fleet-merge.yml` merges PRs selected
-by the fleet. Human PRs should still receive normal review and pass the smoke
-workflow before they are considered for `fleet-merge-ready`.
+`fleet-dispatch.yml` requests bounded work, and `fleet-label.yml` applies the
+repository's existing routing labels. Scheduled Fleet merges are disabled;
+`fleet-merge.yml` requires an explicit maintainer dispatch. Human PRs should
+still receive normal review and pass the smoke workflow before they are
+considered for `fleet-merge-ready`.
 
 The intended protection policy for `main` is at least one human approval plus
 the `Smoke tests / smoke` required status check, with administrators prevented

@@ -65,6 +65,14 @@
       report('Supabase CDN is pinned and integrity checked', supabaseScript && /@2\.111\.0\//.test(supabaseScript.src) && supabaseScript.integrity.startsWith('sha384-') && supabaseScript.crossOrigin === 'anonymous');
 
       const search = doc.getElementById('search');
+      search.value = 'container that holds a value';
+      search.dispatchEvent(new win.Event('input', {bubbles: true}));
+      await wait(250);
+      report('search matches definitions without crashing', doc.querySelectorAll('#grid > .card').length > 0);
+      search.value = 'core';
+      search.dispatchEvent(new win.Event('input', {bubbles: true}));
+      await wait(250);
+      report('search matches category metadata without crashing', doc.querySelectorAll('#grid > .card').length > 0);
       search.value = 'this-term-does-not-exist';
       search.dispatchEvent(new win.Event('input', {bubbles: true}));
       await wait(250);
