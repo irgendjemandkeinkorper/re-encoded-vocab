@@ -61,6 +61,7 @@
       report('HTML examples remain literal text', exampleText.some(text => text.includes('<form>')));
       report('examples cannot create HTML elements', !doc.querySelector('.example form, .example img, .example script'));
       report('lens controls expose visible labels', [...doc.querySelectorAll('#lensChips button')].every(button => button.textContent.trim().length > 0));
+      report('card action buttons expose accessible names', [...doc.querySelectorAll('#grid button')].every(button => (button.getAttribute('aria-label') || button.textContent).trim().length > 0));
       const supabaseScript = [...doc.scripts].find(script => script.src.includes('supabase-js'));
       report('Supabase CDN is pinned and integrity checked', supabaseScript && /@2\.111\.0\//.test(supabaseScript.src) && supabaseScript.integrity.startsWith('sha384-') && supabaseScript.crossOrigin === 'anonymous');
 

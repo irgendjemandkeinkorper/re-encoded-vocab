@@ -2231,7 +2231,7 @@ function renderGrid(){
     const isStarred = starred.has(d.term);
     card.innerHTML = `
       <button class="star-btn ${isStarred ? 'starred' : ''}" title="Star to study later" aria-label="${isStarred ? 'Remove' : 'Add'} ${getEscapedField(d, 'term')} ${isStarred ? 'from' : 'to'} starred terms" aria-pressed="${isStarred}">${isStarred ? '★' : '☆'}</button>
-      <button class="copy-btn" title="Copy term">📋</button>
+      <button class="copy-btn" title="Copy term" aria-label="Copy ${getEscapedField(d, 'term')}">📋</button>
       <div class="card-inner">
         <div class="face ${colorClass(d.cat)}">
           <div class="tag">${getEscapedField(d, 'sub')}</div>
@@ -2455,6 +2455,7 @@ function renderStudyCard(){
   const copyBtn = document.createElement('button');
   copyBtn.className = 'copy-btn';
   copyBtn.title = 'Copy term';
+  copyBtn.setAttribute('aria-label', `Copy ${d.term}`);
   copyBtn.textContent = '📋';
   copyBtn.onclick = (e) => {
     e.stopPropagation();
