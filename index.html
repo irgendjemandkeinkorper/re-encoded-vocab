@@ -2937,6 +2937,8 @@ function renderLeaderboardSubjectTabs(){
 // Keep ranking markup in one place so duplicate-name behavior is testable and
 // every value from the public database still passes through safe text escaping.
 function renderLeaderboardRows(listEl, data){
+  // Security Enhancement: Use Object.create(null) instead of plain object {} to prevent Prototype Pollution
+  // or unexpected behavior/errors with reserved property names (e.g. 'toString', '__proto__') when accumulating frequencies.
   const nameCounts = data.reduce((counts, row) => {
     const name = typeof row.session_name === 'string' ? row.session_name : 'Anonymous';
     counts[name] = (counts[name] || 0) + 1;
