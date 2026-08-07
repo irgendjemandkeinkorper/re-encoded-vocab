@@ -2182,7 +2182,10 @@ function getFiltered(){
     // If search term is empty, we match immediately with zero overhead.
     if (!searchTerm) return true;
 
-    // Performance optimization: JIT lazy-cached lowercase conversion to avoid thousands of string allocations during real-time filtering
+    // If no search term is entered, bypass all lowercase caches and search checks entirely
+    if (!searchTerm) return true;
+
+    // JIT lazy-cached lowercase conversion to avoid thousands of string allocations during real-time filtering
     const termLower = d._termLower || (d._termLower = (d.term || '').toLowerCase());
     const defLower = d._defLower || (d._defLower = (d.def || '').toLowerCase());
     const subLower = d._subLower || (d._subLower = (d.sub || '').toLowerCase());
