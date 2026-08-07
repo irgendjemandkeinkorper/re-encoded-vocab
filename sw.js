@@ -75,7 +75,9 @@ self.addEventListener('fetch', (event) => {
   // Rule: Do not cache mutable, sensitive, or external API responses (e.g. Supabase DB calls)
   // These are handled using a network-only or network-first-without-caching strategy.
   // Failed optional cross-origin requests must not break cached local navigation.
-  if (requestUrl.hostname.includes('supabase.co') || requestUrl.hostname.includes('jsdelivr.net')) {
+  const isSupabase = requestUrl.hostname.endsWith('.supabase.co');
+  const isJsdelivr = requestUrl.hostname === 'cdn.jsdelivr.net';
+  if (isSupabase || isJsdelivr) {
     event.respondWith(
       fetch(event.request)
         .catch((error) => {
