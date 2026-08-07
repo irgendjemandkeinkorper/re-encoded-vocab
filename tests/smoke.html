@@ -48,6 +48,12 @@
       firstInner.dispatchEvent(new win.KeyboardEvent('keydown', {key: ' ', bubbles: true}));
       report('cards flip from the keyboard', firstCard.classList.contains('flipped') && firstInner.getAttribute('aria-pressed') === 'true');
 
+      // Dispatch mouseenter to the Form card to trigger its lazy back-face rendering for the HTML example check
+      const formCard = [...doc.querySelectorAll('#grid > .card')].find(card => card.querySelector('.term').textContent === 'Form');
+      if (formCard) {
+        formCard.dispatchEvent(new win.Event('mouseenter', {bubbles: true}));
+      }
+
       const exampleText = [...doc.querySelectorAll('.example')].map(example => example.textContent);
       report('HTML examples remain literal text', exampleText.some(text => text.includes('<form>')));
       report('examples cannot create HTML elements', !doc.querySelector('.example form, .example img, .example script'));
