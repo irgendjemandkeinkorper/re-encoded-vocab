@@ -2,6 +2,8 @@ name: Smoke tests
 
 on:
   pull_request:
+  push:
+    branches: ["main"]
 
 permissions:
   contents: read
