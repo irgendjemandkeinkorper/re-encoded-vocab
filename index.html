@@ -2187,8 +2187,7 @@ function getFiltered(){
 
     // JIT lazy-cached lowercase conversion to avoid thousands of string allocations during real-time filtering
     const termLower = d._termLower || (d._termLower = (d.term || '').toLowerCase());
-    const defLower = d._defLower || (d._defLower = (d.def || '').toLowerCase());
-    const subLower = d._subLower || (d._subLower = (d.sub || '').toLowerCase());
+    if (termLower.includes(searchTerm)) return true;
 
     return termLower.includes(searchTerm) ||
       defLower.includes(searchTerm) ||
