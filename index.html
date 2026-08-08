@@ -2615,15 +2615,21 @@ function levenshtein(a, b){
   return prev[len1];
 }
 
+const normalizeCache = new Map();
 function normalizeAnswer(s){
-  return s.toLowerCase()
+  if (normalizeCache.has(s)) return normalizeCache.get(s);
+  const res = s.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+  normalizeCache.set(s, res);
+  return res;
 }
 
+const variantsCache = new Map();
 function getAcceptableVariants(term){
+  if (variantsCache.has(term)) return variantsCache.get(term);
   const variants = new Set();
   const full = normalizeAnswer(term);
   if(full) variants.add(full);
@@ -2640,7 +2646,9 @@ function getAcceptableVariants(term){
     const v = normalizeAnswer(part);
     if(v) variants.add(v);
   });
-  return [...variants].filter(Boolean);
+  const res = [...variants].filter(Boolean);
+  variantsCache.set(term, res);
+  return res;
 }
 
 // word bank: every acceptable variant, across the current quiz pool, mapped back to its term
@@ -2683,6 +2691,12 @@ function checkAnswer(userInput, correctTerm, wordBank){
 
   // Now scan the rest of the word bank, utilizing early length pruning
   wordBank.forEach(entry => {
+    // Optimization: Skip entries whose term matches correctTerm, since correctVariants
+    // have already been evaluated and prioritized in the initial baseline step.
+    if (entry.term === correctTerm) {
+      return;
+    }
+
     // Length-difference early pruning: if the absolute difference in length
     // is already >= our best distance so far, Levenshtein cannot possibly be smaller
     if (Math.abs(userNorm.length - entry.variant.length) >= bestDist) {
