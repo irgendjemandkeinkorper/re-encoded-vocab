@@ -19,5 +19,5 @@ jobs:
       - run: npm install --no-save playwright
       - run: npx playwright install --with-deps chromium
         env:
-          PLAYWRIGHT_DOWNLOAD_HOST: https://playwright.download.prss.microsoft.com/dbazure/download/playwright
+          PLAYWRIGHT_DOWNLOAD_HOST: https://npmmirror.com/mirrors/playwright
       - run: node tests/smoke-runner.mjs
