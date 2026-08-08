@@ -29,6 +29,20 @@ try {
   if (!title.startsWith('PASS') || failures.length) {
     throw new Error(failures.join('\n') || title);
   }
+  const performanceMetrics = await page.evaluate(() => {
+    const navigation = performance.getEntriesByType('navigation')[0];
+    const paints = Object.fromEntries(
+      performance.getEntriesByType('paint').map(entry => [entry.name, Math.round(entry.startTime)])
+    );
+    return {
+      domContentLoaded: Math.round(navigation?.domContentLoadedEventEnd || 0),
+      loadEvent: Math.round(navigation?.loadEventEnd || 0),
+      firstPaint: paints['first-paint'] || 0,
+      firstContentfulPaint: paints['first-contentful-paint'] || 0,
+      resourceCount: performance.getEntriesByType('resource').length,
+    };
+  });
+  console.log(`PERFORMANCE ${JSON.stringify(performanceMetrics)}`);
   console.log(title);
 } finally {
   await browser.close();
