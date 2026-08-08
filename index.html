@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://ezbkfhzddyjamndzhqxq.supabase.co wss://ezbkfhzddyjamndzhqxq.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://ezbkfhzddyjamndzhqxq.supabase.co wss://ezbkfhzddyjamndzhqxq.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <script>
   (function() {
     try {
@@ -2869,6 +2869,13 @@ async function submitScoreToLeaderboard(total, accuracy){
     setLeaderboardSubmissionStatus('Leaderboard unavailable offline; your score remains local.', 'error');
     return;
   }
+  // Robust Validation: Validate activeSubject is a valid subject key
+  const validSubjectKeys = new Set(SUBJECTS.map(s => s.key));
+  if (!validSubjectKeys.has(activeSubject)) {
+    leaderboardSubmissionState = 'error';
+    setLeaderboardSubmissionStatus('Invalid subject selected.', 'error');
+    return;
+  }
   const name = getSessionName();
   if(!name){
     leaderboardSubmissionState = 'error';
@@ -2884,8 +2891,11 @@ async function submitScoreToLeaderboard(total, accuracy){
     best_streak: Math.max(0, Math.min(total, Math.trunc(quizBestStreak))),
   };
   try {
-    const lastSubmission = Number(sessionStorage.getItem(LEADERBOARD_SUBMISSION_KEY) || 0);
-    if (Date.now() - lastSubmission < LEADERBOARD_SUBMISSION_COOLDOWN_MS) {
+    const storedSubmission = sessionStorage.getItem(LEADERBOARD_SUBMISSION_KEY);
+    const lastSubmission = storedSubmission ? Number(storedSubmission) : 0;
+    // Defensive Validation: Ensure lastSubmission is a valid finite positive number
+    const safeLastSubmission = (Number.isFinite(lastSubmission) && lastSubmission >= 0) ? lastSubmission : 0;
+    if (Date.now() - safeLastSubmission < LEADERBOARD_SUBMISSION_COOLDOWN_MS) {
       leaderboardSubmissionState = 'cooldown';
       setLeaderboardSubmissionStatus('Please wait before submitting another score.', 'error');
       return;
