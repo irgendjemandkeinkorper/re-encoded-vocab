@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://ezbkfhzddyjamndzhqxq.supabase.co wss://ezbkfhzddyjamndzhqxq.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://ezbkfhzddyjamndzhqxq.supabase.co wss://ezbkfhzddyjamndzhqxq.supabase.co; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self';">
 <script>
   (function() {
     try {
@@ -2875,6 +2875,15 @@ async function submitScoreToLeaderboard(total, accuracy){
     setLeaderboardSubmissionStatus('Enter a name before submitting a score.', 'error');
     return;
   }
+
+  // Security Enhancement: Defensively validate the active subject key against permitted keys
+  const validSubjects = new Set(SUBJECTS.map(s => s.key));
+  if (!validSubjects.has(activeSubject)) {
+    leaderboardSubmissionState = 'error';
+    setLeaderboardSubmissionStatus('Invalid subject domain.', 'error');
+    return;
+  }
+
   const payload = {
     session_name: name,
     subject: activeSubject,
@@ -2884,11 +2893,15 @@ async function submitScoreToLeaderboard(total, accuracy){
     best_streak: Math.max(0, Math.min(total, Math.trunc(quizBestStreak))),
   };
   try {
-    const lastSubmission = Number(sessionStorage.getItem(LEADERBOARD_SUBMISSION_KEY) || 0);
-    if (Date.now() - lastSubmission < LEADERBOARD_SUBMISSION_COOLDOWN_MS) {
-      leaderboardSubmissionState = 'cooldown';
-      setLeaderboardSubmissionStatus('Please wait before submitting another score.', 'error');
-      return;
+    // Security Enhancement: Robustly verify that the leaderboard cooldown timestamp retrieved from sessionStorage is a valid, finite positive number using Number.isFinite(...) to prevent cooldown limit bypasses
+    const rawSubmission = sessionStorage.getItem(LEADERBOARD_SUBMISSION_KEY);
+    const lastSubmission = rawSubmission ? Number(rawSubmission) : 0;
+    if (Number.isFinite(lastSubmission) && lastSubmission > 0) {
+      if (Date.now() - lastSubmission < LEADERBOARD_SUBMISSION_COOLDOWN_MS) {
+        leaderboardSubmissionState = 'cooldown';
+        setLeaderboardSubmissionStatus('Please wait before submitting another score.', 'error');
+        return;
+      }
     }
   } catch(e) {}
   try {
