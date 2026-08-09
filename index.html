@@ -2615,15 +2615,24 @@ function levenshtein(a, b){
   return prev[len1];
 }
 
+// Performance Optimization: Global memoization caches to bypass redundant regex evaluations,
+// string split operations, and array allocations. Uses Object.create(null) for secure prototype-free lookups.
+const normalizeCache = Object.create(null);
+const variantsCache = Object.create(null);
+
 function normalizeAnswer(s){
-  return s.toLowerCase()
+  if (s in normalizeCache) return normalizeCache[s];
+  const res = s.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+  normalizeCache[s] = res;
+  return res;
 }
 
 function getAcceptableVariants(term){
+  if (term in variantsCache) return variantsCache[term];
   const variants = new Set();
   const full = normalizeAnswer(term);
   if(full) variants.add(full);
@@ -2640,7 +2649,9 @@ function getAcceptableVariants(term){
     const v = normalizeAnswer(part);
     if(v) variants.add(v);
   });
-  return [...variants].filter(Boolean);
+  const res = [...variants].filter(Boolean);
+  variantsCache[term] = res;
+  return res;
 }
 
 // word bank: every acceptable variant, across the current quiz pool, mapped back to its term
