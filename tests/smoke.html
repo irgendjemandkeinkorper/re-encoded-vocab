@@ -101,6 +101,41 @@
       dialog.dispatchEvent(new win.KeyboardEvent('keydown', {key: 'Escape', bubbles: true}));
       report('leaderboard closes with Escape', !doc.getElementById('leaderboardOverlay').classList.contains('active'));
 
+      // Defensive Leaderboard Submission tests
+      const originalSubject = win.activeSubject;
+      const originalState = win.leaderboardSubmissionState;
+      win.setSessionName('Sentinel Tester');
+
+      // Test 1: Invalid activeSubject is rejected
+      win.activeSubject = 'invalid_subject_domain';
+      win.leaderboardSubmissionState = 'idle';
+      await win.submitScoreToLeaderboard(10, 100);
+      report('submitScoreToLeaderboard rejects unpermitted subject keys', win.leaderboardSubmissionState === 'error');
+
+      // Test 2: Valid cooldown is correctly enforced
+      win.activeSubject = 'coding';
+      win.sessionStorage.setItem('vocab_last_leaderboard_submission', String(Date.now() - 1000));
+      win.leaderboardSubmissionState = 'idle';
+      await win.submitScoreToLeaderboard(10, 100);
+      report('leaderboard cooldown is enforced for valid recent timestamp', win.leaderboardSubmissionState === 'cooldown');
+
+      // Test 3: Malformed cooldown (NaN) does not crash and does not trigger cooldown
+      win.sessionStorage.setItem('vocab_last_leaderboard_submission', 'NaN');
+      win.leaderboardSubmissionState = 'idle';
+      await win.submitScoreToLeaderboard(10, 100);
+      report('malformed cooldown timestamp (NaN) is robustly handled', win.leaderboardSubmissionState !== 'cooldown');
+
+      // Test 4: Future cooldown timestamp (tampered) does not trigger cooldown
+      win.sessionStorage.setItem('vocab_last_leaderboard_submission', String(Date.now() + 50000));
+      win.leaderboardSubmissionState = 'idle';
+      await win.submitScoreToLeaderboard(10, 100);
+      report('future cooldown timestamp (tampered) does not trigger cooldown', win.leaderboardSubmissionState !== 'cooldown');
+
+      // Cleanup
+      win.activeSubject = originalSubject;
+      win.leaderboardSubmissionState = originalState;
+      win.sessionStorage.removeItem('vocab_last_leaderboard_submission');
+
       const failures = [...resultsEl.querySelectorAll('.fail')];
       if(!failures.length) document.title = 'PASS — Re-Encoded Vocabulary smoke tests';
     }
