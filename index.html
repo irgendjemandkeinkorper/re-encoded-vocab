@@ -2875,6 +2875,13 @@ async function submitScoreToLeaderboard(total, accuracy){
     setLeaderboardSubmissionStatus('Enter a name before submitting a score.', 'error');
     return;
   }
+  // Defensive validation of activeSubject against permitted keys
+  const permittedSubjects = SUBJECTS.map(s => s.key);
+  if (!permittedSubjects.includes(activeSubject)) {
+    leaderboardSubmissionState = 'error';
+    setLeaderboardSubmissionStatus('Invalid subject domain; submission rejected.', 'error');
+    return;
+  }
   const payload = {
     session_name: name,
     subject: activeSubject,
@@ -2884,8 +2891,11 @@ async function submitScoreToLeaderboard(total, accuracy){
     best_streak: Math.max(0, Math.min(total, Math.trunc(quizBestStreak))),
   };
   try {
-    const lastSubmission = Number(sessionStorage.getItem(LEADERBOARD_SUBMISSION_KEY) || 0);
-    if (Date.now() - lastSubmission < LEADERBOARD_SUBMISSION_COOLDOWN_MS) {
+    const rawLastSubmission = sessionStorage.getItem(LEADERBOARD_SUBMISSION_KEY);
+    const lastSubmission = Number(rawLastSubmission);
+    const isValidTimestamp = Number.isFinite(lastSubmission) && lastSubmission >= 0;
+    const validatedTimestamp = isValidTimestamp ? lastSubmission : 0;
+    if (Date.now() - validatedTimestamp < LEADERBOARD_SUBMISSION_COOLDOWN_MS) {
       leaderboardSubmissionState = 'cooldown';
       setLeaderboardSubmissionStatus('Please wait before submitting another score.', 'error');
       return;
