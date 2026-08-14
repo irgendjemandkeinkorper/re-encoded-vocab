@@ -2896,6 +2896,15 @@ async function submitScoreToLeaderboard(total, accuracy){
     setLeaderboardSubmissionStatus('Enter a name before submitting a score.', 'error');
     return;
   }
+
+  // Security Enhancement: Defensively validate the active subject key against permitted keys
+  const validSubjects = new Set(SUBJECTS.map(s => s.key));
+  if (!validSubjects.has(activeSubject)) {
+    leaderboardSubmissionState = 'error';
+    setLeaderboardSubmissionStatus('Invalid subject domain.', 'error');
+    return;
+  }
+
   const payload = {
     session_name: name,
     subject: activeSubject,
