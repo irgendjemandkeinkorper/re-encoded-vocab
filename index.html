@@ -2009,7 +2009,7 @@ const COLOR_MAP = {
 };
 function colorClass(cat){ return COLOR_MAP[cat] || 'general'; }
 
-let activeSubject = 'coding';
+var activeSubject = 'coding';
 let activeCat = 'all';
 let searchTerm = '';
 let studyMode = false;
@@ -2849,7 +2849,7 @@ function submitQuizAnswer(){
   document.getElementById('quizNext').style.display = 'inline-block';
 }
 
-let leaderboardSubmissionState = 'idle';
+var leaderboardSubmissionState = 'idle';
 const LEADERBOARD_SUBMISSION_KEY = 'vocab_last_leaderboard_submission';
 const LEADERBOARD_SUBMISSION_COOLDOWN_MS = 10_000;
 
@@ -2864,17 +2864,46 @@ async function submitScoreToLeaderboard(total, accuracy){
   if(leaderboardSubmissionState !== 'idle') return;
   leaderboardSubmissionState = 'submitting';
   setLeaderboardSubmissionStatus('Submitting score…', 'loading');
-  if(!supabaseClient){
-    leaderboardSubmissionState = 'unavailable';
-    setLeaderboardSubmissionStatus('Leaderboard unavailable offline; your score remains local.', 'error');
-    return;
-  }
+
+  // 1. Cooldown Check: Retrieve from sessionStorage and robustly verify that it is a valid, finite positive number
+  // to ensure client system clock is not tampered with or corrupted.
+  try {
+    const rawLast = sessionStorage.getItem(LEADERBOARD_SUBMISSION_KEY);
+    if (rawLast !== null) {
+      const lastSubmission = Number(rawLast);
+      if (Number.isFinite(lastSubmission) && lastSubmission > 0 && lastSubmission <= Date.now()) {
+        if (Date.now() - lastSubmission < LEADERBOARD_SUBMISSION_COOLDOWN_MS) {
+          leaderboardSubmissionState = 'cooldown';
+          setLeaderboardSubmissionStatus('Please wait before submitting another score.', 'error');
+          return;
+        }
+      }
+    }
+  } catch(e) {}
+
+  // 2. Session Name Check
   const name = getSessionName();
   if(!name){
     leaderboardSubmissionState = 'error';
     setLeaderboardSubmissionStatus('Enter a name before submitting a score.', 'error');
     return;
   }
+
+  // 3. Subject Key Check: Verify active subject key against permitted keys from the configuration
+  const permittedSubjects = new Set(SUBJECTS.map(s => s.key));
+  if(!permittedSubjects.has(activeSubject)){
+    leaderboardSubmissionState = 'error';
+    setLeaderboardSubmissionStatus('Invalid subject domain.', 'error');
+    return;
+  }
+
+  // 4. Client Availability Check: Only check Supabase client availability after validations pass
+  if(!supabaseClient){
+    leaderboardSubmissionState = 'unavailable';
+    setLeaderboardSubmissionStatus('Leaderboard unavailable offline; your score remains local.', 'error');
+    return;
+  }
+
   const payload = {
     session_name: name,
     subject: activeSubject,
@@ -2883,14 +2912,7 @@ async function submitScoreToLeaderboard(total, accuracy){
     total_questions: Math.max(1, Math.min(1000, Math.trunc(total))),
     best_streak: Math.max(0, Math.min(total, Math.trunc(quizBestStreak))),
   };
-  try {
-    const lastSubmission = Number(sessionStorage.getItem(LEADERBOARD_SUBMISSION_KEY) || 0);
-    if (Date.now() - lastSubmission < LEADERBOARD_SUBMISSION_COOLDOWN_MS) {
-      leaderboardSubmissionState = 'cooldown';
-      setLeaderboardSubmissionStatus('Please wait before submitting another score.', 'error');
-      return;
-    }
-  } catch(e) {}
+
   try {
     const { error } = await supabaseClient.from('leaderboard').insert(payload);
     if (error) throw error;
