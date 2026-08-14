@@ -3631,7 +3631,8 @@ function escHtml(s){
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
 }
 
 // JIT Caching for Code Lab segment translations to avoid redundant HTML-escaping overhead
