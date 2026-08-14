@@ -2615,15 +2615,35 @@ function levenshtein(a, b){
   return prev[len1];
 }
 
+// Memoization caches using ES6 Map to prevent duplicate regex execution and string split operations.
+const normalizeCache = new Map();
+const variantsCache = new Map();
+
+/**
+ * Normalizes a string by lowercasing and stripping special characters.
+ * Memoized to optimize hot paths inside the fuzzy matching / Levenshtein loops.
+ */
 function normalizeAnswer(s){
-  return s.toLowerCase()
+  if (normalizeCache.has(s)) {
+    return normalizeCache.get(s);
+  }
+  const result = s.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+  normalizeCache.set(s, result);
+  return result;
 }
 
+/**
+ * Generates acceptable variants of a term for the quiz word bank.
+ * Memoized to prevent redundant regex executions and splitting.
+ */
 function getAcceptableVariants(term){
+  if (variantsCache.has(term)) {
+    return variantsCache.get(term);
+  }
   const variants = new Set();
   const full = normalizeAnswer(term);
   if(full) variants.add(full);
@@ -2640,7 +2660,9 @@ function getAcceptableVariants(term){
     const v = normalizeAnswer(part);
     if(v) variants.add(v);
   });
-  return [...variants].filter(Boolean);
+  const result = [...variants].filter(Boolean);
+  variantsCache.set(term, result);
+  return result;
 }
 
 // word bank: every acceptable variant, across the current quiz pool, mapped back to its term
