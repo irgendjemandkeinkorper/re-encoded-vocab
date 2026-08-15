@@ -1091,7 +1091,22 @@
     max-width: 660px;
     margin: 0 auto;
   }
-  .code-walk-tabs { justify-content: center; }
+  .code-walk-tabs { justify-content: center; align-items: center; gap: 8px 18px; }
+  .walk-lang-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .walk-lang-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted-text);
+    margin-right: 2px;
+  }
   .code-lens-row { justify-content: center; }
   .code-walk-meta { text-align: center; }
   .code-walk-title {
@@ -3148,6 +3163,7 @@ document.getElementById('quizEnd').addEventListener('click', showQuizSummary);
 const CODE_WALKS = [
   {
     id: 'get-lens-text',
+    lang: 'javascript',
     title: 'getLensText(d, key)',
     summary: 'The heart of the whole site: turn one idea into whichever world you picked.',
     segments: [
@@ -3211,6 +3227,7 @@ const CODE_WALKS = [
   },
   {
     id: 'render-grid',
+    lang: 'javascript',
     title: 'renderGrid()',
     summary: 'Rebuilds the whole card board from scratch every time a filter changes.',
     segments: [
@@ -3302,6 +3319,7 @@ const CODE_WALKS = [
   },
   {
     id: 'quiz-scoring',
+    lang: 'javascript',
     title: 'submitQuizAnswer() — scoring',
     summary: 'How a single answer turns into points, streaks, and the streak multiplier.',
     segments: [
@@ -3365,6 +3383,7 @@ const CODE_WALKS = [
   },
   {
     id: 'card-flip',
+    lang: 'css',
     title: 'CSS 3D Card Flip',
     summary: 'The perspective, backface-visibility, and 3D transform trick that makes our cards spin.',
     segments: [
@@ -3456,6 +3475,7 @@ const CODE_WALKS = [
   },
   {
     id: 'leaderboard-flow',
+    lang: 'javascript',
     title: 'Leaderboard Round-Trip',
     summary: 'The complete async lifecycle of submitting high scores and fetching the top players.',
     segments: [
@@ -3561,6 +3581,7 @@ const CODE_WALKS = [
   },
   {
     id: 'click-decline-button',
+    lang: 'javascript',
     title: 'clickDeclineButton()',
     summary: 'A Playwright interaction helper that iterates through candidate selectors to find and click a cookie decline/reject button.',
     segments: [
@@ -3596,6 +3617,7 @@ const CODE_WALKS = [
   },
   {
     id: 'detect-placebo-consent',
+    lang: 'javascript',
     title: 'detectPlaceboConsent()',
     summary: 'The core placeholder/placebo cookie auditor that records cookies before and after clicking a rejection button to verify if user choices are ignored.',
     segments: [
@@ -3642,7 +3664,545 @@ const CODE_WALKS = [
         }
       }
     ]
-  }
+  },
+  {
+    id: 'tally-scores-python',
+    lang: 'python',
+    title: 'tally_scores(rounds)',
+    summary: 'A tiny Python function that walks a list, keeps only what qualifies, and adds it up — loop, condition, and accumulator in six lines.',
+    segments: [
+      {
+        code: 'def tally_scores(rounds):',
+        plain: 'Define a function named tally_scores that takes one input: a list of round scores.',
+        lenses: {
+          medical: 'Open a new chart review: the reviewer is handed one stack of visit records to work through.',
+          sports: 'The stats crew sets up for the game: they\'re handed the full play-by-play sheet to total up.',
+          fandom: 'The Sorting begins: the judge is handed the complete scroll of House point awards for the term.',
+          ttrpg: 'The DM opens the session ledger: one list of every roll made tonight, ready for tallying.',
+          cooking: 'The head chef starts the till count: handed the full stack of the night\'s order tickets.',
+          millennial: 'You open the group expenses app: one shared list of everything people claim they paid for.',
+          f1: 'The pit wall opens the stint report: every lap time from the race, ready to be analyzed.',
+          gaming: 'The post-match screen loads: the full match log is handed over for score calculation.'
+        }
+      },
+      {
+        code: '    total = 0',
+        plain: 'Start an accumulator at zero — this variable will collect the running sum as we go.',
+        lenses: {
+          medical: 'The tally sheet starts blank: zero confirmed cases before any record is reviewed.',
+          sports: 'The scoreboard is reset to 0–0 before the first play is counted.',
+          fandom: 'Every House hourglass starts empty — no points until the first award is read out.',
+          ttrpg: 'The damage counter starts at zero before any dice are added up.',
+          cooking: 'The till starts empty: not a single ticket rung up yet.',
+          millennial: 'The running total in the app starts at $0.00 before any receipt is added.',
+          f1: 'The stopwatch reads zero before the first lap is clocked.',
+          gaming: 'Your score starts at 0 the moment the match begins.'
+        }
+      },
+      {
+        code: '    for score in rounds:',
+        plain: 'Loop through the list: each pass, one score from rounds is placed in the variable score.',
+        lenses: {
+          medical: 'The reviewer works the stack one chart at a time — each pass, the next record is on the desk.',
+          sports: 'The crew replays the game one play at a time — each review handles exactly one play.',
+          fandom: 'The judge reads the scroll one award at a time, calling each entry out in turn.',
+          ttrpg: 'The DM picks up each die result in order — one roll considered per pass around the table.',
+          cooking: 'The chef flips through the tickets one order at a time.',
+          millennial: 'You scroll the expense list one receipt at a time, top to bottom.',
+          f1: 'The engineer steps through the telemetry lap by lap — one lap on screen at a time.',
+          gaming: 'The results screen ticks through the match log one event at a time.'
+        }
+      },
+      {
+        code: '        if score > 0:',
+        plain: 'A filter inside the loop: only positive scores qualify; anything else is skipped.',
+        lenses: {
+          medical: 'Screening criteria: only records that meet the threshold count — the rest are set aside.',
+          sports: 'Only completed plays make the stat sheet; broken plays are waved off.',
+          fandom: 'Only points *awarded* go in the hourglass — deductions are handled by a different ledger.',
+          ttrpg: 'Only hits count toward damage; misses are dropped from the tally.',
+          cooking: 'Only paid tickets ring the till; comped orders are skipped.',
+          millennial: 'Only receipts with an actual charge count — $0 pending entries get scrolled past.',
+          f1: 'Only clean laps count for the average; in-laps and out-laps are excluded.',
+          gaming: 'Only scoring events add points; neutral events scroll by without effect.'
+        }
+      },
+      {
+        code: '            total += score',
+        plain: 'Add the qualifying score onto the running total — the accumulator grows as the loop runs.',
+        lenses: {
+          medical: 'Each qualifying case adds one tick to the tally sheet.',
+          sports: 'Each counted play\'s yardage is added to the team total.',
+          fandom: 'Each award pours its points into the House hourglass, sand piling up.',
+          ttrpg: 'Each hit\'s damage is stacked onto the total — the monster\'s HP dwindles accordingly.',
+          cooking: 'Each paid ticket\'s amount is rung into the till, the drawer total climbing.',
+          millennial: 'Each valid receipt bumps the running total everyone will split.',
+          f1: 'Each clean lap\'s time feeds the cumulative stint figure.',
+          gaming: 'Each scoring event adds its points — the score counter climbs on screen.'
+        }
+      },
+      {
+        code: '    return total',
+        plain: 'After the loop finishes, hand the final sum back to whoever called the function.',
+        lenses: {
+          medical: 'The review is complete: the final case count is filed back to the requesting physician.',
+          sports: 'The final stat line is handed to the broadcast booth.',
+          fandom: 'The final House totals are announced to the Great Hall.',
+          ttrpg: 'The DM declares the total damage dealt this round.',
+          cooking: 'The chef reports the night\'s takings to the owner.',
+          millennial: 'The app posts the final split for everyone to see.',
+          f1: 'The stint analysis lands in the race engineer\'s hands for the next call.',
+          gaming: 'The final score flashes up on the results screen.'
+        }
+      }
+    ]
+  },
+{
+  "id": "python-list-comprehension",
+  "lang": "python",
+  "title": "double_qualifying_scores(scores)",
+  "summary": "Filters candidate scores by a benchmark and doubles qualifying values in a single transform expression.",
+  "segments": [
+    {
+      "code": "def double_qualifying_scores(scores):",
+      "plain": "Define a function that receives a list of performance scores to evaluate and transform.",
+      "lenses": {
+        "medical": "Open a diagnostic batch review: receive a list of patient test values to screen and double-check.",
+        "sports": "The coaching staff opens the stat log: receive a list of player game scores to filter and boost.",
+        "fandom": "The House master opens the ledger: receive a list of earned merits to audit and double for bonus week.",
+        "ttrpg": "The DM opens the combat round log: receive a list of raw roll totals to check and amplify.",
+        "cooking": "The head chef reviews the prep order: receive a list of ticket quantities to filter and double for peak service.",
+        "millennial": "Open the group trip expense sheet: receive a list of receipts to audit and boost with the agreed conversion rate.",
+        "f1": "The race engineer opens the lap data: receive a list of sector times to evaluate and scale.",
+        "gaming": "The post-game server receives a match log: receive a list of raw experience points to filter and double."
+      }
+    },
+    {
+      "code": "    threshold = 50",
+      "plain": "Establish the baseline value required for a score to qualify for processing.",
+      "lenses": {
+        "medical": "Set the clinical cutoff line: only diagnostic markers meeting this level require secondary analysis.",
+        "sports": "Set the qualifying standard: only performances reaching this mark count toward bonus consideration.",
+        "fandom": "Set the merit threshold: only House point awards meeting this bar qualify for the double-point charm.",
+        "ttrpg": "Set the difficulty class: only attack rolls hitting or exceeding this target activate the critical boost.",
+        "cooking": "Set the minimum order size: only prep batches meeting this volume qualify for batch doubling.",
+        "millennial": "Set the split limit: only expense entries above this dollar amount get added to the bonus split.",
+        "f1": "Set the target delta: only laps faster than this time threshold qualify for telemetry amplification.",
+        "gaming": "Set the score floor: only match actions exceeding this threshold qualify for double XP."
+      }
+    },
+    {
+      "code": "    multiplier = 2",
+      "plain": "Define the boost factor applied to every score that passes the threshold.",
+      "lenses": {
+        "medical": "Set the dosage scaling factor: qualifying test values have their secondary metrics doubled.",
+        "sports": "Set the bonus multiplier: qualifying performances double their contribution to team standings.",
+        "fandom": "Set the spell power factor: qualifying House point awards are doubled by the house charm.",
+        "ttrpg": "Set the critical hit multiplier: qualifying attack rolls double their damage output.",
+        "cooking": "Set the batch scaling factor: qualifying prep portions are doubled for the dinner rush.",
+        "millennial": "Set the double-up multiplier: qualifying split expenses are doubled for match funding.",
+        "f1": "Set the energy recovery multiplier: qualifying telemetry sectors double their deployment weight.",
+        "gaming": "Set the XP multiplier: qualifying achievements double their awarded experience points."
+      }
+    },
+    {
+      "code": "    results = [s * multiplier for s in scores if s >= threshold]",
+      "plain": "Iterate through every score in the list, keep only those meeting the threshold, and double each keeper into a new list.",
+      "lenses": {
+        "medical": "Scan every patient record in order: set aside low results, and double the qualifying values into a fresh lab report.",
+        "sports": "Review every player entry in order: discard sub-par stats, and double the qualifying numbers into a new roster sheet.",
+        "fandom": "Read down the award scroll in order: ignore minor merits, and apply the doubling charm to qualifying points in a new tally.",
+        "ttrpg": "Check every roll on the table in order: ignore misses, and double the damage of qualifying hits into a fresh combat summary.",
+        "cooking": "Go through every order ticket in order: skip small dishes, and double the portion size of major items into a new prep list.",
+        "millennial": "Scroll through every receipt in order: skip small purchases, and double the qualifying expense items into a fresh split ledger.",
+        "f1": "Step through every sector time in order: discard slow laps, and double the weighted telemetry of qualifying laps into a new stint sheet.",
+        "gaming": "Cycle through every match event in order: ignore low-tier actions, and double the experience points of qualifying events into a new reward log."
+      }
+    },
+    {
+      "code": "    return results",
+      "plain": "Return the newly constructed list of doubled qualifying scores back to the caller.",
+      "lenses": {
+        "medical": "Hand the finalized batch report of doubled lab metrics back to the attending physician.",
+        "sports": "Hand the updated bonus roster sheet back to the head coach for final sign-off.",
+        "fandom": "Submit the completed scroll of doubled House points to the Great Hall standings board.",
+        "ttrpg": "Announce the final list of doubled damage numbers to the table for resolving the round.",
+        "cooking": "Hand the updated double-prep list to the line cooks to start evening service.",
+        "millennial": "Share the updated double-split summary link directly to the group chat.",
+        "f1": "Send the completed double-weighted stint report to the pit wall for strategy calculations.",
+        "gaming": "Display the final summary of doubled XP rewards on the player post-match screen."
+      }
+    }
+  ]
+},
+{
+  "id": "python-dict-get",
+  "lang": "python",
+  "title": "fetch_user_avatar(profile)",
+  "summary": "Safely fetches a user avatar URL from a profile map, providing a default fallback if missing or empty.",
+  "segments": [
+    {
+      "code": "def fetch_user_avatar(profile):",
+      "plain": "Define a function that accepts a profile record dictionary containing user details.",
+      "lenses": {
+        "medical": "Open a patient file review: receive a chart record containing patient personal details.",
+        "sports": "The team registrar opens a player file: receive a player profile packet containing media assets.",
+        "fandom": "The wizarding registry opens a student dossier: receive a record containing wizard profile items.",
+        "ttrpg": "The DM opens a character sheet: receive a hero file containing character portrait references.",
+        "cooking": "The head chef inspects a dish specification: receive a recipe card containing presentation imagery.",
+        "millennial": "Open a user profile card: receive a contact file containing social media account info.",
+        "f1": "The telemetry garage opens a driver profile: receive a team record containing helmet livery assets.",
+        "gaming": "The game client opens a player profile: receive an account file containing cosmetic loadout details."
+      }
+    },
+    {
+      "code": "    default_avatar = \"default.png\"",
+      "plain": "Define the standard fallback image path used whenever a custom image is missing.",
+      "lenses": {
+        "medical": "Prepare the standard hospital badge template to use if no custom photo is on file.",
+        "sports": "Select the generic team jersey graphic to use if no official headshot is uploaded.",
+        "fandom": "Select the default House crest icon to display if no custom magical crest is registered.",
+        "ttrpg": "Select the default hero silhouette token to place on the map if no custom mini art is provided.",
+        "cooking": "Select the standard house garnish photo to print on the menu if no custom dish picture exists.",
+        "millennial": "Select the generic egg avatar picture to display if the user never uploaded a custom photo.",
+        "f1": "Select the baseline team logo graphic to display if no custom driver helmet render is available.",
+        "gaming": "Select the default starting character icon to display if no custom portrait skin is selected."
+      }
+    },
+    {
+      "code": "    avatar = profile.get(\"avatar\", default_avatar)",
+      "plain": "Attempt to read the custom avatar entry from the record, returning the default image if the entry does not exist.",
+      "lenses": {
+        "medical": "Search the chart for a custom ID photo, retrieving the standard hospital badge template if no photo field exists.",
+        "sports": "Look up the player photo entry, falling back to the generic team jersey graphic if no photo was filed.",
+        "fandom": "Check the scroll for a personal wizard portrait, falling back to the default House crest icon if none was recorded.",
+        "ttrpg": "Inspect the sheet for custom character art, falling back to the default hero silhouette token if the space is blank.",
+        "cooking": "Check the recipe specification for a custom dish photo, falling back to the standard house garnish photo if unlisted.",
+        "millennial": "Query the profile data for a custom avatar link, falling back to the generic egg avatar picture if missing.",
+        "f1": "Query driver records for a custom helmet render, falling back to the baseline team logo graphic if omitted.",
+        "gaming": "Query account data for a custom profile icon, falling back to the default starting character icon if absent."
+      }
+    },
+    {
+      "code": "    if not avatar:",
+      "plain": "Check if the retrieved image path is empty, blank, or invalid.",
+      "lenses": {
+        "medical": "Verify whether the retrieved photo record turned out to be corrupted or blank.",
+        "sports": "Check whether the retrieved player photo link turned out to be an empty text field.",
+        "fandom": "Inspect whether the retrieved portrait reference turned out to be a blank parchment area.",
+        "ttrpg": "Check whether the character portrait reference turned out to be an empty slot on the sheet.",
+        "cooking": "Verify whether the dish photo entry turned out to be an unprinted empty frame.",
+        "millennial": "Check whether the custom avatar URL turned out to be an empty string in the profile.",
+        "f1": "Verify whether the helmet graphic reference turned out to be a blank asset link.",
+        "gaming": "Check whether the profile icon ID turned out to be an unassigned empty slot."
+      }
+    },
+    {
+      "code": "        avatar = default_avatar",
+      "plain": "Reassign the fallback image path if the custom entry was blank or invalid.",
+      "lenses": {
+        "medical": "Substitute the standard hospital badge template to ensure every chart has a valid picture.",
+        "sports": "Substitute the generic team jersey graphic to ensure the roster display is never empty.",
+        "fandom": "Substitute the default House crest icon so the parchment display remains complete.",
+        "ttrpg": "Substitute the default hero silhouette token so the battlemap token is never missing.",
+        "cooking": "Substitute the standard house garnish photo so the digital menu item is never unlit.",
+        "millennial": "Substitute the generic egg avatar picture so the user header always shows an image.",
+        "f1": "Substitute the baseline team logo graphic so the timing screen display remains uniform.",
+        "gaming": "Substitute the default starting character icon so the lobby frame is never empty."
+      }
+    },
+    {
+      "code": "    return avatar",
+      "plain": "Return the confirmed avatar image path to display in the user interface.",
+      "lenses": {
+        "medical": "Provide the verified photo graphic to the clinic check-in terminal.",
+        "sports": "Provide the finalized player image asset to the stadium broadcast graphics board.",
+        "fandom": "Provide the confirmed portrait image to the enchanted hall roster display.",
+        "ttrpg": "Provide the verified character graphic to the virtual tabletop token manager.",
+        "cooking": "Provide the finalized dish image to the kitchen display unit and customer ordering app.",
+        "millennial": "Provide the confirmed avatar image URL to render on the profile card header.",
+        "f1": "Provide the confirmed driver icon graphic to the live race telemetry broadcast overlay.",
+        "gaming": "Provide the finalized character portrait asset to render in the multiplayer match lobby."
+      }
+    }
+  ]
+},
+{
+  "id": "python-try-except",
+  "lang": "python",
+  "title": "parse_user_age(input_text)",
+  "summary": "Attempts to convert text input into a valid integer age, catching parsing errors safely with a default fallback.",
+  "segments": [
+    {
+      "code": "def parse_user_age(input_text):",
+      "plain": "Define a function that receives raw text representing a user-submitted age.",
+      "lenses": {
+        "medical": "Open patient intake: receive a handwritten age string recorded on an intake form.",
+        "sports": "The draft desk receives an entry form: receive a raw text string representing an athlete's stated age.",
+        "fandom": "The Academy registrar receives an application: receive a parchment note with a student's claimed age.",
+        "ttrpg": "The DM receives a character sheet submission: receive a handwritten note with a hero's stated age.",
+        "cooking": "The reservation desk receives a party booking: receive a raw text note detailing a guest's age.",
+        "millennial": "Open a signup form handler: receive a text field string containing what someone typed for their age.",
+        "f1": "The driver license bureau receives an entry application: receive a text field string with a driver's age.",
+        "gaming": "The guild registration service receives a request: receive a chat input string containing a player's stated age."
+      }
+    },
+    {
+      "code": "    try:",
+      "plain": "Set up a protected block to attempt a conversion that might fail if the text is not a valid number.",
+      "lenses": {
+        "medical": "Initiate a clinical data conversion trial, preparing to catch any non-numeric intake entries.",
+        "sports": "Enter a guarded verification step, preparing to handle unreadable handwriting on the entry form.",
+        "fandom": "Cast a guarded reading spell, prepared to shield against corrupted runes or illegible handwriting.",
+        "ttrpg": "Roll a skill check for reading the sheet, prepared for unexpected text or illegible handwriting.",
+        "cooking": "Begin processing the guest note, prepared to handle unclear or non-digit scribbles.",
+        "millennial": "Start a risky parsing step, ready to catch any weird typos or emoji someone entered in the text box.",
+        "f1": "Begin processing the application form, prepared to handle invalid text in the age column.",
+        "gaming": "Start a guarded data translation, prepared to catch invalid text or spam symbols in the input box."
+      }
+    },
+    {
+      "code": "        age = int(input_text)",
+      "plain": "Attempt to convert the raw text into a clean numeric integer.",
+      "lenses": {
+        "medical": "Parse the handwritten age string into an exact numeric patient age integer.",
+        "sports": "Convert the handwritten text into an exact numeric player age count.",
+        "fandom": "Transfigure the parchment text into an exact numeric student age value.",
+        "ttrpg": "Translate the handwritten note into an exact numeric character age statistic.",
+        "cooking": "Convert the guest note text into an exact numeric age figure for seating arrangements.",
+        "millennial": "Parse the raw text box string into a clean numeric age integer.",
+        "f1": "Translate the application string into an exact numeric driver age value.",
+        "gaming": "Convert the input string into a clean numeric player age count."
+      }
+    },
+    {
+      "code": "        return age",
+      "plain": "If conversion succeeds, immediately return the valid numeric age.",
+      "lenses": {
+        "medical": "If the parsing succeeds, file the verified numeric age directly into the electronic health record.",
+        "sports": "If the conversion succeeds, submit the verified player age to the official tournament roster.",
+        "fandom": "If the spell succeeds, record the verified student age in the Academy registry scrolls.",
+        "ttrpg": "If the check succeeds, save the verified character age on the official character sheet.",
+        "cooking": "If the conversion succeeds, log the verified guest age on the dining room seating chart.",
+        "millennial": "If parsing succeeds, save the verified age integer directly into the user account settings.",
+        "f1": "If processing succeeds, log the verified driver age in the official FIA entry list.",
+        "gaming": "If conversion succeeds, register the verified player age in the account profile."
+      }
+    },
+    {
+      "code": "    except ValueError:",
+      "plain": "Catch conversion failure if the text contained non-numeric characters, letters, or invalid symbols.",
+      "lenses": {
+        "medical": "Interpose a clinical safety net if the intake string contained letters, symbols, or unreadable marks.",
+        "sports": "Intercept the entry if the form contained illegible words or non-numeric text.",
+        "fandom": "Deploy a protective counter-charm if the parchment contained unreadable magical symbols instead of digits.",
+        "ttrpg": "Trigger a failure safety rule if the character sheet note contained letters instead of numbers.",
+        "cooking": "Catch the processing error if the guest note contained special characters or word descriptions.",
+        "millennial": "Catch the formatting error if the user typed words, emojis, or gibberish instead of numbers.",
+        "f1": "Intercept the error if the application form contained non-numeric text in the age field.",
+        "gaming": "Catch the input exception if the player entered text, symbols, or invalid characters."
+      }
+    },
+    {
+      "code": "        return 0",
+      "plain": "Return zero as a safe baseline default age when parsing fails.",
+      "lenses": {
+        "medical": "File zero as the default placeholder age so the chart remains safe for secondary audit.",
+        "sports": "Assign zero as the baseline age flag so the registration desk can request a manual check.",
+        "fandom": "Record zero as the default baseline age so the registrar scroll stays intact without breaking.",
+        "ttrpg": "Record zero as the default age flag so the DM can prompt the player for clarification.",
+        "cooking": "Record zero as the default party age flag so the host team can confirm details at arrival.",
+        "millennial": "Return zero as the safe fallback age so the signup flow completes without crashing.",
+        "f1": "Assign zero as the default age flag so race stewards can request verification at check-in.",
+        "gaming": "Return zero as the safe fallback age so the account setup proceeds smoothly."
+      }
+    }
+  ]
+},
+{
+  "id": "js-debounce-flush",
+  "lang": "javascript",
+  "title": "debounce(func, wait) with flush()",
+  "summary": "Delays execution until user activity settles, while providing a flush mechanism to execute pending calls immediately.",
+  "segments": [
+    {
+      "code": "function debounce(func, wait) {\n  let timeout;\n  let pendingArgs;\n  let pendingContext;",
+      "plain": "Create a wrapper function and set up state variables to hold the active timer and most recent function arguments.",
+      "lenses": {
+        "medical": "Establish a hold station and set up triage slots to hold the latest patient intake details until the doctor is free.",
+        "sports": "Establish a play-calling delay and set up clipboard slots to hold the latest play instructions before signaling the field.",
+        "fandom": "Cast a buffering spell and prepare memory slots to hold the latest incantation parameters until the magic stabilizes.",
+        "ttrpg": "Set up a delayed action buffer and reserve slots to hold the latest turn parameters until execution time.",
+        "cooking": "Set up an order staging area and prepare ticket slots to hold the latest order adjustments before firing the kitchen.",
+        "millennial": "Create a message buffer and set up draft slots to hold your latest typed thoughts before hitting send.",
+        "f1": "Set up a telemetry buffer and allocate memory slots to hold the latest pit-stop request parameters before confirming.",
+        "gaming": "Set up an input buffer and reserve slots to hold the latest combo commands before executing the attack sequence."
+      }
+    },
+    {
+      "code": "  const debounced = function(...args) {\n    pendingContext = this;\n    pendingArgs = args;\n    clearTimeout(timeout);",
+      "plain": "When invoked, store the latest invocation details and cancel any previously scheduled execution timer.",
+      "lenses": {
+        "medical": "When a new symptom update arrives, record the latest vitals and cancel the previous pending review schedule.",
+        "sports": "When a new play adjustment comes in, save the new tactical notes and cancel the previous whistle timer.",
+        "fandom": "When a new spell command is spoken, store the newest incantation target and reset the channeling timer.",
+        "ttrpg": "When a player changes their action, update the held target details and reset the initiative delay timer.",
+        "cooking": "When a table modifies their order, save the updated dish notes and reset the timer before firing the ticket.",
+        "millennial": "When you type a new letter in the text box, update the draft message and reset the auto-send timer.",
+        "f1": "When the driver updates a setting over radio, save the latest wing angle call and reset the adjustment delay timer.",
+        "gaming": "When a new button is pressed during a combo, update the queued skill inputs and reset the execution delay timer."
+      }
+    },
+    {
+      "code": "    timeout = setTimeout(() => {\n      timeout = null;\n      const argsToApply = pendingArgs;\n      const contextToApply = pendingContext;\n      pendingArgs = null;\n      pendingContext = null;\n      func.apply(contextToApply, argsToApply);\n    }, wait);",
+      "plain": "Schedule a new timer; when it fires after the wait period, clear the state and execute the original function with stored details.",
+      "lenses": {
+        "medical": "Set a new waiting window; if no further updates arrive, clear the triage queue and perform the medical assessment with the latest vitals.",
+        "sports": "Set a new countdown; once quiet settles, clear the staging area and execute the play call with the latest instructions.",
+        "fandom": "Set a channeling timer; once the aura settles, clear the spell buffer and release the enchantment with the stored parameters.",
+        "ttrpg": "Set an initiative delay; once all choices settle, clear the action buffer and resolve the action with the latest parameters.",
+        "cooking": "Set a firing delay; once the ticket modifications stop, clear the staging area and cook the order with the final modifications.",
+        "millennial": "Set an auto-send delay; once typing pauses, clear the draft state and send the final message.",
+        "f1": "Set a radio confirmation delay; once chatter clears, clear the telemetry buffer and transmit the setting to the car.",
+        "gaming": "Set a combo execution window; once input pauses, clear the move queue and fire the ultimate attack with stored commands."
+      }
+    },
+    {
+      "code": "  debounced.flush = () => {\n    if(!timeout) return;\n    clearTimeout(timeout);\n    timeout = null;",
+      "plain": "Define an instant flush method: if a timer is active, cancel it immediately so execution can happen right now.",
+      "lenses": {
+        "medical": "Define an emergency override: if a triage review is pending, cancel the waiting window immediately to treat the patient right now.",
+        "sports": "Define a quick-snap call: if a play timer is running, blow the whistle immediately to run the play right now.",
+        "fandom": "Define a fast-cast charm: if spell channeling is underway, cancel the delay instantly to release the spell right now.",
+        "ttrpg": "Define an instant reaction feature: if an action is waiting, cancel the turn delay immediately to act right now.",
+        "cooking": "Define a rush-order trigger: if a ticket is waiting in line, bypass the delay immediately to fire the food right now.",
+        "millennial": "Define a send-now button: if an auto-send timer is running, override the wait immediately to post the text right now.",
+        "f1": "Define an emergency pit button: if a strategy delay is running, cancel the wait immediately to call the car in right now.",
+        "gaming": "Define a instant trigger override: if a combo execution is waiting, cancel the delay immediately to release the attack right now."
+      }
+    },
+    {
+      "code": "    const argsToApply = pendingArgs;\n    const contextToApply = pendingContext;\n    pendingArgs = null;\n    pendingContext = null;\n    func.apply(contextToApply, argsToApply);\n  };",
+      "plain": "Retrieve the stored details, reset the pending variables, and execute the underlying function immediately.",
+      "lenses": {
+        "medical": "Grab the stored vitals, clear the triage slots, and conduct the doctor assessment immediately.",
+        "sports": "Grab the stored play call, clear the clipboard slots, and execute the play on the field immediately.",
+        "fandom": "Grab the stored spell target, clear the channeling memory, and release the magic immediately.",
+        "ttrpg": "Grab the stored turn choices, clear the action slots, and resolve the action result immediately.",
+        "cooking": "Grab the stored ticket details, clear the order slots, and send the dish to the pass immediately.",
+        "millennial": "Grab the draft message, clear the input state, and deliver the post to the chat immediately.",
+        "f1": "Grab the stored wing settings, clear the telemetry slots, and execute the pit adjustments immediately.",
+        "gaming": "Grab the queued attack inputs, clear the combo slots, and land the hit on the target immediately."
+      }
+    },
+    {
+      "code": "  return debounced;\n}",
+      "plain": "Return the enhanced debounced function complete with its flush capability.",
+      "lenses": {
+        "medical": "Hand back the complete triage management system equipped with emergency override capabilities.",
+        "sports": "Hand back the flexible play-calling system equipped with quick-snap capabilities.",
+        "fandom": "Hand back the stabilized spellcasting mechanism equipped with fast-cast capabilities.",
+        "ttrpg": "Hand back the complete turn management system equipped with instant reaction capabilities.",
+        "cooking": "Hand back the smart order-staging system equipped with rush-order capabilities.",
+        "millennial": "Hand back the smart messaging system equipped with send-now capabilities.",
+        "f1": "Hand back the telemetry management tool equipped with emergency pit call capabilities.",
+        "gaming": "Hand back the combo management system equipped with instant trigger capabilities."
+      }
+    }
+  ]
+},
+{
+  "id": "js-acceptable-variants",
+  "lang": "javascript",
+  "title": "getAcceptableVariants(term)",
+  "summary": "Generates and caches all valid answer variations for a quiz term to optimize answer verification.",
+  "segments": [
+    {
+      "code": "function getAcceptableVariants(term){\n  if (variantsCache.has(term)) return variantsCache.get(term);\n  const variants = new Set();",
+      "plain": "Check the cache for previously computed variants to return immediately; if not found, initialize a set for unique results.",
+      "lenses": {
+        "medical": "Check the archive for existing diagnosis aliases to return immediately; if missing, open a clean registry to collect unique medical names.",
+        "sports": "Check the rulebook for existing play aliases to return immediately; if missing, open a clean sheet to list unique play names.",
+        "fandom": "Check the archives for known spell names to return immediately; if missing, open a clean parchment to collect unique spell names.",
+        "ttrpg": "Check campaign notes for existing rule aliases to return immediately; if missing, open a clean ledger to track unique rule names.",
+        "cooking": "Check the recipe book for known dish aliases to return immediately; if missing, open a clean notepad to list unique dish names.",
+        "millennial": "Check your saved notes for known slang variants to return immediately; if missing, open a clean list to gather unique slang terms.",
+        "f1": "Check strategy records for known track aliases to return immediately; if missing, open a clean log to record unique track names.",
+        "gaming": "Check the game database for known item aliases to return immediately; if missing, open a clean inventory list to collect unique item names."
+      }
+    },
+    {
+      "code": "  const full = normalizeAnswer(term);\n  if(full) variants.add(full);",
+      "plain": "Normalize the full term string and add it as the primary acceptable variant.",
+      "lenses": {
+        "medical": "Clean up the full medical term and add it as the primary acceptable clinical diagnosis.",
+        "sports": "Clean up the full play call name and add it as the primary official play name.",
+        "fandom": "Clean up the full spell incantation and add it as the primary canonical spell name.",
+        "ttrpg": "Clean up the full rule title and add it as the primary official rule name.",
+        "cooking": "Clean up the full dish title and add it as the primary official menu name.",
+        "millennial": "Clean up the full phrase and add it as the primary standard text version.",
+        "f1": "Clean up the full circuit designation and add it as the primary official race track name.",
+        "gaming": "Clean up the full item name and add it as the primary canonical gear name."
+      }
+    },
+    {
+      "code": "  const parenMatch = term.match(/\\(([^)]+)\\)/);\n  if(parenMatch){\n    const inner = normalizeAnswer(parenMatch[1]);\n    if(inner) variants.add(inner);\n  }",
+      "plain": "Extract any text enclosed in parentheses, normalize it, and add it as a standalone acceptable variant.",
+      "lenses": {
+        "medical": "Extract any secondary medical term inside parentheses, clean it up, and register it as an acceptable abbreviation.",
+        "sports": "Extract any alternate play call inside parentheses, clean it up, and register it as an acceptable shorthand call.",
+        "fandom": "Extract any incantation subtitle inside parentheses, clean it up, and register it as an acceptable magic alias.",
+        "ttrpg": "Extract any sub-rule note inside parentheses, clean it up, and register it as an acceptable rule shorthand.",
+        "cooking": "Extract any culinary subtitle inside parentheses, clean it up, and register it as an acceptable dish shorthand.",
+        "millennial": "Extract any side note inside parentheses, clean it up, and register it as an acceptable slang shortcut.",
+        "f1": "Extract any corner nickname inside parentheses, clean it up, and register it as an acceptable track sector alias.",
+        "gaming": "Extract any weapon subtype inside parentheses, clean it up, and register it as an acceptable gear alias."
+      }
+    },
+    {
+      "code": "  term.split('/').forEach(part => {\n    const v = normalizeAnswer(part);\n    if(v) variants.add(v);\n  });",
+      "plain": "Split the term by forward slashes and normalize each part to add as individual acceptable variants.",
+      "lenses": {
+        "medical": "Divide slash-separated clinical terms and clean up each option to register as individual valid diagnoses.",
+        "sports": "Divide slash-separated position titles and clean up each option to register as individual valid positions.",
+        "fandom": "Divide slash-separated spell translations and clean up each option to register as individual valid spell names.",
+        "ttrpg": "Divide slash-separated skill options and clean up each option to register as individual valid skill choices.",
+        "cooking": "Divide slash-separated ingredient options and clean up each option to register as individual valid menu choices.",
+        "millennial": "Divide slash-separated slang terms and clean up each option to register as individual valid expressions.",
+        "f1": "Divide slash-separated tire compounds and clean up each option to register as individual valid tyre choices.",
+        "gaming": "Divide slash-separated item classes and clean up each option to register as individual valid item choices."
+      }
+    },
+    {
+      "code": "  term.split(/\\s+vs\\.?\\s+/i).forEach(part => {\n    const v = normalizeAnswer(part);\n    if(v) variants.add(v);\n  });",
+      "plain": "Split the term by \"vs\" delimiters and normalize each opposing part as an acceptable variant.",
+      "lenses": {
+        "medical": "Separate vs-formatted condition comparisons and clean up each condition as an acceptable diagnostic match.",
+        "sports": "Separate vs-formatted matchup teams and clean up each team as an acceptable team identifier.",
+        "fandom": "Separate vs-formatted duel opponents and clean up each wizard as an acceptable participant name.",
+        "ttrpg": "Separate vs-formatted combatant matchups and clean up each creature as an acceptable target name.",
+        "cooking": "Separate vs-formatted recipe comparisons and clean up each dish style as an acceptable menu match.",
+        "millennial": "Separate vs-formatted debate topics and clean up each side as an acceptable topic identifier.",
+        "f1": "Separate vs-formatted driver rivalries and clean up each driver as an acceptable competitor name.",
+        "gaming": "Separate vs-formatted boss matchups and clean up each boss as an acceptable target identifier."
+      }
+    },
+    {
+      "code": "  const res = [...variants].filter(Boolean);\n  variantsCache.set(term, res);\n  return res;\n}",
+      "plain": "Convert the unique set into an array of non-empty strings, store it in the cache, and return the result.",
+      "lenses": {
+        "medical": "Compile the unique clinical names into a clean array, save it in the archive for fast lookup, and return the diagnostic list.",
+        "sports": "Compile the unique play names into a clean array, store it in the playbook for instant access, and return the play list.",
+        "fandom": "Compile the unique spell names into a clean scroll, save it in the library memory, and return the spell list.",
+        "ttrpg": "Compile the unique rule names into a clean ledger, store it in the campaign archive, and return the rule list.",
+        "cooking": "Compile the unique dish names into a clean menu index, save it in the kitchen system, and return the recipe list.",
+        "millennial": "Compile the unique slang variants into a clean array, save it in your chat shortcuts, and return the phrase list.",
+        "f1": "Compile the unique track names into a clean index, save it in telemetry memory, and return the sector list.",
+        "gaming": "Compile the unique item names into a clean array, store it in the database cache, and return the gear list."
+      }
+    }
+  ]
+}
 ];
 
 let codeLabMode = false;
@@ -3688,15 +4248,34 @@ function buildSegLensStackHTML(seg){
   }).join('');
 }
 
+const WALK_LANGS = [
+  {key: 'javascript', label: 'JavaScript'},
+  {key: 'python', label: 'Python'},
+  {key: 'css', label: 'CSS'},
+];
+
 function renderCodeWalkTabs(){
   const el = document.getElementById('codeWalkTabs');
   el.innerHTML = '';
-  CODE_WALKS.forEach((w, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'tab' + (i === activeWalk ? ' active' : '');
-    btn.textContent = w.title;
-    btn.onclick = () => { activeWalk = i; activeSeg = 0; renderCodeWalk(); };
-    el.appendChild(btn);
+  WALK_LANGS.forEach(lang => {
+    const walks = CODE_WALKS.map((w, i) => ({w, i})).filter(({w}) => w.lang === lang.key);
+    if(!walks.length) return;
+    const group = document.createElement('div');
+    group.className = 'walk-lang-group';
+    group.setAttribute('role', 'group');
+    group.setAttribute('aria-label', `${lang.label} walkthroughs`);
+    const label = document.createElement('span');
+    label.className = 'walk-lang-label';
+    label.textContent = lang.label;
+    group.appendChild(label);
+    walks.forEach(({w, i}) => {
+      const btn = document.createElement('button');
+      btn.className = 'tab' + (i === activeWalk ? ' active' : '');
+      btn.textContent = w.title;
+      btn.onclick = () => { activeWalk = i; activeSeg = 0; renderCodeWalk(); };
+      group.appendChild(btn);
+    });
+    el.appendChild(group);
   });
 }
 
