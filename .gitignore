@@ -17,3 +17,7 @@ build/
 .env
 .env.*
 !.env.example
+
+# Local agent tooling state (never commit)
+.claude-octopus/
+.claude/
