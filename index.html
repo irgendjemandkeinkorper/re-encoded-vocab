@@ -1951,6 +1951,11 @@ const SUBJECTS = [
 
 ];
 
+// Performance Optimization: Pre-compute static Sets for term and subject validation lookups
+// to avoid redundant array mapping and Set allocations during import, startup, and leaderboard submission operations.
+const VALID_TERMS_SET = new Set(DATA.map(d => d.term));
+const VALID_SUBJECTS_SET = new Set(SUBJECTS.map(s => s.key));
+
 const CATS_BY_SUBJECT = {
   coding: [
     {key:'all', label:'All'},
@@ -2048,9 +2053,8 @@ let starred = new Set();
 try {
   const saved = JSON.parse(localStorage.getItem(STAR_KEY) || '[]');
   if (Array.isArray(saved)) {
-    // Security Enhancement: Validate loaded localStorage data against static trusted terms
-    const validTerms = new Set(DATA.map(d => d.term));
-    const filtered = saved.filter(term => typeof term === 'string' && validTerms.has(term));
+    // Security & Performance Enhancement: Validate loaded localStorage data against pre-computed trusted terms
+    const filtered = saved.filter(term => typeof term === 'string' && VALID_TERMS_SET.has(term));
     starred = new Set(filtered);
   } else {
     starred = new Set();
@@ -2364,11 +2368,10 @@ importFile.addEventListener('change', (e) => {
         throw new Error('Imported list is too large (max 1000 items)');
       }
 
-      const validTerms = new Set(DATA.map(d => d.term));
       let count = 0;
       list.forEach(item => {
         const term = (item && typeof item === 'object' && 'term' in item) ? item.term : item;
-        if (typeof term === 'string' && validTerms.has(term)) {
+        if (typeof term === 'string' && VALID_TERMS_SET.has(term)) {
           if (!starred.has(term)) {
             starred.add(term);
             count++;
@@ -2904,9 +2907,8 @@ async function submitScoreToLeaderboard(total){
     setLeaderboardSubmissionStatus('Leaderboard unavailable offline; your score remains local.', 'error');
     return;
   }
-  // Robust Validation: Validate activeSubject is a valid subject key
-  const validSubjectKeys = new Set(SUBJECTS.map(s => s.key));
-  if (!validSubjectKeys.has(activeSubject)) {
+  // Robust Validation: Validate activeSubject against pre-computed valid subjects Set
+  if (!VALID_SUBJECTS_SET.has(activeSubject)) {
     leaderboardSubmissionState = 'error';
     setLeaderboardSubmissionStatus('Invalid subject selected.', 'error');
     return;
