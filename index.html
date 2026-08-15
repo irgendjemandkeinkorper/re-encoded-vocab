@@ -1091,7 +1091,22 @@
     max-width: 660px;
     margin: 0 auto;
   }
-  .code-walk-tabs { justify-content: center; }
+  .code-walk-tabs { justify-content: center; align-items: center; gap: 8px 18px; }
+  .walk-lang-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .walk-lang-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted-text);
+    margin-right: 2px;
+  }
   .code-lens-row { justify-content: center; }
   .code-walk-meta { text-align: center; }
   .code-walk-title {
@@ -3148,6 +3163,7 @@ document.getElementById('quizEnd').addEventListener('click', showQuizSummary);
 const CODE_WALKS = [
   {
     id: 'get-lens-text',
+    lang: 'javascript',
     title: 'getLensText(d, key)',
     summary: 'The heart of the whole site: turn one idea into whichever world you picked.',
     segments: [
@@ -3211,6 +3227,7 @@ const CODE_WALKS = [
   },
   {
     id: 'render-grid',
+    lang: 'javascript',
     title: 'renderGrid()',
     summary: 'Rebuilds the whole card board from scratch every time a filter changes.',
     segments: [
@@ -3302,6 +3319,7 @@ const CODE_WALKS = [
   },
   {
     id: 'quiz-scoring',
+    lang: 'javascript',
     title: 'submitQuizAnswer() — scoring',
     summary: 'How a single answer turns into points, streaks, and the streak multiplier.',
     segments: [
@@ -3365,6 +3383,7 @@ const CODE_WALKS = [
   },
   {
     id: 'card-flip',
+    lang: 'css',
     title: 'CSS 3D Card Flip',
     summary: 'The perspective, backface-visibility, and 3D transform trick that makes our cards spin.',
     segments: [
@@ -3456,6 +3475,7 @@ const CODE_WALKS = [
   },
   {
     id: 'leaderboard-flow',
+    lang: 'javascript',
     title: 'Leaderboard Round-Trip',
     summary: 'The complete async lifecycle of submitting high scores and fetching the top players.',
     segments: [
@@ -3561,6 +3581,7 @@ const CODE_WALKS = [
   },
   {
     id: 'click-decline-button',
+    lang: 'javascript',
     title: 'clickDeclineButton()',
     summary: 'A Playwright interaction helper that iterates through candidate selectors to find and click a cookie decline/reject button.',
     segments: [
@@ -3596,6 +3617,7 @@ const CODE_WALKS = [
   },
   {
     id: 'detect-placebo-consent',
+    lang: 'javascript',
     title: 'detectPlaceboConsent()',
     summary: 'The core placeholder/placebo cookie auditor that records cookies before and after clicking a rejection button to verify if user choices are ignored.',
     segments: [
@@ -3639,6 +3661,98 @@ const CODE_WALKS = [
           millennial: 'Re-examine your follower list; if new tracking bots appear on your feed after you blocked them, return true to report a privacy violation.',
           f1: 'Re-analyze the telemetry; if any new unauthorized engine adjustments were made after the driver rejected them, return true to flag a paddock rule breach.',
           gaming: 'Re-inspect your inventory; if new tracking tracking devices or debuffs appeared after you declined the quest, return true to flag a security exploit.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'tally-scores-python',
+    lang: 'python',
+    title: 'tally_scores(rounds)',
+    summary: 'A tiny Python function that walks a list, keeps only what qualifies, and adds it up — loop, condition, and accumulator in six lines.',
+    segments: [
+      {
+        code: 'def tally_scores(rounds):',
+        plain: 'Define a function named tally_scores that takes one input: a list of round scores.',
+        lenses: {
+          medical: 'Open a new chart review: the reviewer is handed one stack of visit records to work through.',
+          sports: 'The stats crew sets up for the game: they\'re handed the full play-by-play sheet to total up.',
+          fandom: 'The Sorting begins: the judge is handed the complete scroll of House point awards for the term.',
+          ttrpg: 'The DM opens the session ledger: one list of every roll made tonight, ready for tallying.',
+          cooking: 'The head chef starts the till count: handed the full stack of the night\'s order tickets.',
+          millennial: 'You open the group expenses app: one shared list of everything people claim they paid for.',
+          f1: 'The pit wall opens the stint report: every lap time from the race, ready to be analyzed.',
+          gaming: 'The post-match screen loads: the full match log is handed over for score calculation.'
+        }
+      },
+      {
+        code: '    total = 0',
+        plain: 'Start an accumulator at zero — this variable will collect the running sum as we go.',
+        lenses: {
+          medical: 'The tally sheet starts blank: zero confirmed cases before any record is reviewed.',
+          sports: 'The scoreboard is reset to 0–0 before the first play is counted.',
+          fandom: 'Every House hourglass starts empty — no points until the first award is read out.',
+          ttrpg: 'The damage counter starts at zero before any dice are added up.',
+          cooking: 'The till starts empty: not a single ticket rung up yet.',
+          millennial: 'The running total in the app starts at $0.00 before any receipt is added.',
+          f1: 'The stopwatch reads zero before the first lap is clocked.',
+          gaming: 'Your score starts at 0 the moment the match begins.'
+        }
+      },
+      {
+        code: '    for score in rounds:',
+        plain: 'Loop through the list: each pass, one score from rounds is placed in the variable score.',
+        lenses: {
+          medical: 'The reviewer works the stack one chart at a time — each pass, the next record is on the desk.',
+          sports: 'The crew replays the game one play at a time — each review handles exactly one play.',
+          fandom: 'The judge reads the scroll one award at a time, calling each entry out in turn.',
+          ttrpg: 'The DM picks up each die result in order — one roll considered per pass around the table.',
+          cooking: 'The chef flips through the tickets one order at a time.',
+          millennial: 'You scroll the expense list one receipt at a time, top to bottom.',
+          f1: 'The engineer steps through the telemetry lap by lap — one lap on screen at a time.',
+          gaming: 'The results screen ticks through the match log one event at a time.'
+        }
+      },
+      {
+        code: '        if score > 0:',
+        plain: 'A filter inside the loop: only positive scores qualify; anything else is skipped.',
+        lenses: {
+          medical: 'Screening criteria: only records that meet the threshold count — the rest are set aside.',
+          sports: 'Only completed plays make the stat sheet; broken plays are waved off.',
+          fandom: 'Only points *awarded* go in the hourglass — deductions are handled by a different ledger.',
+          ttrpg: 'Only hits count toward damage; misses are dropped from the tally.',
+          cooking: 'Only paid tickets ring the till; comped orders are skipped.',
+          millennial: 'Only receipts with an actual charge count — $0 pending entries get scrolled past.',
+          f1: 'Only clean laps count for the average; in-laps and out-laps are excluded.',
+          gaming: 'Only scoring events add points; neutral events scroll by without effect.'
+        }
+      },
+      {
+        code: '            total += score',
+        plain: 'Add the qualifying score onto the running total — the accumulator grows as the loop runs.',
+        lenses: {
+          medical: 'Each qualifying case adds one tick to the tally sheet.',
+          sports: 'Each counted play\'s yardage is added to the team total.',
+          fandom: 'Each award pours its points into the House hourglass, sand piling up.',
+          ttrpg: 'Each hit\'s damage is stacked onto the total — the monster\'s HP dwindles accordingly.',
+          cooking: 'Each paid ticket\'s amount is rung into the till, the drawer total climbing.',
+          millennial: 'Each valid receipt bumps the running total everyone will split.',
+          f1: 'Each clean lap\'s time feeds the cumulative stint figure.',
+          gaming: 'Each scoring event adds its points — the score counter climbs on screen.'
+        }
+      },
+      {
+        code: '    return total',
+        plain: 'After the loop finishes, hand the final sum back to whoever called the function.',
+        lenses: {
+          medical: 'The review is complete: the final case count is filed back to the requesting physician.',
+          sports: 'The final stat line is handed to the broadcast booth.',
+          fandom: 'The final House totals are announced to the Great Hall.',
+          ttrpg: 'The DM declares the total damage dealt this round.',
+          cooking: 'The chef reports the night\'s takings to the owner.',
+          millennial: 'The app posts the final split for everyone to see.',
+          f1: 'The stint analysis lands in the race engineer\'s hands for the next call.',
+          gaming: 'The final score flashes up on the results screen.'
         }
       }
     ]
@@ -3688,15 +3802,34 @@ function buildSegLensStackHTML(seg){
   }).join('');
 }
 
+const WALK_LANGS = [
+  {key: 'javascript', label: 'JavaScript'},
+  {key: 'python', label: 'Python'},
+  {key: 'css', label: 'CSS'},
+];
+
 function renderCodeWalkTabs(){
   const el = document.getElementById('codeWalkTabs');
   el.innerHTML = '';
-  CODE_WALKS.forEach((w, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'tab' + (i === activeWalk ? ' active' : '');
-    btn.textContent = w.title;
-    btn.onclick = () => { activeWalk = i; activeSeg = 0; renderCodeWalk(); };
-    el.appendChild(btn);
+  WALK_LANGS.forEach(lang => {
+    const walks = CODE_WALKS.map((w, i) => ({w, i})).filter(({w}) => w.lang === lang.key);
+    if(!walks.length) return;
+    const group = document.createElement('div');
+    group.className = 'walk-lang-group';
+    group.setAttribute('role', 'group');
+    group.setAttribute('aria-label', `${lang.label} walkthroughs`);
+    const label = document.createElement('span');
+    label.className = 'walk-lang-label';
+    label.textContent = lang.label;
+    group.appendChild(label);
+    walks.forEach(({w, i}) => {
+      const btn = document.createElement('button');
+      btn.className = 'tab' + (i === activeWalk ? ' active' : '');
+      btn.textContent = w.title;
+      btn.onclick = () => { activeWalk = i; activeSeg = 0; renderCodeWalk(); };
+      group.appendChild(btn);
+    });
+    el.appendChild(group);
   });
 }
 
