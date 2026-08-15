@@ -3681,6 +3681,410 @@ const CODE_WALKS = [
     ]
   },
   {
+    id: 'list-comprehension-python',
+    lang: 'python',
+    title: 'double_positives(numbers)',
+    summary: 'A compact Python list comprehension that filters positive values and doubles them in a single expressive line.',
+    segments: [
+      {
+        code: 'def double_positives(numbers):',
+        plain: 'Define a function named double_positives that accepts a list of numbers to process.',
+        lenses: {
+          medical: 'Open a diagnostic protocol that takes a batch of incoming lab metrics for evaluation.',
+          sports: 'Set up a stat calculation that accepts a player\'s game-by-game scoring history.',
+          fandom: 'Announce a potion recipe that takes a vial of collected ingredients.',
+          ttrpg: 'Establish a party spell that processes a list of encounter roll results.',
+          cooking: 'Prepare a prep station routine that receives a crate of raw kitchen produce.',
+          millennial: 'Open a group chat survey that takes a list of member ratings.',
+          f1: 'Fire up a pit wall telemetry session that receives a driver\'s stint lap times.',
+          gaming: 'Trigger a loot routine that receives a collection of item drop scores.'
+        }
+      },
+      {
+        code: '    return [',
+        plain: 'Start building a new list container to hold all the resulting transformed values.',
+        lenses: {
+          medical: 'Prepare a new clean medical chart folder to hold the processed clinical findings.',
+          sports: 'Clear a new column on the scoreboard to record the adjusted point totals.',
+          fandom: 'Place a new parchment scroll on the desk to write down the refined enchantments.',
+          ttrpg: 'Open a fresh combat log sheet to tally the total effective attack damage.',
+          cooking: 'Line a fresh serving platter to arrange the finished dish portions.',
+          millennial: 'Create a new highlight reel folder to store the curated vacation clips.',
+          f1: 'Prepare a fresh timing sheet on the pit wall monitor for calculated lap deltas.',
+          gaming: 'Open a new inventory bag slot to hold the upgraded gear items.'
+        }
+      },
+      {
+        code: '        n * 2',
+        plain: 'Apply the transformation rule: double the magnitude of every item that passes through.',
+        lenses: {
+          medical: 'Apply a double-dosage multiplier to enhance the therapeutic potency of the compound.',
+          sports: 'Apply the double-points bonus to double the value of each scoring play.',
+          fandom: 'Cast a doubling charm to clone the power level of each magical artifact.',
+          ttrpg: 'Apply critical hit damage to double the impact of each successful strike.',
+          cooking: 'Double the spice measure to intensify the flavor profile of each batch.',
+          millennial: 'Double-tap to amplify the aesthetic clout of every tagged post.',
+          f1: 'Engage overtake mode to double the energy discharge down the main straight.',
+          gaming: 'Apply a double-EXP booster to double the value of every experience drop.'
+        }
+      },
+      {
+        code: '        for n in numbers',
+        plain: 'Walk through the incoming collection item by item, inspecting each value in sequence.',
+        lenses: {
+          medical: 'Examine each patient chart one by one down the admission queue.',
+          sports: 'Review each play from the game tape in chronological sequence.',
+          fandom: 'Scan each ancient rune in the spellbook from top to bottom.',
+          ttrpg: 'Check each die result on the table one player at a time.',
+          cooking: 'Inspect each piece of produce on the prep table individually.',
+          millennial: 'Scroll through every notification in your inbox line by line.',
+          f1: 'Step through every sector time from the session log lap by lap.',
+          gaming: 'Scan every loot crate dropped during the raid one by one.'
+        }
+      },
+      {
+        code: '        if n > 0',
+        plain: 'Filter out non-positive values, allowing only strictly positive items to pass through.',
+        lenses: {
+          medical: 'Isolate only positive diagnostic results, discarding negative or inconclusive findings.',
+          sports: 'Keep only scoring drives, waving off penalties and incomplete attempts.',
+          fandom: 'Select only light magic charms, discarding dark curses or neutral incantations.',
+          ttrpg: 'Count only effective damage rolls, ignoring completely blocked or absorbed hits.',
+          cooking: 'Select only ripe, high-grade produce, setting aside spoiled or underripe items.',
+          millennial: 'Keep only high-vibe messages, ignoring spam or negative comments.',
+          f1: 'Include only clean flying laps, discarding pit entry or yellow-flag laps.',
+          gaming: 'Keep only rare equipment drops, discarding junk items and empty crates.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'dict-get-fallback-python',
+    lang: 'python',
+    title: 'get_user_role(profiles, user_id)',
+    summary: 'Safely retrieve a user\'s role from a dictionary using .get() with a default fallback to avoid KeyErrors.',
+    segments: [
+      {
+        code: 'def get_user_role(profiles, user_id):',
+        plain: 'Define a function named get_user_role that takes a collection of user profiles and a target user ID.',
+        lenses: {
+          medical: 'Establish an access protocol that receives a patient registry and a patient record number.',
+          sports: 'Set up a roster query that takes the team database and a player jersey number.',
+          fandom: 'Declare a House lookup spell that takes the student directory and a wizard\'s name.',
+          ttrpg: 'Define a guild registry check that takes the adventurer roster and a character name.',
+          cooking: 'Open a pantry inventory check that takes the ingredient list and an item tag.',
+          millennial: 'Create a group chat status check that takes the member list and a handle.',
+          f1: 'Set up a driver status inquiry that takes the paddock directory and a car number.',
+          gaming: 'Establish a player rank query that takes the guild roster and a player ID.'
+        }
+      },
+      {
+        code: '    if not isinstance(profiles, dict):',
+        plain: 'Verify that the provided profiles parameter is a valid structured mapping before proceeding.',
+        lenses: {
+          medical: 'Confirm that the incoming record cabinet is a certified medical database rather than an unverified file.',
+          sports: 'Ensure the official roster binder is present and formatted correctly before checking player entries.',
+          fandom: 'Verify that the magical directory scroll is authentic before reading student credentials.',
+          ttrpg: 'Check that the guild master\'s ledger is properly bound before looking up character stats.',
+          cooking: 'Verify that the pantry catalog is an active stock list before searching for ingredients.',
+          millennial: 'Check that the contact list is synced properly before searching for a friend\'s profile.',
+          f1: 'Confirm that the timing system feed is live before requesting car telemetry.',
+          gaming: 'Verify that the server database is connected before querying player accounts.'
+        }
+      },
+      {
+        code: '        return \'guest\'',
+        plain: 'If the catalog structure is invalid, immediately fall back to a safe default visitor status.',
+        lenses: {
+          medical: 'If the registry is unverified, assign temporary outpatient visitor status for safety.',
+          sports: 'If the roster binder is missing, list the entry as an unassigned spectator.',
+          fandom: 'If the scroll is unreadable, treat the newcomer as an unclassified visitor.',
+          ttrpg: 'If the ledger is corrupted, register the traveler as an unaffiliated wanderer.',
+          cooking: 'If the catalog is missing, label the ingredient as an unclassified item.',
+          millennial: 'If the list won\'t load, tag the user with a default lurker badge.',
+          f1: 'If the feed is offline, classify the entry as an unverified pit pass holder.',
+          gaming: 'If the server fails, assign a default guest avatar status.'
+        }
+      },
+      {
+        code: '    user_data = profiles.get(user_id, {})',
+        plain: 'Look up the specific user record by ID, falling back to an empty record if the user isn\'t found.',
+        lenses: {
+          medical: 'Search the database for the patient ID, retrieving a blank chart if no prior history exists.',
+          sports: 'Search the roster for the jersey number, returning an empty card if the player is unlisted.',
+          fandom: 'Search the directory for the wizard\'s name, opening a blank parchment if unrecorded.',
+          ttrpg: 'Search the guild ledger for the character, pulling a blank sheet if they\'re a newcomer.',
+          cooking: 'Check the catalog for the item tag, returning an empty bin card if it\'s unlisted.',
+          millennial: 'Search the member list for the handle, returning a blank card if they haven\'t joined.',
+          f1: 'Check the paddock list for the car number, returning an empty profile if unassigned.',
+          gaming: 'Query the guild roster for the player ID, returning a default profile if unregistered.'
+        }
+      },
+      {
+        code: '    return user_data.get(\'role\', \'guest\')',
+        plain: 'Extract the assigned role property from the record, defaulting to guest if no specific role is stored.',
+        lenses: {
+          medical: 'Retrieve the recorded privilege level from the patient file, defaulting to standard visitor if unlisted.',
+          sports: 'Extract the designated squad role from the card, defaulting to bench reserve if unspecified.',
+          fandom: 'Read the assigned House title from the parchment, defaulting to visitor status if unranked.',
+          ttrpg: 'Read the rank title from the character sheet, defaulting to novice adventurer if unassigned.',
+          cooking: 'Extract the storage shelf assignment, defaulting to general pantry if unclassified.',
+          millennial: 'Retrieve the custom role badge, defaulting to spectator status if unassigned.',
+          f1: 'Read the team role credential from the profile, defaulting to guest garage pass if unlisted.',
+          gaming: 'Extract the guild rank title, defaulting to visitor status if unassigned.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'try-except-block-python',
+    lang: 'python',
+    title: 'parse_payload(raw_data)',
+    summary: 'Safely parse JSON data with exception handling, returning a default dictionary if decoding fails.',
+    segments: [
+      {
+        code: 'def parse_payload(raw_data):',
+        plain: 'Define a function named parse_payload that receives raw unparsed incoming data.',
+        lenses: {
+          medical: 'Establish an intake protocol that receives an unverified batch of incoming lab transmissions.',
+          sports: 'Set up a statistics ingest route that receives raw game logs from an external stadium feed.',
+          fandom: 'Declare a decryption spell that takes an encoded message delivered by owl post.',
+          ttrpg: 'Define a deciphering ritual that receives an ancient cryptic inscription found in a dungeon.',
+          cooking: 'Set up an ingredient inspection routine that takes an unverified shipment crate at the back door.',
+          millennial: 'Create an unboxing routine that receives a raw encrypted file link in the group chat.',
+          f1: 'Set up a telemetry ingest routine that receives raw radio telemetry bursts from the car.',
+          gaming: 'Establish a network packet processor that receives raw game data from the server.'
+        }
+      },
+      {
+        code: '    try:',
+        plain: 'Attempt the primary risky operation in a protected block that catches potential processing errors.',
+        lenses: {
+          medical: 'Proceed with high-precision lab analysis inside a sterile controlled environment.',
+          sports: 'Process the raw statistical feed through the main automated engine with safety flags engaged.',
+          fandom: 'Cast the complex unbinding spell inside a protective magical ward.',
+          ttrpg: 'Attempt to translate the ancient runes while maintaining a protective magical shield.',
+          cooking: 'Unpack and test the fragile shipment under strict kitchen inspection standards.',
+          millennial: 'Open the mysterious file link inside a protected preview sandbox.',
+          f1: 'Decode the incoming telemetry stream through the main pit wall decoder with error handling active.',
+          gaming: 'Unpack the raw network packet inside a protected buffer stream.'
+        }
+      },
+      {
+        code: '        return json.loads(raw_data)',
+        plain: 'Parse the raw formatted string into a structured dictionary and hand back the parsed result.',
+        lenses: {
+          medical: 'Translate the raw signals into a fully structured patient diagnostic summary.',
+          sports: 'Convert the raw game log into a organized box score table.',
+          fandom: 'Decipher the encoded owl message into a clear readable wizard parchment.',
+          ttrpg: 'Translate the cryptic runes into a clear adventurer quest map.',
+          cooking: 'Unpack the shipment into an organized pantry inventory list.',
+          millennial: 'Extract the raw link into a clean formatted media card.',
+          f1: 'Decode the raw radio signal into clear live lap speed telemetry.',
+          gaming: 'Parse the raw server bytes into a structured player inventory list.'
+        }
+      },
+      {
+        code: '    except (ValueError, TypeError):',
+        plain: 'Catch decoding or type mismatch errors if the incoming data format is corrupted or unexpected.',
+        lenses: {
+          medical: 'Intercept signal corruption or invalid medical sensor readouts before they affect clinical records.',
+          sports: 'Catch transmission dropouts or garbled score entries before they corrupt team statistics.',
+          fandom: 'Intercept magical interference or scrambled rune letters before the spell misfires.',
+          ttrpg: 'Detect magical traps or damaged rune carvings before the translation ritual fails.',
+          cooking: 'Identify damaged packaging or missing ingredient labels before items reach the kitchen line.',
+          millennial: 'Catch broken links or corrupted media downloads before they crash your feed.',
+          f1: 'Detect radio interference or dropped telemetry packets before they distort race strategy.',
+          gaming: 'Intercept corrupted data packets or missing payload headers before they crash the game client.'
+        }
+      },
+      {
+        code: '        return {\'status\': \'error\', \'data\': None}',
+        plain: 'Return a safe fallback structure indicating an error state without crashing the program.',
+        lenses: {
+          medical: 'File an error status report with null diagnostic data to safely alert the attending physician.',
+          sports: 'Post an incomplete feed alert on the scoreboard with empty player metrics.',
+          fandom: 'Send back a fizzled-spell scroll with empty message fields to notify the caster.',
+          ttrpg: 'Hand the party a unreadable scroll warning while preserving character safety.',
+          cooking: 'Mark the crate as rejected stock and log an empty inventory entry for the chef.',
+          millennial: 'Display an error card with null media content so the chat timeline keeps scrolling.',
+          f1: 'Display a telemetry loss warning on the pit wall dashboard with empty data channels.',
+          gaming: 'Return a connection warning packet with empty inventory slots so gameplay continues smoothly.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'debounce-js',
+    lang: 'javascript',
+    title: 'debounce(func, wait)',
+    summary: 'Delay execution until user activity pauses, with a flush method to force immediate execution.',
+    segments: [
+      {
+        code: 'function debounce(func, wait) {\n  let timeout, pendingArgs, pendingContext;',
+        plain: 'Define a debouncer that accepts a target action and delay time, holding state variables for pending calls.',
+        lenses: {
+          medical: 'Establish a prescription delay protocol that buffers rapid doctor requests until dosage settles.',
+          sports: 'Set up a whistle delay rule that holds referee calls until rapid player scuffles stabilize.',
+          fandom: 'Cast a delayed incantation ward that holds spell energy until the wand movement stops shaking.',
+          ttrpg: 'Establish a reaction queue rule that holds monster turns until all simultaneous player actions resolve.',
+          cooking: 'Set up an order fire delay that holds kitchen tickets until the diner finishes ordering.',
+          millennial: 'Create a text draft buffer that holds outgoing messages until you stop typing rapidly.',
+          f1: 'Set up a radio transmission buffer that holds driver messages until engine noise dies down.',
+          gaming: 'Establish an ability cooldown queue that holds rapid key presses until the input window closes.'
+        }
+      },
+      {
+        code: '  const debounced = function(...args) {\n    pendingContext = this;\n    pendingArgs = args;',
+        plain: 'When the wrapped function is called, store the latest invocation context and arguments.',
+        lenses: {
+          medical: 'When a new request arrives, update the patient chart with the latest prescription dosage and attending notes.',
+          sports: 'When a new play call comes in, update the clipboard with the latest tactical positions and player personnel.',
+          fandom: 'When the wand moves, capture the latest spell target and magical intensity parameters.',
+          ttrpg: 'When a action is declared, record the active character\'s target and die modifier values.',
+          cooking: 'When the waiter updates the table, record the latest dish modifications and special requests.',
+          millennial: 'When a new key is pressed, store the updated text draft and current group chat target.',
+          f1: 'When the driver speaks, store the latest lap delta and tire state radio notes.',
+          gaming: 'When a command is pressed, store the latest target location and skill parameter choices.'
+        }
+      },
+      {
+        code: '    clearTimeout(timeout);\n    timeout = setTimeout(() => {\n      func.apply(pendingContext, pendingArgs);\n      timeout = null;\n    }, wait);',
+        plain: 'Reset any existing timer and schedule the action to execute after the specified quiet period.',
+        lenses: {
+          medical: 'Cancel the previous timer and set a new waiting countdown; execute the order once the patient stabilizes.',
+          sports: 'Reset the play clock and restart the countdown; blow the whistle once the field settles down.',
+          fandom: 'Quell the building spell charge and restart the timer; release the magic once the wand becomes steady.',
+          ttrpg: 'Reset the initiative timer and restart the countdown; resolve the turn once all players pause.',
+          cooking: 'Hold the order ticket and reset the timer; fire the dish to the kitchen once the table stops ordering.',
+          millennial: 'Cancel the send timer and reset the countdown; post the message once you stop editing.',
+          f1: 'Reset the radio delay timer; transmit the clear voice message once engine noise drops below threshold.',
+          gaming: 'Reset the cast bar countdown; execute the ability once button mash pauses.'
+        }
+      },
+      {
+        code: '  debounced.flush = () => {\n    if (!timeout) return;',
+        plain: 'Provide an emergency flush method that checks if an action is currently waiting in the queue.',
+        lenses: {
+          medical: 'Provide a STAT override control that checks if an urgent medical order is pending in queue.',
+          sports: 'Provide an instant whistle option that checks if a play call is waiting on clock expiration.',
+          fandom: 'Provide a instant charm release that checks if spell energy is waiting inside the wand.',
+          ttrpg: 'Provide a quick-draw feat trigger that checks if an action is held in reserve.',
+          cooking: 'Provide a rush order bell that checks if a dish ticket is holding in the queue.',
+          millennial: 'Provide a send-now button that checks if a text draft is waiting on the auto-send timer.',
+          f1: 'Provide an urgent pit button that checks if a radio message is holding in buffer.',
+          gaming: 'Provide a priority queue trigger that checks if an ability cast is buffering.'
+        }
+      },
+      {
+        code: '    clearTimeout(timeout);\n    timeout = null;\n    func.apply(pendingContext, pendingArgs);',
+        plain: 'Cancel the pending delay timer immediately and execute the saved action right away.',
+        lenses: {
+          medical: 'Cancel the delay timer instantly and deliver the pending medication order without waiting.',
+          sports: 'Cancel the play clock immediately and signal the official call on the field right now.',
+          fandom: 'Cancel the charge timer and release the stored magical charm instantly.',
+          ttrpg: 'Cancel the initiative delay and resolve the held character action immediately.',
+          cooking: 'Cancel the order delay and fire the ticket to the line instantly.',
+          millennial: 'Bypass the send countdown and dispatch the pending text draft immediately.',
+          f1: 'Cancel the radio buffer timer and blast the driver audio to the pit wall immediately.',
+          gaming: 'Bypass the cast timer and unleash the buffered ability instantly.'
+        }
+      },
+      {
+        code: '  };\n  return debounced;\n}',
+        plain: 'Return the complete debounced wrapper function equipped with timer management and flush capability.',
+        lenses: {
+          medical: 'Hand back the completed intake protocol ready to protect patient orders with timer and STAT controls.',
+          sports: 'Hand back the official play call manager equipped with clock delays and instant whistle controls.',
+          fandom: 'Hand back the stabilized wand enchantment ready to control spell release timing.',
+          ttrpg: 'Hand back the action queue manager equipped with timing buffers and quick-draw overrides.',
+          cooking: 'Hand back the ticket timing system equipped with order pauses and rush bells.',
+          millennial: 'Hand back the chat draft controller equipped with auto-pause and instant send controls.',
+          f1: 'Hand back the radio buffer pipeline ready to streamline pit wall communications.',
+          gaming: 'Hand back the input buffer controller equipped with cooldown smoothing and priority triggers.'
+        }
+      }
+    ]
+  },
+  {
+    id: 'leaderboard-guard-js',
+    lang: 'javascript',
+    title: 'fetchAndRenderLeaderboard() — generation guard',
+    summary: 'Prevent race conditions when switching subjects quickly by guarding async responses with a request generation counter.',
+    segments: [
+      {
+        code: 'async function fetchAndRenderLeaderboard() {\n  const requestGeneration = ++leaderboardRequestGeneration;\n  const requestedSubject = leaderboardSubject;',
+        plain: 'Increment the global request counter and capture current request generation and subject key snapshots.',
+        lenses: {
+          medical: 'Increment the hospital dispatch sequence and log exact timestamps and target ward identifiers.',
+          sports: 'Increment the stadium scoreboard sequence number and record current play session keys.',
+          fandom: 'Advance the House owl post sequence counter and note the exact destination parchment and house seal.',
+          ttrpg: 'Advance the guild quest contract tracker and note the active dungeon level and party token.',
+          cooking: 'Increment the kitchen order ticket sequence and note the table number and course seat.',
+          millennial: 'Increment the story post upload sequence and save the target channel and draft timestamp.',
+          f1: 'Advance the pit wall telemetry fetch counter and lock in current stint number and tire compound key.',
+          gaming: 'Increment the match server query counter and capture active map zone and player session IDs.'
+        }
+      },
+      {
+        code: '  listEl.textContent = \'Loading…\';\n  listEl.className = \'leaderboard-state loading\';',
+        plain: 'Update the user interface to display an active loading state while the network request is pending.',
+        lenses: {
+          medical: 'Display a processing badge on the clinic status board while patient charts are being retrieved.',
+          sports: 'Display a checking-replay message on the stadium jumbotron while scores update.',
+          fandom: 'Illuminate a shimmering orb on the Great Hall board while owl messages arrive.',
+          ttrpg: 'Display a swirling scrying pool visual while the DM retrieves monster standings.',
+          cooking: 'Flip the pass sign to kitchen working while orders cook on the line.',
+          millennial: 'Show a pulsing loading spinner on your feed while stories sync from the server.',
+          f1: 'Display a telemetry syncing indicator on the pit wall monitor during data transfer.',
+          gaming: 'Show a fetching standings overlay on the scoreboard while match statistics sync.'
+        }
+      },
+      {
+        code: '  const { data, error } = await supabaseClient\n    .from(\'leaderboard\')\n    .select(\'session_name, score\')\n    .eq(\'subject\', requestedSubject);',
+        plain: 'Fetch the top score records from the remote database asynchronously for the requested subject.',
+        lenses: {
+          medical: 'Query the central medical database for patient recovery scores under the active specialty department.',
+          sports: 'Fetch the official season leader metrics from the league server for the selected sport.',
+          fandom: 'Retrieve the top house point records from the central magical archive for the chosen house.',
+          ttrpg: 'Query the guild master\'s remote vault for top adventurer honor scores in the chosen realm.',
+          cooking: 'Fetch top recipe rating scores from the culinary database for the selected menu category.',
+          millennial: 'Query the cloud database for top trending post scores in the active interest group.',
+          f1: 'Fetch fast lap leaderboard records from the central timing server for the selected circuit.',
+          gaming: 'Query the global ladder database for top player rankings in the active match mode.'
+        }
+      },
+      {
+        code: '  if (requestGeneration !== leaderboardRequestGeneration || requestedSubject !== leaderboardSubject) return;',
+        plain: 'Check if a newer request was started while waiting; if so, abort to ignore stale outdated data.',
+        lenses: {
+          medical: 'Check if a newer patient transfer request was dispatched; if so, discard stale incoming charts immediately.',
+          sports: 'Check if a newer play review was initiated; if so, discard outdated score updates to prevent confusion.',
+          fandom: 'Check if a newer owl message was dispatched; if so, ignore old incoming spell updates.',
+          ttrpg: 'Check if the party moved to a new dungeon level; if so, ignore old monster scrying results.',
+          cooking: 'Check if the guest modified their order; if so, toss outdated kitchen tickets before cooking.',
+          millennial: 'Check if you switched channels while loading; if so, ignore old feed responses silently.',
+          f1: 'Check if a newer pit strategy call was issued; if so, drop outdated telemetry streams immediately.',
+          gaming: 'Check if the player switched match lobbies; if so, drop outdated rank responses instantly.'
+        }
+      },
+      {
+        code: '  renderLeaderboardRows(listEl, data);\n}',
+        plain: 'Render the fresh, verified score data into the display board once confirmed current.',
+        lenses: {
+          medical: 'Post the verified patient rankings onto the clinic department whiteboard.',
+          sports: 'Update the stadium jumbotron with verified top scorer standings.',
+          fandom: 'Display the confirmed house points on the Great Hall hourglass standings board.',
+          ttrpg: 'Write the verified adventurer rankings onto the tavern guild board.',
+          cooking: 'Display the top rated dishes on the restaurant specials chalkboard.',
+          millennial: 'Publish the updated leader rankings to your profile feed.',
+          f1: 'Display the live driver standings on the pit wall main screen.',
+          gaming: 'Populate the verified top player rankings onto the leader HUD overlay.'
+        }
+      }
+    ]
+  },
+  {
     id: 'tally-scores-python',
     lang: 'python',
     title: 'tally_scores(rounds)',
