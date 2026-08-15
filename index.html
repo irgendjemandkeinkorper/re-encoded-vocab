@@ -2089,13 +2089,32 @@ function toggleTheme() {
  */
 function debounce(func, wait) {
   let timeout;
-  return function(...args) {
-    const context = this;
+  let pendingArgs;
+  let pendingContext;
+  const debounced = function(...args) {
+    pendingContext = this;
+    pendingArgs = args;
     clearTimeout(timeout);
     timeout = setTimeout(() => {
-      func.apply(context, args);
+      timeout = null;
+      const argsToApply = pendingArgs;
+      const contextToApply = pendingContext;
+      pendingArgs = null;
+      pendingContext = null;
+      func.apply(contextToApply, argsToApply);
     }, wait);
   };
+  debounced.flush = () => {
+    if(!timeout) return;
+    clearTimeout(timeout);
+    timeout = null;
+    const argsToApply = pendingArgs;
+    const contextToApply = pendingContext;
+    pendingArgs = null;
+    pendingContext = null;
+    func.apply(contextToApply, argsToApply);
+  };
+  return debounced;
 }
 
 const grid = document.getElementById('grid');
@@ -2293,10 +2312,11 @@ function renderGrid(){
   grid.appendChild(fragment);
 }
 
-searchInput.addEventListener('input', debounce((e) => {
+const debouncedSearch = debounce((e) => {
   searchTerm = e.target.value.toLowerCase();
   renderGrid();
-}, 150));
+}, 150);
+searchInput.addEventListener('input', debouncedSearch);
 
 starredToggle.addEventListener('click', () => {
   starredOnly = !starredOnly;
@@ -2386,6 +2406,7 @@ function getFilteredOrShowEmpty(modeLabel){
 }
 
 function enterStudy(){
+  debouncedSearch.flush();
   const filtered = getFilteredOrShowEmpty('Study Mode');
   if(!filtered) return;
   if(quizMode){ quizWrap.classList.remove('active'); quizMode = false; quizToggle.textContent = 'Quiz Mode'; quizToggle.setAttribute('aria-pressed', 'false'); }
@@ -2753,6 +2774,7 @@ function setSessionName(name){
 }
 
 function enterQuiz(){
+  debouncedSearch.flush();
   if(!getFilteredOrShowEmpty('Quiz Mode')) return;
   if(studyMode){ studyWrap.classList.remove('active'); studyMode = false; studyToggle.textContent = 'Study Mode'; studyToggle.setAttribute('aria-pressed', 'false'); }
   if(codeLabMode){ codeWrap.classList.remove('active'); codeLabMode = false; codeLabToggle.textContent = 'Code Lab'; codeLabToggle.setAttribute('aria-pressed', 'false'); }
@@ -2873,7 +2895,7 @@ function setLeaderboardSubmissionStatus(message, state = '') {
   status.className = `leaderboard-submit-status ${state}`.trim();
 }
 
-async function submitScoreToLeaderboard(total, accuracy){
+async function submitScoreToLeaderboard(total){
   if(leaderboardSubmissionState !== 'idle') return;
   leaderboardSubmissionState = 'submitting';
   setLeaderboardSubmissionStatus('Submitting score…', 'loading');
@@ -2895,15 +2917,6 @@ async function submitScoreToLeaderboard(total, accuracy){
     setLeaderboardSubmissionStatus('Enter a name before submitting a score.', 'error');
     return;
   }
-
-  // Security Enhancement: Defensively validate the active subject key against permitted keys
-  const validSubjects = new Set(SUBJECTS.map(s => s.key));
-  if (!validSubjects.has(activeSubject)) {
-    leaderboardSubmissionState = 'error';
-    setLeaderboardSubmissionStatus('Invalid subject domain.', 'error');
-    return;
-  }
-
   const payload = {
     session_name: name,
     subject: activeSubject,
@@ -2952,13 +2965,14 @@ function showQuizSummary(){
   document.getElementById('quizFeedback').className = 'quiz-feedback';
   document.getElementById('quizNext').style.display = 'none';
   document.getElementById('quizProgress').textContent = 'Done';
-  submitScoreToLeaderboard(total, accuracy);
+  submitScoreToLeaderboard(total);
 }
 
 // ---- Leaderboard viewing ----
 const leaderboardOverlay = document.getElementById('leaderboardOverlay');
 let leaderboardSubject = 'coding';
 let leaderboardReturnFocus = null;
+let leaderboardRequestGeneration = 0;
 
 function renderLeaderboardSubjectTabs(){
   const el = document.getElementById('leaderboardSubjectTabs');
@@ -3002,11 +3016,14 @@ function renderLeaderboardRows(listEl, data){
 }
 
 async function fetchAndRenderLeaderboard(){
+  const requestGeneration = ++leaderboardRequestGeneration;
+  const requestedSubject = leaderboardSubject;
   const listEl = document.getElementById('leaderboardList');
   listEl.textContent = 'Loading…';
   listEl.className = 'leaderboard-state loading';
   listEl.setAttribute('aria-busy', 'true');
   if(!supabaseClient){
+    if(requestGeneration !== leaderboardRequestGeneration || requestedSubject !== leaderboardSubject) return;
     listEl.textContent = 'Leaderboard unavailable offline or because the Supabase service could not be loaded.';
     listEl.className = 'leaderboard-state error';
     listEl.setAttribute('aria-busy', 'false');
@@ -3016,9 +3033,10 @@ async function fetchAndRenderLeaderboard(){
     const { data, error } = await supabaseClient
       .from('leaderboard')
       .select('session_name, score, correct_count, total_questions')
-      .eq('subject', leaderboardSubject)
+      .eq('subject', requestedSubject)
       .order('score', { ascending: false })
       .limit(10);
+    if(requestGeneration !== leaderboardRequestGeneration || requestedSubject !== leaderboardSubject) return;
     if(error) throw error;
     if(!data || !data.length){
       listEl.textContent = 'No scores yet for this subject — be the first!';
@@ -3030,6 +3048,7 @@ async function fetchAndRenderLeaderboard(){
     listEl.className = 'leaderboard-state loaded';
     listEl.setAttribute('aria-busy', 'false');
   } catch(e) {
+    if(requestGeneration !== leaderboardRequestGeneration || requestedSubject !== leaderboardSubject) return;
     console.warn('Leaderboard fetch failed:', e);
     listEl.textContent = 'Could not load the leaderboard right now. Please try again later.';
     listEl.className = 'leaderboard-state error';
