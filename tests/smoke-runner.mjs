@@ -44,6 +44,32 @@ try {
   });
   console.log(`PERFORMANCE ${JSON.stringify(performanceMetrics)}`);
   console.log(title);
+
+  // collection-format.test.html renders per-test cards and summary counters into the DOM
+  await page.goto('http://127.0.0.1:4173/tests/collection-format.test.html');
+  await page.waitForFunction(() => /^\d+$/.test(document.getElementById('total-tests')?.textContent ?? ''), null, { timeout: 30000 });
+  const collection = await page.evaluate(() => ({
+    total: Number(document.getElementById('total-tests').textContent),
+    passed: Number(document.getElementById('passed-tests').textContent),
+    failed: Number(document.getElementById('failed-tests').textContent),
+    errors: [...document.querySelectorAll('.test-card.failed .test-error')].map(el => el.textContent.trim()),
+  }));
+  if (!collection.total || collection.failed) {
+    throw new Error(`collection-format: ${collection.failed}/${collection.total} failed\n${collection.errors.join('\n')}`);
+  }
+  console.log(`PASS — collection-format tests (${collection.passed}/${collection.total})`);
+
+  // spaced-repetition.test.html signals completion via window.testsCompleted / window.testResults
+  await page.goto('http://127.0.0.1:4173/tests/spaced-repetition.test.html');
+  await page.waitForFunction(() => window.testsCompleted === true, null, { timeout: 30000 });
+  const spaced = await page.evaluate(() => ({
+    ...window.testResults,
+    errors: [...document.querySelectorAll('.test-case .test-error')].map(el => el.textContent.trim()),
+  }));
+  if (!spaced.total || spaced.failed) {
+    throw new Error(`spaced-repetition: ${spaced.failed}/${spaced.total} failed\n${spaced.errors.join('\n')}`);
+  }
+  console.log(`PASS — spaced-repetition tests (${spaced.passed}/${spaced.total})`);
 } finally {
   await browser.close();
   server.close();
