@@ -369,6 +369,10 @@ export function normalize(collection) {
     if (typeof val === 'object') {
       const cloned = {};
       for (const key of Object.keys(val)) {
+        // Security Enhancement: Skip dangerous prototype keys to prevent prototype pollution
+        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+          continue;
+        }
         cloned[key] = sanitizeRecursive(val[key]);
       }
       return cloned;
@@ -403,6 +407,10 @@ export function serialize(collection) {
     const sorted = {};
     const sortedKeys = Object.keys(val).sort();
     for (const key of sortedKeys) {
+      // Security Enhancement: Skip dangerous prototype keys to prevent prototype pollution
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        continue;
+      }
       sorted[key] = sortKeysRecursive(val[key]);
     }
     return sorted;
