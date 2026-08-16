@@ -2297,9 +2297,12 @@ function renderGrid(){
         </div>
       </div>
     `;
-    const inner = card.querySelector('.card-inner');
-    const starBtn = card.querySelector('.star-btn');
-    const backFace = card.querySelector('.face.back');
+    // Performance Optimization: Use direct element property indexing (`children[i]`)
+    // instead of querySelector CSS engine traversals. This eliminates 960+ DOM selector queries per grid render.
+    const starBtn = card.children[0];
+    const copyBtn = card.children[1];
+    const inner = card.children[2];
+    const backFace = inner.children[1];
     let backRendered = false;
 
     // Performance Optimization: Lazily generate and inject card back content (nested lens blocks and formatting)
@@ -2337,9 +2340,9 @@ function renderGrid(){
     card.addEventListener('focusin', renderBackContent, { passive: true });
     starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
     fragment.appendChild(card);
-    card.querySelector('.copy-btn').onclick = (e) => {
+    copyBtn.onclick = (e) => {
       e.stopPropagation();
-      copyToClipboard(d.term, card.querySelector('.copy-btn'));
+      copyToClipboard(d.term, copyBtn);
     };
   });
 
