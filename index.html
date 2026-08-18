@@ -2670,12 +2670,19 @@ function levenshtein(a, b){
 
 const normalizeCache = new Map();
 function normalizeAnswer(s){
+  if (typeof s !== 'string') return '';
   if (normalizeCache.has(s)) return normalizeCache.get(s);
-  const res = s.toLowerCase()
+  // Security & Performance: Bound input length to 200 chars to avoid ReDoS / resource exhaustion
+  const inputToProcess = s.length > 200 ? s.slice(0, 200) : s;
+  const res = inputToProcess.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+  // Security & Memory Management: Bound cache size to 1000 items (FIFO eviction) to prevent DoS via unbounded memory growth
+  if (normalizeCache.size >= 1000) {
+    normalizeCache.delete(normalizeCache.keys().next().value);
+  }
   normalizeCache.set(s, res);
   return res;
 }
