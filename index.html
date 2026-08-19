@@ -2297,9 +2297,12 @@ function renderGrid(){
         </div>
       </div>
     `;
-    const inner = card.querySelector('.card-inner');
-    const starBtn = card.querySelector('.star-btn');
-    const backFace = card.querySelector('.face.back');
+    // Performance Optimization: Direct element indexing (children[i]) avoids repeated querySelector calls,
+    // saving ~1,200 DOM tree search queries across 240 cards per grid render cycle.
+    const starBtn = card.children[0];
+    const copyBtn = card.children[1];
+    const inner = card.children[2];
+    const backFace = inner.children[1];
     let backRendered = false;
 
     // Performance Optimization: Lazily generate and inject card back content (nested lens blocks and formatting)
@@ -2337,9 +2340,9 @@ function renderGrid(){
     card.addEventListener('focusin', renderBackContent, { passive: true });
     starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
     fragment.appendChild(card);
-    card.querySelector('.copy-btn').onclick = (e) => {
+    copyBtn.onclick = (e) => {
       e.stopPropagation();
-      copyToClipboard(d.term, card.querySelector('.copy-btn'));
+      copyToClipboard(d.term, copyBtn);
     };
   });
 
@@ -3783,8 +3786,13 @@ const codeLabToggle = document.getElementById('codeLabToggle');
 const codeLensChipsEl = document.getElementById('codeLensChips');
 const codeColEl = document.getElementById('codeCol');
 
+// Fast-path regex check to avoid executing 6 sequential string replacement passes on plain text strings
+const HTML_CHAR_RE = /[&<>"'/]/;
+
 function escHtml(s){
-  return String(s)
+  const str = String(s);
+  if (!HTML_CHAR_RE.test(str)) return str;
+  return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
