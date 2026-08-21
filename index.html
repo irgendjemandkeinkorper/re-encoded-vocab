@@ -2670,18 +2670,22 @@ function levenshtein(a, b){
 
 const normalizeCache = new Map();
 function normalizeAnswer(s){
-  if (normalizeCache.has(s)) return normalizeCache.get(s);
-  const res = s.toLowerCase()
+  if (typeof s !== 'string') return '';
+  const str = s.length > 200 ? s.slice(0, 200) : s;
+  if (normalizeCache.has(str)) return normalizeCache.get(str);
+  const res = str.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  normalizeCache.set(s, res);
+  if (normalizeCache.size >= 1000) normalizeCache.clear();
+  normalizeCache.set(str, res);
   return res;
 }
 
 const variantsCache = new Map();
 function getAcceptableVariants(term){
+  if (typeof term !== 'string') return [];
   if (variantsCache.has(term)) return variantsCache.get(term);
   const variants = new Set();
   const full = normalizeAnswer(term);
