@@ -3783,8 +3783,13 @@ const codeLabToggle = document.getElementById('codeLabToggle');
 const codeLensChipsEl = document.getElementById('codeLensChips');
 const codeColEl = document.getElementById('codeCol');
 
+// Performance Optimization: Fast-path regex check to skip 6 sequential .replace() calls when no special HTML characters exist
+const HTML_CHAR_RE = /[&<>"'/]/;
+
 function escHtml(s){
-  return String(s)
+  const str = typeof s === 'string' ? s : String(s);
+  if (!HTML_CHAR_RE.test(str)) return str;
+  return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
