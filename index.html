@@ -2700,6 +2700,10 @@ function getAcceptableVariants(term){
     if(v) variants.add(v);
   });
   const res = [...variants].filter(Boolean);
+  if (variantsCache.size >= 1000) {
+    const firstKey = variantsCache.keys().next().value;
+    if (firstKey !== undefined) variantsCache.delete(firstKey);
+  }
   variantsCache.set(term, res);
   return res;
 }
