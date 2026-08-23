@@ -7,7 +7,9 @@
 <script>
   (function() {
     try {
-      const savedTheme = localStorage.getItem('vocab_theme_preference');
+      const rawTheme = localStorage.getItem('vocab_theme_preference');
+      // Defense-in-depth: Validate theme against strict allowlist to prevent unvalidated storage values from bypassing system preference evaluation
+      const savedTheme = (rawTheme === 'dark' || rawTheme === 'light') ? rawTheme : null;
       if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark-theme');
       } else {
