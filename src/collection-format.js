@@ -36,9 +36,15 @@ const STANDARD_LENSES = new Set([
   'medical', 'sports', 'fandom', 'ttrpg', 'cooking', 'millennial', 'f1', 'gaming'
 ]);
 
+// Fast-path regex to detect HTML special characters before running replacement passes
+const HTML_CHAR_RE = /[&<>"'/]/;
+const ISO8601_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:?\d{2})$/;
+
 // Helper to escape HTML characters for safety against stored XSS
 export function escHtml(str) {
   if (typeof str !== 'string') return str;
+  // Performance Optimization: Fast-path return for plain strings with no HTML special characters
+  if (!HTML_CHAR_RE.test(str)) return str;
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -129,10 +135,8 @@ export function validate(collection) {
     }
   }
 
-  const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:?\d{2})$/;
-
   if (typeof collection.created === 'string') {
-    if (!iso8601Regex.test(collection.created) || isNaN(Date.parse(collection.created))) {
+    if (!ISO8601_REGEX.test(collection.created) || isNaN(Date.parse(collection.created))) {
       addError('created', 'Created must be a valid ISO-8601 datetime string');
     }
   } else if ('created' in collection) {
@@ -140,7 +144,7 @@ export function validate(collection) {
   }
 
   if (typeof collection.modified === 'string') {
-    if (!iso8601Regex.test(collection.modified) || isNaN(Date.parse(collection.modified))) {
+    if (!ISO8601_REGEX.test(collection.modified) || isNaN(Date.parse(collection.modified))) {
       addError('modified', 'Modified must be a valid ISO-8601 datetime string');
     }
   } else if ('modified' in collection) {
