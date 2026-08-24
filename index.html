@@ -2299,6 +2299,8 @@ function renderGrid(){
     `;
     const inner = card.querySelector('.card-inner');
     const starBtn = card.querySelector('.star-btn');
+    // Performance Optimization: Cache copyBtn element reference to avoid redundant querySelector searches on click
+    const copyBtn = card.querySelector('.copy-btn');
     const backFace = card.querySelector('.face.back');
     let backRendered = false;
 
@@ -2337,9 +2339,9 @@ function renderGrid(){
     card.addEventListener('focusin', renderBackContent, { passive: true });
     starBtn.onclick = (e) => { e.stopPropagation(); toggleStar(d.term); };
     fragment.appendChild(card);
-    card.querySelector('.copy-btn').onclick = (e) => {
+    copyBtn.onclick = (e) => {
       e.stopPropagation();
-      copyToClipboard(d.term, card.querySelector('.copy-btn'));
+      copyToClipboard(d.term, copyBtn);
     };
   });
 
