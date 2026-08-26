@@ -455,6 +455,26 @@
           assertEqual(e.message, 'Invalid currentTimestamp: "not-a-date". Must be a valid Date constructor parameter.');
         }
       });
+
+      test("handles non-finite numeric inputs (Infinity, NaN) safely", () => {
+        const malformed = {
+          state: "review",
+          interval: Infinity,
+          repetitions: -Infinity,
+          lapses: NaN,
+          mastery: Infinity
+        };
+        const healed = validateAndMigrateState(malformed);
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 2.5);
+
+        // Verify scheduling does not throw RangeError: Invalid time value
+        const res = schedule(malformed, "good", "2026-07-31T12:00:00.000Z");
+        assertEqual(res.state, "review");
+        assert(typeof res.dueDate === "string", "dueDate should be a valid ISO string");
+      });
     });
 
     // Execution engine
