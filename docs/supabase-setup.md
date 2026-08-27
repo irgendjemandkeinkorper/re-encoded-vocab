@@ -3,7 +3,13 @@
 The glossary can run without Supabase, but the shared leaderboard requires a
 project whose URL and anonymous key are configured in `index.html`. The client
 is untrusted: anyone can inspect the page and call the public API directly.
-RLS and database constraints are therefore required for any deployment.
+RLS, database constraints, and a server-side submission function are therefore
+required for any deployment.
+
+The write path is deliberately **not** a direct table insert. Clients call the
+`submit_leaderboard_score` RPC below, which validates the payload against the
+quiz's actual scoring math and rate-limits by client IP before inserting. The
+anonymous role has no insert policy on the table itself.
 
 ## Table and constraints
 
@@ -28,63 +34,177 @@ alter table public.leaderboard enable row level security;
 
 create policy "public can view leaderboard"
   on public.leaderboard for select to anon, authenticated using (true);
-
-create policy "anonymous users can submit plausible scores"
-  on public.leaderboard for insert to anon, authenticated
-  with check (
-    char_length(session_name) between 1 and 40
-    and score between 0 and 100000
-    and correct_count between 0 and total_questions
-    and total_questions between 1 and 1000
-    and best_streak between 0 and total_questions
-  );
 ```
 
-For a basic database-side abuse guard, add a short cooldown per displayed
-session name. This is intentionally only a backstop: anonymous clients can
-choose a different name, so a production deployment should move submission to
-an Edge Function with a server-issued challenge or authenticated identity.
+Do not create `insert`, `update`, or `delete` policies for the anonymous role.
+Reads are public; every write goes through the function below.
+
+## Hardened submission path (issue #54)
+
+A private submission log supports per-IP rate limiting. It has RLS enabled and
+**no policies at all**, so the anonymous role can neither read nor write it —
+only the `security definer` function touches it. Raw IPs are never stored, only
+salted hashes.
 
 ```sql
-create or replace function public.reject_rapid_leaderboard_submissions()
-returns trigger
+create table public.leaderboard_submission_log (
+  id bigint generated always as identity primary key,
+  ip_hash text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table public.leaderboard_submission_log enable row level security;
+
+create index leaderboard_submission_log_ip_time
+  on public.leaderboard_submission_log (ip_hash, created_at desc);
+```
+
+The submission function re-validates everything server-side. Beyond the shape
+checks, it enforces two invariants of the quiz's scoring rules that a direct
+insert could never check:
+
+- A correct answer awards 10 points, doubled only from the 5th consecutive
+  correct answer onward, and misses only subtract — so the maximum possible
+  score for `c` correct answers is `10 × c` when `c ≤ 4` and `20 × c − 40`
+  when `c ≥ 5`. Anything higher is fabricated.
+- A best streak of `n` requires at least `n` correct answers, so
+  `best_streak ≤ correct_count`.
+
+If the scoring constants in `index.html` (`+10`, `×2` at streak ≥ 5, `−5` per
+miss) ever change, update `v_max_score` here in the same commit.
+
+```sql
+create or replace function public.submit_leaderboard_score(
+  p_session_name text,
+  p_subject text,
+  p_score integer,
+  p_correct_count integer,
+  p_total_questions integer,
+  p_best_streak integer
+) returns void
 language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  v_headers json;
+  v_ip text;
+  v_ip_hash text;
+  v_max_score integer;
 begin
+  -- Shape validation (mirrors the table constraints, with clearer errors).
+  if p_session_name is null
+     or char_length(btrim(p_session_name)) not between 1 and 40 then
+    raise exception 'invalid name';
+  end if;
+  if p_subject is null or p_subject not in ('coding', 'philosophy') then
+    raise exception 'invalid subject';
+  end if;
+  if p_total_questions is null or p_total_questions not between 1 and 1000 then
+    raise exception 'invalid question count';
+  end if;
+  if p_correct_count is null
+     or p_correct_count not between 0 and p_total_questions then
+    raise exception 'invalid correct count';
+  end if;
+  if p_best_streak is null
+     or p_best_streak not between 0 and p_correct_count then
+    raise exception 'invalid streak';
+  end if;
+
+  -- Scoring-math plausibility (see the invariant note above this function).
+  v_max_score := case
+    when p_correct_count <= 4 then 10 * p_correct_count
+    else 20 * p_correct_count - 40
+  end;
+  if p_score is null or p_score < 0 or p_score > v_max_score then
+    raise exception 'implausible score';
+  end if;
+
+  -- Rate limit per client IP. Supabase exposes request headers to Postgres;
+  -- the raw IP is hashed with a static salt and never stored.
+  begin
+    v_headers := current_setting('request.headers', true)::json;
+    v_ip := coalesce(
+      v_headers ->> 'cf-connecting-ip',
+      nullif(btrim(split_part(v_headers ->> 'x-forwarded-for', ',', 1)), ''),
+      'unknown'
+    );
+  exception when others then
+    v_ip := 'unknown';
+  end;
+  v_ip_hash := encode(sha256(convert_to('leaderboard:' || v_ip, 'utf8')), 'hex');
+
   if exists (
-    select 1
-    from public.leaderboard
-    where session_name = new.session_name
+    select 1 from public.leaderboard_submission_log
+    where ip_hash = v_ip_hash
       and created_at > now() - interval '10 seconds'
   ) then
     raise exception 'please wait before submitting another score';
   end if;
-  return new;
+
+  if (
+    select count(*) from public.leaderboard_submission_log
+    where ip_hash = v_ip_hash
+      and created_at > now() - interval '1 hour'
+  ) >= 20 then
+    raise exception 'hourly submission limit reached';
+  end if;
+
+  -- Opportunistic cleanup keeps the log small; a day of history is plenty.
+  delete from public.leaderboard_submission_log
+  where created_at < now() - interval '1 day';
+
+  insert into public.leaderboard_submission_log (ip_hash)
+  values (v_ip_hash);
+
+  insert into public.leaderboard
+    (session_name, subject, score, correct_count, total_questions, best_streak)
+  values
+    (btrim(p_session_name), p_subject, p_score, p_correct_count,
+     p_total_questions, p_best_streak);
 end;
 $$;
 
-drop trigger if exists leaderboard_submission_cooldown on public.leaderboard;
-create trigger leaderboard_submission_cooldown
-  before insert on public.leaderboard
-  for each row execute function public.reject_rapid_leaderboard_submissions();
+revoke all on function public.submit_leaderboard_score(text, text, integer, integer, integer, integer) from public;
+grant execute on function public.submit_leaderboard_score(text, text, integer, integer, integer, integer) to anon, authenticated;
 ```
 
-Do not create `update` or `delete` policies for the anonymous role. For a
-production leaderboard, prefer an Edge Function or authenticated server-side
-write path with rate limiting; client-side score values cannot be trusted. The
-browser also applies a 10-second cooldown to normal submissions, but that is a
-user-experience guard rather than a security boundary. Issue #54 tracks the
-stronger server-side abuse-protection boundary.
+Known limitations, accepted for a public demo leaderboard: clients behind one
+NAT share an IP budget, a determined attacker can rotate IPs, and a plausible
+fake score (within the scoring-math bounds and rate limits) still gets in.
+Raising the bar beyond this means an authenticated identity or a server-issued
+challenge in an Edge Function — out of scope for now, and the score ceiling
+plus rate limits cap the damage either way.
+
+## Migrating an existing deployment
+
+If your project still has the original direct-insert policy and the name-keyed
+cooldown trigger (which a client could bypass by changing its display name),
+run the *Hardened submission path* SQL above, then remove the legacy write
+path:
+
+```sql
+drop policy if exists "anonymous users can submit plausible scores" on public.leaderboard;
+drop trigger if exists leaderboard_submission_cooldown on public.leaderboard;
+drop function if exists public.reject_rapid_leaderboard_submissions();
+```
+
+The client falls back to the legacy direct insert only while the RPC does not
+exist yet (Supabase returns `PGRST202`), so applying the SQL before or after
+deploying the client change are both safe orderings.
 
 ## Configure a fork
 
-1. Create a Supabase project and run the SQL above.
+1. Create a Supabase project and run the SQL above (table, log table, and
+   function).
 2. Copy the project URL and anon key into `SUPABASE_URL` and
    `SUPABASE_ANON_KEY` in `index.html`.
-3. Keep the RLS policies enabled and test both a normal submission and a
-   deliberately invalid direct REST insert.
+3. Keep the RLS policies enabled and test: a normal submission, a deliberately
+   invalid direct REST insert (should be rejected — no insert policy), a direct
+   REST call to the RPC with an impossible score like
+   `score=1000, correct_count=3` (should raise `implausible score`), and two
+   rapid submissions (the second should raise the cooldown error).
 
 The CDN dependency is pinned to `@supabase/supabase-js@2.111.0` and protected
 with SRI. Any deliberate version bump must update both the URL and the hash.

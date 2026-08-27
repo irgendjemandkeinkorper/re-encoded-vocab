@@ -2969,14 +2969,32 @@ async function submitScoreToLeaderboard(total){
     }
   } catch(e) {}
   try {
-    const { error } = await supabaseClient.from('leaderboard').insert(payload);
+    // Writes go through the server-side RPC (docs/supabase-setup.md), which
+    // re-validates the score against the quiz's scoring math and rate-limits
+    // by client IP. The table itself has no anonymous insert policy.
+    let { error } = await supabaseClient.rpc('submit_leaderboard_score', {
+      p_session_name: payload.session_name,
+      p_subject: payload.subject,
+      p_score: payload.score,
+      p_correct_count: payload.correct_count,
+      p_total_questions: payload.total_questions,
+      p_best_streak: payload.best_streak,
+    });
+    if (error && error.code === 'PGRST202') {
+      // Deployment predates the hardened RPC — legacy direct insert still works
+      // there because the old insert policy is only dropped in the same migration.
+      ({ error } = await supabaseClient.from('leaderboard').insert(payload));
+    }
     if (error) throw error;
     try { sessionStorage.setItem(LEADERBOARD_SUBMISSION_KEY, String(Date.now())); } catch(e) {}
     leaderboardSubmissionState = 'submitted';
     setLeaderboardSubmissionStatus('Score submitted to the leaderboard.', 'success');
   } catch(e) {
+    const message = typeof e?.message === 'string' && /wait|limit/i.test(e.message)
+      ? 'Please wait before submitting another score.'
+      : 'Could not submit the score right now; your result remains local.';
     leaderboardSubmissionState = 'error';
-    setLeaderboardSubmissionStatus('Could not submit the score right now; your result remains local.', 'error');
+    setLeaderboardSubmissionStatus(message, 'error');
     console.warn('Could not submit score to leaderboard:', e);
   }
 }
@@ -3509,17 +3527,17 @@ const CODE_WALKS = [
         }
       },
       {
-        code: 'await supabaseClient.from(\'leaderboard\').insert({\n  session_name: name,\n  subject: activeSubject,\n  score: quizScore,\n  correct_count: quizCorrectCount,\n  total_questions: total,\n  best_streak: quizStreak,\n});',
-        plain: 'Send the player\'s name, quiz subject, total score, correct answer count, total questions, and longest streak directly to the "leaderboard" database table.',
+        code: 'await supabaseClient.rpc(\'submit_leaderboard_score\', {\n  p_session_name: payload.session_name,\n  p_subject: payload.subject,\n  p_score: payload.score,\n  p_correct_count: payload.correct_count,\n  p_total_questions: payload.total_questions,\n  p_best_streak: payload.best_streak,\n});',
+        plain: 'Hand the player\'s name, subject, score, correct count, question total, and best streak to a server-side function — the database re-checks the values against the scoring rules and rate limits before accepting the row, because the browser can\'t be trusted.',
         lenses: {
-          medical: 'Submit the patient\'s vitals, medical record number, and full diagnostic test results directly to the clinic\'s central electronic database.',
-          sports: 'Log the athlete\'s name, current event, total points scored, successful shots, and longest scoring run onto the official league stat sheet.',
-          fandom: 'Register the wizard\'s name, magic discipline, house points earned, successful charm casts, and consecutive spell streak in the Ministry registry.',
-          ttrpg: 'Add your character\'s name, current quest, gold pieces earned, successful skill checks, and consecutive crits to the guild master\'s chronicle.',
-          cooking: 'File the chef\'s name, station assignment, total points scored, perfect plates served, and longest consecutive perfect service streak on the kitchen noticeboard.',
-          millennial: 'Post your username, current topic, high score, perfect tweets, and consecutive viral threads directly to your social profile database.',
-          f1: 'Send the driver\'s name, race category, total championship points, successful overtakes, and consecutive clean laps to the official FIA database.',
-          gaming: 'Upload your gamertag, game mode, final score, kills, shots fired, and highest killstreak to the global multiplayer server.'
+          medical: 'Submit the patient\'s results through the records office, not straight into the chart — a clerk verifies the values are medically possible before filing them.',
+          sports: 'Report the athlete\'s stat line to the official scorer\'s table — the league checks the numbers add up before they enter the record book.',
+          fandom: 'Send the wizard\'s results to the Ministry examiner by owl — the registry verifies the spellwork was actually possible before recording it.',
+          ttrpg: 'Hand your session results to the DM, not the campaign log — the DM checks the math against the dice before it becomes canon.',
+          cooking: 'Send the chef\'s tally through the head chef\'s pass — the numbers are checked against the tickets before they reach the noticeboard.',
+          millennial: 'Submit your score through the app\'s API, not straight into its database — the server validates it before your profile updates.',
+          f1: 'Radio the lap data to race control — the stewards verify the telemetry is physically plausible before it enters the classification.',
+          gaming: 'Send your match results to the game server — the anti-cheat verifies the score was achievable before the leaderboard updates.'
         }
       },
       {

@@ -54,8 +54,13 @@ The public demo's Supabase project is not a reusable backend for forks. Create
 your own project, run the SQL in [docs/supabase-setup.md](docs/supabase-setup.md),
 then replace `SUPABASE_URL` and `SUPABASE_ANON_KEY` in `index.html`. Keep Row
 Level Security enabled: the browser is an untrusted client and can submit
-arbitrary requests directly. The documented policies allow public reads and
-plausible inserts, but no anonymous updates or deletes.
+arbitrary requests directly, so leaderboard integrity is enforced entirely
+server-side. Reads are public; the only write path is the
+`submit_leaderboard_score` database function, which re-checks every value
+against the quiz's actual scoring math and rate-limits submissions per client
+IP. There are no anonymous insert, update, or delete policies on the table.
+Even so, treat the leaderboard as low-stakes: a plausible fake score within
+those bounds cannot be distinguished from a real one.
 
 ---
 
