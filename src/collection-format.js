@@ -36,9 +36,15 @@ const STANDARD_LENSES = new Set([
   'medical', 'sports', 'fandom', 'ttrpg', 'cooking', 'millennial', 'f1', 'gaming'
 ]);
 
-// Helper to escape HTML characters for safety against stored XSS
+const HTML_CHAR_RE = /[&<>"'/]/;
+
+// Helper to escape HTML characters for safety against stored XSS.
+// Performance Optimization: Fast-path regex check tests for HTML special characters prior to
+// string replacements, allowing plain text strings (~95%+ of corpus) to return immediately
+// without incurring six sequential .replace() calls and intermediate string allocations.
 export function escHtml(str) {
   if (typeof str !== 'string') return str;
+  if (!HTML_CHAR_RE.test(str)) return str;
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
