@@ -193,6 +193,15 @@
         assertEqual(healed.lastReviewed, null);
       });
 
+      test("should strictly validate version property as a positive integer", () => {
+        assertEqual(validateAndMigrateState({ version: 0 }).version, 1);
+        assertEqual(validateAndMigrateState({ version: -5 }).version, 1);
+        assertEqual(validateAndMigrateState({ version: NaN }).version, 1);
+        assertEqual(validateAndMigrateState({ version: 1.5 }).version, 1);
+        assertEqual(validateAndMigrateState({ version: "2" }).version, 1);
+        assertEqual(validateAndMigrateState({ version: 2 }).version, 2);
+      });
+
       test("should validate and correct boundary values (e.g. mastery minimum)", () => {
         const state = {
           mastery: 0.5,
