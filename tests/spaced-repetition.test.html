@@ -455,6 +455,30 @@
           assertEqual(e.message, 'Invalid currentTimestamp: "not-a-date". Must be a valid Date constructor parameter.');
         }
       });
+
+      test("heals non-finite numeric properties, negative versions, and clamps mastery", () => {
+        const corruptedState = {
+          version: -1,
+          state: "review",
+          dueDate: "2026-07-31T12:00:00.000Z",
+          interval: Infinity,
+          repetitions: NaN,
+          lapses: -5,
+          mastery: 100.0,
+          lastReviewed: "2026-07-30T12:00:00.000Z"
+        };
+        const healed = validateAndMigrateState(corruptedState);
+        assertEqual(healed.version, 1);
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 5.0);
+
+        const res = schedule(corruptedState, "good", now);
+        assertEqual(res.version, 1);
+        assertEqual(res.interval, 1440);
+        assert(typeof res.dueDate === "string", "dueDate should be valid ISO string");
+      });
     });
 
     // Execution engine
