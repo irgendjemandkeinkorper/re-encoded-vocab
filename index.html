@@ -2670,6 +2670,11 @@ function levenshtein(a, b){
 
 const normalizeCache = new Map();
 function normalizeAnswer(s){
+  if (typeof s !== 'string') return '';
+  // Security Enhancement: Limit input length early to prevent ReDoS / excessive resource consumption
+  if (s.length > 200) {
+    s = s.slice(0, 200);
+  }
   if (normalizeCache.has(s)) return normalizeCache.get(s);
   const res = s.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
