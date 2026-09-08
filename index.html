@@ -3061,6 +3061,14 @@ async function fetchAndRenderLeaderboard(){
     listEl.setAttribute('aria-busy', 'false');
     return;
   }
+  // Defensive Input Validation: Validate requestedSubject against pre-computed VALID_SUBJECTS_SET
+  if (!VALID_SUBJECTS_SET.has(requestedSubject)) {
+    if(requestGeneration !== leaderboardRequestGeneration || requestedSubject !== leaderboardSubject) return;
+    listEl.textContent = 'Could not load the leaderboard right now. Invalid subject requested.';
+    listEl.className = 'leaderboard-state error';
+    listEl.setAttribute('aria-busy', 'false');
+    return;
+  }
   try {
     const { data, error } = await supabaseClient
       .from('leaderboard')
