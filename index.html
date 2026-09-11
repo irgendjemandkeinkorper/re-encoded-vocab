@@ -2722,6 +2722,7 @@ function buildWordBank(pool){
  * 3. Prioritizes computing correct term's variants to set a tight distance baseline early.
  */
 function checkAnswer(userInput, correctTerm, wordBank){
+  if (typeof userInput !== 'string' || userInput.length > 200) return false;
   const userNorm = normalizeAnswer(userInput);
   if(!userNorm) return false;
 
