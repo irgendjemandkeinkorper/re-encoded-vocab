@@ -2256,17 +2256,21 @@ function getEscapedLensExample(d, key) {
 
 // Lens rendering pipeline: turn one term plus the cached active-lens selection
 // into the safe, reusable card/study/Code Lab markup used by every view.
+// Performance Optimization: Direct for-loop string accumulation eliminates array allocations and map callback overhead
 function buildLensStackHTML(d){
-  return cachedSelectedLensesList.map(l => {
+  let out = '';
+  for (let i = 0; i < cachedSelectedLensesList.length; i++) {
+    const l = cachedSelectedLensesList[i];
     const exEsc = getEscapedLensExample(d, l.key);
-    return `
+    out += `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
       <div class="lens-text">${getEscapedLensText(d, l.key)}</div>
       ${exEsc ? `<div class="example">${exEsc}</div>` : ''}
     </div>
   `;
-  }).join('');
+  }
+  return out;
 }
 
 function renderGrid(){
@@ -3783,8 +3787,14 @@ const codeLabToggle = document.getElementById('codeLabToggle');
 const codeLensChipsEl = document.getElementById('codeLensChips');
 const codeColEl = document.getElementById('codeCol');
 
+const HTML_CHAR_RE = /[&<>"'/]/;
+
+// Performance Optimization: Fast-path regex test to skip 6 replace passes for plain text strings
 function escHtml(s){
-  return String(s)
+  if (s === null || s === undefined) return '';
+  const str = String(s);
+  if (!HTML_CHAR_RE.test(str)) return str;
+  return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -3806,15 +3816,19 @@ function getEscapedSegCode(seg) {
   return seg._escCode = escHtml(seg.code);
 }
 
+// Performance Optimization: Direct for-loop string accumulation eliminates array allocations and map callback overhead
 function buildSegLensStackHTML(seg){
-  return cachedSelectedLensesList.map(l => {
+  let out = '';
+  for (let i = 0; i < cachedSelectedLensesList.length; i++) {
+    const l = cachedSelectedLensesList[i];
     const txtEscaped = getEscapedSegText(seg, l.key);
-    return `
+    out += `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
       <div class="lens-text">${txtEscaped !== null ? txtEscaped : '<span style="opacity:.55">translation coming soon</span>'}</div>
     </div>`;
-  }).join('');
+  }
+  return out;
 }
 
 const WALK_LANGS = [
