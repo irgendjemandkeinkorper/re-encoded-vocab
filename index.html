@@ -2669,8 +2669,16 @@ function levenshtein(a, b){
 }
 
 const normalizeCache = new Map();
+const NORMALIZE_CACHE_MAX_SIZE = 500;
 function normalizeAnswer(s){
+  if (typeof s !== 'string') return '';
+  // Security Enhancement: Slice early to prevent ReDoS / memory bloat
+  if (s.length > 200) s = s.slice(0, 200);
   if (normalizeCache.has(s)) return normalizeCache.get(s);
+  // Security Enhancement: Cap cache size to prevent memory exhaustion / DoS
+  if (normalizeCache.size >= NORMALIZE_CACHE_MAX_SIZE) {
+    normalizeCache.clear();
+  }
   const res = s.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
