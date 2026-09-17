@@ -162,6 +162,14 @@
     });
 
     suite("2. Validation and Migration/Defaulting", () => {
+      test("should default version to 1 for non-integer, negative, zero, or NaN versions", () => {
+        assertEqual(validateAndMigrateState({ version: NaN }).version, 1);
+        assertEqual(validateAndMigrateState({ version: -1 }).version, 1);
+        assertEqual(validateAndMigrateState({ version: 0 }).version, 1);
+        assertEqual(validateAndMigrateState({ version: 0.5 }).version, 1);
+        assertEqual(validateAndMigrateState({ version: "2" }).version, 1);
+      });
+
       test("should return default state when called with null/undefined", () => {
         const s1 = validateAndMigrateState(null);
         assertEqual(s1.state, "new");
