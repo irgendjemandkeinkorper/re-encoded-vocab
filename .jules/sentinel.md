@@ -1,5 +1,10 @@
 # Sentinel's Security Journal
 
+## 2026-09-19 - [JIT Cache Object Prototype Pollution and Collision Mitigation]
+**Vulnerability:** JIT translation cache objects (`_escLenses`, `_escExLenses`) attached dynamically to glossary terms and Code Lab segments were initialized as plain objects (`{}`). If a lens key matched inherited `Object.prototype` property names (such as `toString`, `valueOf`, or `constructor`), looking up cached values via `d._escLenses[key] !== undefined` could resolve to inherited functions rather than cached strings, leading to potential prototype collision, improper cache hits, or runtime errors.
+**Learning:** Dynamic property lookups and writes on object maps using untrusted or dynamic keys can cause prototype collisions if the object inherits from `Object.prototype`. Initializing dynamic cache maps with `Object.create(null)` creates prototype-free dictionaries where lookups only check own properties.
+**Prevention:** Always initialize dynamic lookup or cache objects with `Object.create(null)` when properties are queried using non-literal or dynamic keys.
+
 ## 2026-08-05 - [Leaderboard Accumulator Prototype Pollution and Runtime Crash Risk]
 **Vulnerability:** The leaderboard row renderer used plain JavaScript object literals (`{}`) to accumulate name frequencies and run disambiguator counts (`seenNames` and `nameCounts`) from database/user-controlled strings (`row.session_name`). This exposed a prototype pollution vulnerability and runtime crash risk if a user submitted standard prototype property names (e.g. `__proto__`, `toString`, `constructor`, `valueOf`).
 **Learning:** When using arbitrary, user-controlled strings as dynamic keys in a dictionary map/accumulator, plain objects can look up or overwrite inherited properties on `Object.prototype`, leading to logic bypasses, application crashes, or state corruption.
