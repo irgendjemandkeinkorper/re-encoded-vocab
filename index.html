@@ -2668,9 +2668,14 @@ function levenshtein(a, b){
   return prev[len1];
 }
 
+// Defense-in-depth: Input validation, string length capping, direct cache lookup, and cache size bounds
 const normalizeCache = new Map();
 function normalizeAnswer(s){
-  if (normalizeCache.has(s)) return normalizeCache.get(s);
+  if (typeof s !== 'string') return '';
+  if (s.length > 200) s = s.slice(0, 200);
+  const cached = normalizeCache.get(s);
+  if (cached !== undefined) return cached;
+  if (normalizeCache.size >= 500) normalizeCache.clear();
   const res = s.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
