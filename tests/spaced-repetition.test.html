@@ -184,6 +184,9 @@
         };
         const healed = validateAndMigrateState(malformed);
         assertEqual(healed.version, 1);
+
+        const nonIntVersion = validateAndMigrateState({ version: 1.5 });
+        assertEqual(nonIntVersion.version, 1);
         assertEqual(healed.state, "new");
         assertEqual(healed.dueDate, null);
         assertEqual(healed.interval, 0);
