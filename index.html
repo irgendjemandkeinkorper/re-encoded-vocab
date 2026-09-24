@@ -2670,13 +2670,16 @@ function levenshtein(a, b){
 
 const normalizeCache = new Map();
 function normalizeAnswer(s){
-  if (normalizeCache.has(s)) return normalizeCache.get(s);
-  const res = s.toLowerCase()
+  if (typeof s !== 'string') return '';
+  const input = s.length > 200 ? s.slice(0, 200) : s;
+  if (normalizeCache.has(input)) return normalizeCache.get(input);
+  if (normalizeCache.size >= 500) normalizeCache.clear();
+  const res = input.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  normalizeCache.set(s, res);
+  normalizeCache.set(input, res);
   return res;
 }
 
