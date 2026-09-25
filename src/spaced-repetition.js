@@ -27,8 +27,8 @@ export function validateAndMigrateState(state) {
 
   const healed = {};
 
-  // Version: always default to 1
-  healed.version = typeof state.version === "number" ? state.version : 1;
+  // Version: must be a positive integer, default to 1 otherwise
+  healed.version = Number.isInteger(state.version) && state.version > 0 ? state.version : 1;
 
   // State state machine check: 'new', 'learning', 'review', 'relearning'
   const VALID_STATES = ["new", "learning", "review", "relearning"];
