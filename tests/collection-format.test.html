@@ -521,7 +521,37 @@
       }
     );
 
-    // 10. Large Payload Rejection
+    // 10. Prototype Ownership & Disallowed Prototype Keys
+    addTest(
+      'Prototype Ownership and Lens Prototype Key Rejection',
+      'Ensure validation uses own-property checks and explicitly flags disallowed prototype keys in lenses.',
+      () => {
+        const inheritedObj = Object.create({
+          version: '1.0.0',
+          id: 'test',
+          title: 'Test',
+          created: '2026-01-01T00:00:00Z',
+          modified: '2026-01-01T00:00:00Z',
+          categories: [],
+          terms: []
+        });
+        const resInherited = validate(inheritedObj);
+        if (resInherited.valid) {
+          throw new Error('Validation passed for object inheriting required fields from prototype');
+        }
+
+        const colWithProtoLens = createValidCollection();
+        colWithProtoLens.terms[0].lenses.constructor = 'bad';
+        const resProtoLens = validate(colWithProtoLens);
+        if (resProtoLens.valid) {
+          throw new Error('Validation passed for collection with constructor in lenses');
+        }
+
+        return { detail: 'Correctly rejected inherited prototype properties and reserved prototype lens keys.' };
+      }
+    );
+
+    // 11. Large Payload Rejection
     addTest(
       'Oversized Payload Rejection (>1MB)',
       'Ensure that parse() rejects any input string exceeding the 1MB file size limit to prevent Denial of Service / RAM depletion.',

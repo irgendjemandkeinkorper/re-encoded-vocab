@@ -68,10 +68,12 @@ export function validate(collection) {
     errors.push({ field, message });
   };
 
+  const hasOwn = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
+
   // Required top-level fields
   const requiredFields = ['version', 'id', 'title', 'created', 'modified', 'categories', 'terms'];
   for (const field of requiredFields) {
-    if (!(field in collection)) {
+    if (!hasOwn(collection, field)) {
       addError(field, `Required field "${field}" is missing`);
     }
   }
@@ -90,7 +92,7 @@ export function validate(collection) {
         addError('version', `Unsupported schema version: ${collection.version}. Only major version 1 is supported.`);
       }
     }
-  } else if ('version' in collection) {
+  } else if (hasOwn(collection, 'version')) {
     addError('version', 'Version must be a string');
   }
 
@@ -101,7 +103,7 @@ export function validate(collection) {
     if (!/^[a-zA-Z0-9_.-]{1,100}$/.test(collection.id)) {
       addError('id', 'ID must contain only alphanumeric characters, underscores, hyphens, and dots');
     }
-  } else if ('id' in collection) {
+  } else if (hasOwn(collection, 'id')) {
     addError('id', 'ID must be a string');
   }
 
@@ -109,7 +111,7 @@ export function validate(collection) {
     if (collection.title.length === 0 || collection.title.length > LIMITS.FIELD_LENGTHS.title) {
       addError('title', `Title must be between 1 and ${LIMITS.FIELD_LENGTHS.title} characters`);
     }
-  } else if ('title' in collection) {
+  } else if (hasOwn(collection, 'title')) {
     addError('title', 'Title must be a string');
   }
 
@@ -135,7 +137,7 @@ export function validate(collection) {
     if (!iso8601Regex.test(collection.created) || isNaN(Date.parse(collection.created))) {
       addError('created', 'Created must be a valid ISO-8601 datetime string');
     }
-  } else if ('created' in collection) {
+  } else if (hasOwn(collection, 'created')) {
     addError('created', 'Created must be a string');
   }
 
@@ -143,7 +145,7 @@ export function validate(collection) {
     if (!iso8601Regex.test(collection.modified) || isNaN(Date.parse(collection.modified))) {
       addError('modified', 'Modified must be a valid ISO-8601 datetime string');
     }
-  } else if ('modified' in collection) {
+  } else if (hasOwn(collection, 'modified')) {
     addError('modified', 'Modified must be a string');
   }
 
@@ -196,7 +198,7 @@ export function validate(collection) {
       }
 
       // Check required category fields
-      if (!('key' in cat)) {
+      if (!hasOwn(cat, 'key')) {
         addError(`${prefix}.key`, 'Category key is required');
       } else if (typeof cat.key !== 'string') {
         addError(`${prefix}.key`, 'Category key must be a string');
@@ -214,7 +216,7 @@ export function validate(collection) {
         }
       }
 
-      if (!('label' in cat)) {
+      if (!hasOwn(cat, 'label')) {
         addError(`${prefix}.label`, 'Category label is required');
       } else if (typeof cat.label !== 'string') {
         addError(`${prefix}.label`, 'Category label must be a string');
@@ -222,7 +224,7 @@ export function validate(collection) {
         addError(`${prefix}.label`, `Category label must be between 1 and ${LIMITS.FIELD_LENGTHS.catLabel} characters`);
       }
     });
-  } else if ('categories' in collection) {
+  } else if (hasOwn(collection, 'categories')) {
     addError('categories', 'Categories must be an array');
   }
 
@@ -241,7 +243,7 @@ export function validate(collection) {
       }
 
       // Check required term fields
-      if (!('id' in t)) {
+      if (!hasOwn(t, 'id')) {
         addError(`${prefix}.id`, 'Term ID is required');
       } else if (typeof t.id !== 'string') {
         addError(`${prefix}.id`, 'Term ID must be a string');
@@ -259,7 +261,7 @@ export function validate(collection) {
         }
       }
 
-      if (!('term' in t)) {
+      if (!hasOwn(t, 'term')) {
         addError(`${prefix}.term`, 'Term name is required');
       } else if (typeof t.term !== 'string') {
         addError(`${prefix}.term`, 'Term name must be a string');
@@ -267,7 +269,7 @@ export function validate(collection) {
         addError(`${prefix}.term`, `Term name must be between 1 and ${LIMITS.FIELD_LENGTHS.termName} characters`);
       }
 
-      if (!('cat' in t)) {
+      if (!hasOwn(t, 'cat')) {
         addError(`${prefix}.cat`, 'Term category is required');
       } else if (typeof t.cat !== 'string') {
         addError(`${prefix}.cat`, 'Term category must be a string');
@@ -290,7 +292,7 @@ export function validate(collection) {
         }
       }
 
-      if (!('def' in t)) {
+      if (!hasOwn(t, 'def')) {
         addError(`${prefix}.def`, 'Term definition is required');
       } else if (typeof t.def !== 'string') {
         addError(`${prefix}.def`, 'Term definition must be a string');
@@ -298,7 +300,7 @@ export function validate(collection) {
         addError(`${prefix}.def`, `Term definition must be between 1 and ${LIMITS.FIELD_LENGTHS.termDef} characters`);
       }
 
-      if (!('analogy' in t)) {
+      if (!hasOwn(t, 'analogy')) {
         addError(`${prefix}.analogy`, 'Term analogy is required');
       } else if (typeof t.analogy !== 'string') {
         addError(`${prefix}.analogy`, 'Term analogy must be a string');
@@ -319,6 +321,10 @@ export function validate(collection) {
           addError(`${prefix}.lenses`, 'Term lenses must be an object');
         } else {
           for (const key of Object.keys(t.lenses)) {
+            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+              addError(`${prefix}.lenses`, `Reserved prototype key "${key}" is disallowed in lenses`);
+              continue;
+            }
             const val = t.lenses[key];
             if (!/^[a-zA-Z0-9_-]{1,40}$/.test(key)) {
               addError(`${prefix}.lenses`, `Lens key "${key}" contains invalid characters or exceeds 40 characters`);
@@ -333,7 +339,7 @@ export function validate(collection) {
         }
       }
     });
-  } else if ('terms' in collection) {
+  } else if (hasOwn(collection, 'terms')) {
     addError('terms', 'Terms must be an array');
   }
 
