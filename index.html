@@ -2256,17 +2256,21 @@ function getEscapedLensExample(d, key) {
 
 // Lens rendering pipeline: turn one term plus the cached active-lens selection
 // into the safe, reusable card/study/Code Lab markup used by every view.
+// Performance Optimization: Direct for loop and string accumulation avoids array allocations in hot rendering paths.
 function buildLensStackHTML(d){
-  return cachedSelectedLensesList.map(l => {
+  let html = '';
+  for (let i = 0; i < cachedSelectedLensesList.length; i++) {
+    const l = cachedSelectedLensesList[i];
     const exEsc = getEscapedLensExample(d, l.key);
-    return `
+    html += `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
       <div class="lens-text">${getEscapedLensText(d, l.key)}</div>
       ${exEsc ? `<div class="example">${exEsc}</div>` : ''}
     </div>
   `;
-  }).join('');
+  }
+  return html;
 }
 
 function renderGrid(){
@@ -3783,7 +3787,11 @@ const codeLabToggle = document.getElementById('codeLabToggle');
 const codeLensChipsEl = document.getElementById('codeLensChips');
 const codeColEl = document.getElementById('codeCol');
 
+// Fast-path regex check to bypass redundant .replace() calls when no HTML special characters exist
+const HTML_CHAR_RE = /[&<>"'/]/;
+
 function escHtml(s){
+  if (typeof s !== 'string' || !HTML_CHAR_RE.test(s)) return s;
   return String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -3806,15 +3814,19 @@ function getEscapedSegCode(seg) {
   return seg._escCode = escHtml(seg.code);
 }
 
+// Performance Optimization: Direct for loop and string accumulation avoids array allocations in hot Code Lab template paths.
 function buildSegLensStackHTML(seg){
-  return cachedSelectedLensesList.map(l => {
+  let html = '';
+  for (let i = 0; i < cachedSelectedLensesList.length; i++) {
+    const l = cachedSelectedLensesList[i];
     const txtEscaped = getEscapedSegText(seg, l.key);
-    return `
+    html += `
     <div class="lens-block" style="--lens-color:${l.color}">
       <div class="lens-label">${l.icon} ${l.label}</div>
       <div class="lens-text">${txtEscaped !== null ? txtEscaped : '<span style="opacity:.55">translation coming soon</span>'}</div>
     </div>`;
-  }).join('');
+  }
+  return html;
 }
 
 const WALK_LANGS = [
