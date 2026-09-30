@@ -37,8 +37,10 @@ const STANDARD_LENSES = new Set([
 ]);
 
 // Helper to escape HTML characters for safety against stored XSS
+const HTML_CHAR_RE = /[&<>'/"]/;
 export function escHtml(str) {
   if (typeof str !== 'string') return str;
+  if (!HTML_CHAR_RE.test(str)) return str;
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
