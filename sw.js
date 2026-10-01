@@ -40,6 +40,7 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event: handle requests gracefully, offline support
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
   const requestUrl = new URL(event.request.url);
 
   // 1. Handle same-origin requests (the local application shell)
