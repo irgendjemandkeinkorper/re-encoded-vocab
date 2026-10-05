@@ -521,6 +521,21 @@
       }
     );
 
+    // 11. Prototype Inheritance Bypass Detection
+    addTest(
+      'Prototype Inheritance Bypass Detection',
+      'Verify that validation checks direct own properties rather than inherited prototype properties.',
+      () => {
+        const protoObj = createValidCollection();
+        const attackObj = Object.create(protoObj);
+        const res = validate(attackObj);
+        if (res.valid) {
+          throw new Error('Validation succeeded despite required properties being on prototype chain rather than own properties');
+        }
+        return { detail: 'Correctly rejected object relying on prototype chain for required fields.' };
+      }
+    );
+
     // 10. Large Payload Rejection
     addTest(
       'Oversized Payload Rejection (>1MB)',

@@ -68,10 +68,12 @@ export function validate(collection) {
     errors.push({ field, message });
   };
 
+  const hasOwn = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
+
   // Required top-level fields
   const requiredFields = ['version', 'id', 'title', 'created', 'modified', 'categories', 'terms'];
   for (const field of requiredFields) {
-    if (!(field in collection)) {
+    if (!hasOwn(collection, field)) {
       addError(field, `Required field "${field}" is missing`);
     }
   }
