@@ -3783,7 +3783,9 @@ const codeLabToggle = document.getElementById('codeLabToggle');
 const codeLensChipsEl = document.getElementById('codeLensChips');
 const codeColEl = document.getElementById('codeCol');
 
+const HTML_CHAR_RE = /[&<>'"/]/;
 function escHtml(s){
+  if (!HTML_CHAR_RE.test(s)) return s;
   return String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
