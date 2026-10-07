@@ -2668,14 +2668,24 @@ function levenshtein(a, b){
   return prev[len1];
 }
 
+// Security Enhancement: Input validation, string length capping, and bounded cache size limit
+// to protect against ReDoS, CPU resource exhaustion, memory leaks, and runtime type errors.
+const NORMALIZE_CACHE_MAX_SIZE = 500;
 const normalizeCache = new Map();
 function normalizeAnswer(s){
-  if (normalizeCache.has(s)) return normalizeCache.get(s);
+  if (typeof s !== 'string') return '';
+  if (s.length > 200) s = s.slice(0, 200);
+  const cached = normalizeCache.get(s);
+  if (cached !== undefined) return cached;
   const res = s.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+  if (normalizeCache.size >= NORMALIZE_CACHE_MAX_SIZE) {
+    const firstKey = normalizeCache.keys().next().value;
+    normalizeCache.delete(firstKey);
+  }
   normalizeCache.set(s, res);
   return res;
 }
