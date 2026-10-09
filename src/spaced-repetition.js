@@ -20,6 +20,10 @@ export function createInitialState() {
   };
 }
 
+// Hoisted constants to avoid repeated array allocations on every function call
+const VALID_STATES = ["new", "learning", "review", "relearning"];
+const VALID_RATINGS = ["again", "hard", "good", "easy"];
+
 export function validateAndMigrateState(state) {
   if (!state || typeof state !== "object") {
     return createInitialState();
@@ -31,7 +35,6 @@ export function validateAndMigrateState(state) {
   healed.version = typeof state.version === "number" ? state.version : 1;
 
   // State state machine check: 'new', 'learning', 'review', 'relearning'
-  const VALID_STATES = ["new", "learning", "review", "relearning"];
   healed.state = VALID_STATES.includes(state.state) ? state.state : "new";
 
   // Due Date validation
@@ -90,7 +93,6 @@ export function validateAndMigrateState(state) {
 }
 
 export function schedule(state, rating, currentTimestamp) {
-  const VALID_RATINGS = ["again", "hard", "good", "easy"];
   if (!VALID_RATINGS.includes(rating)) {
     throw new Error(`Invalid rating: "${rating}". Must be one of: again, hard, good, easy.`);
   }

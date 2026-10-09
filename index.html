@@ -2626,6 +2626,11 @@ const quizInput = document.getElementById('quizInput');
  * Optimized to use two 1D arrays (O(N) space) instead of a full 2D grid,
  * greatly reducing memory allocation and garbage collection overhead.
  */
+// Performance Optimization: Reuse module-scoped Int32Array buffers to eliminate
+// temporary array allocations during high-frequency Levenshtein fuzzy answer checks.
+let levRow0 = new Int32Array(64);
+let levRow1 = new Int32Array(64);
+
 function levenshtein(a, b){
   const m = a.length, n = b.length;
   if(m === 0) return n;
@@ -2641,8 +2646,13 @@ function levenshtein(a, b){
   const len1 = s1.length;
   const len2 = s2.length;
 
-  let prev = new Array(len1 + 1);
-  let curr = new Array(len1 + 1);
+  if (len1 + 1 > levRow0.length) {
+    levRow0 = new Int32Array(len1 + 64);
+    levRow1 = new Int32Array(len1 + 64);
+  }
+
+  let prev = levRow0;
+  let curr = levRow1;
 
   for (let i = 0; i <= len1; i++) {
     prev[i] = i;
