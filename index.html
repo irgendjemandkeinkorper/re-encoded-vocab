@@ -2670,19 +2670,26 @@ function levenshtein(a, b){
 
 const normalizeCache = new Map();
 function normalizeAnswer(s){
-  if (normalizeCache.has(s)) return normalizeCache.get(s);
+  if (typeof s !== 'string') return '';
+  if (s.length > 200) s = s.slice(0, 200);
+  const cached = normalizeCache.get(s);
+  if (cached !== undefined) return cached;
   const res = s.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  normalizeCache.set(s, res);
+  if (normalizeCache.size < 500) {
+    normalizeCache.set(s, res);
+  }
   return res;
 }
 
 const variantsCache = new Map();
 function getAcceptableVariants(term){
-  if (variantsCache.has(term)) return variantsCache.get(term);
+  if (typeof term !== 'string') return [];
+  const cached = variantsCache.get(term);
+  if (cached !== undefined) return cached;
   const variants = new Set();
   const full = normalizeAnswer(term);
   if(full) variants.add(full);
@@ -2700,7 +2707,9 @@ function getAcceptableVariants(term){
     if(v) variants.add(v);
   });
   const res = [...variants].filter(Boolean);
-  variantsCache.set(term, res);
+  if (variantsCache.size < 500) {
+    variantsCache.set(term, res);
+  }
   return res;
 }
 
