@@ -2621,10 +2621,14 @@ const quizWrap = document.getElementById('quizWrap');
 const quizToggle = document.getElementById('quizToggle');
 const quizInput = document.getElementById('quizInput');
 
+// Reusable growable Int32Array buffers to eliminate temporary array allocations and GC churn in levenshtein
+let levRow0 = new Int32Array(64);
+let levRow1 = new Int32Array(64);
+
 /**
  * Calculates the Levenshtein distance between two strings.
- * Optimized to use two 1D arrays (O(N) space) instead of a full 2D grid,
- * greatly reducing memory allocation and garbage collection overhead.
+ * Optimized to use two reusable 1D Int32Array buffers (O(N) space) instead of a full 2D grid,
+ * completely eliminating temporary array allocations and garbage collection overhead during fuzzy checks.
  */
 function levenshtein(a, b){
   const m = a.length, n = b.length;
@@ -2641,8 +2645,14 @@ function levenshtein(a, b){
   const len1 = s1.length;
   const len2 = s2.length;
 
-  let prev = new Array(len1 + 1);
-  let curr = new Array(len1 + 1);
+  const reqLen = len1 + 1;
+  if (levRow0.length < reqLen) {
+    levRow0 = new Int32Array(reqLen * 2);
+    levRow1 = new Int32Array(reqLen * 2);
+  }
+
+  let prev = levRow0;
+  let curr = levRow1;
 
   for (let i = 0; i <= len1; i++) {
     prev[i] = i;
