@@ -2242,13 +2242,13 @@ function getEscapedField(d, field) {
 }
 
 function getEscapedLensText(d, key) {
-  if (!d._escLenses) d._escLenses = {};
+  if (!d._escLenses) d._escLenses = Object.create(null);
   if (d._escLenses[key] !== undefined) return d._escLenses[key];
   return d._escLenses[key] = escHtml(getLensText(d, key));
 }
 
 function getEscapedLensExample(d, key) {
-  if (!d._escExLenses) d._escExLenses = {};
+  if (!d._escExLenses) d._escExLenses = Object.create(null);
   if (d._escExLenses[key] !== undefined) return d._escExLenses[key];
   const exVal = getLensExample(d, key);
   return d._escExLenses[key] = exVal ? escHtml(exVal) : '';
@@ -2670,12 +2670,16 @@ function levenshtein(a, b){
 
 const normalizeCache = new Map();
 function normalizeAnswer(s){
-  if (normalizeCache.has(s)) return normalizeCache.get(s);
+  if (typeof s !== 'string') return '';
+  if (s.length > 200) s = s.slice(0, 200);
+  const cached = normalizeCache.get(s);
+  if (cached !== undefined) return cached;
   const res = s.toLowerCase()
     .replace(/\([^)]*\)/g, ' ')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+  if (normalizeCache.size >= 500) normalizeCache.clear();
   normalizeCache.set(s, res);
   return res;
 }
@@ -3795,7 +3799,7 @@ function escHtml(s){
 
 // JIT Caching for Code Lab segment translations to avoid redundant HTML-escaping overhead
 function getEscapedSegText(seg, key) {
-  if (!seg._escLenses) seg._escLenses = {};
+  if (!seg._escLenses) seg._escLenses = Object.create(null);
   if (seg._escLenses[key] !== undefined) return seg._escLenses[key];
   const txt = (seg.lenses && seg.lenses[key]) ? seg.lenses[key] : null;
   return seg._escLenses[key] = txt ? escHtml(txt) : null;
