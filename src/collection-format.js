@@ -36,9 +36,13 @@ const STANDARD_LENSES = new Set([
   'medical', 'sports', 'fandom', 'ttrpg', 'cooking', 'millennial', 'f1', 'gaming'
 ]);
 
+const HTML_CHAR_RE = /[&<>"'\/]/;
+
 // Helper to escape HTML characters for safety against stored XSS
 export function escHtml(str) {
   if (typeof str !== 'string') return str;
+  // Fast-path optimization: Skip six sequential regex replacements if no HTML characters are present
+  if (!HTML_CHAR_RE.test(str)) return str;
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
