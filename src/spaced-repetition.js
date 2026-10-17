@@ -7,6 +7,11 @@
  * All dates are returned as standard ISO 8601 strings (YYYY-MM-DDTHH:mm:ss.sssZ).
  */
 
+// Performance Optimization: Pre-allocate static Sets at module scope to avoid
+// recreating validation arrays on every schedule/validation execution call.
+const VALID_STATES_SET = new Set(["new", "learning", "review", "relearning"]);
+const VALID_RATINGS_SET = new Set(["again", "hard", "good", "easy"]);
+
 export function createInitialState() {
   return {
     version: 1,
@@ -31,8 +36,7 @@ export function validateAndMigrateState(state) {
   healed.version = typeof state.version === "number" ? state.version : 1;
 
   // State state machine check: 'new', 'learning', 'review', 'relearning'
-  const VALID_STATES = ["new", "learning", "review", "relearning"];
-  healed.state = VALID_STATES.includes(state.state) ? state.state : "new";
+  healed.state = VALID_STATES_SET.has(state.state) ? state.state : "new";
 
   // Due Date validation
   if (state.dueDate) {
@@ -90,8 +94,7 @@ export function validateAndMigrateState(state) {
 }
 
 export function schedule(state, rating, currentTimestamp) {
-  const VALID_RATINGS = ["again", "hard", "good", "easy"];
-  if (!VALID_RATINGS.includes(rating)) {
+  if (!VALID_RATINGS_SET.has(rating)) {
     throw new Error(`Invalid rating: "${rating}". Must be one of: again, hard, good, easy.`);
   }
 
