@@ -40,6 +40,10 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event: handle requests gracefully, offline support
 self.addEventListener('fetch', (event) => {
+  // Security & Stability: Non-GET HTTP requests (such as POST, PUT, DELETE, PATCH)
+  // must bypass SW interception so data-mutating requests execute directly against the network.
+  if (event.request.method !== 'GET') return;
+
   const requestUrl = new URL(event.request.url);
 
   // 1. Handle same-origin requests (the local application shell)
