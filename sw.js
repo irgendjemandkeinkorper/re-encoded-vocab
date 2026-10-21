@@ -40,6 +40,9 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event: handle requests gracefully, offline support
 self.addEventListener('fetch', (event) => {
+  // Security & Performance Enhancement: Bypass Service Worker caching/intercepting for non-GET requests (e.g. POST score submissions)
+  if (event.request.method !== 'GET') return;
+
   const requestUrl = new URL(event.request.url);
 
   // 1. Handle same-origin requests (the local application shell)
