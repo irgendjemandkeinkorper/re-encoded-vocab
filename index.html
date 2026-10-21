@@ -2621,10 +2621,22 @@ const quizWrap = document.getElementById('quizWrap');
 const quizToggle = document.getElementById('quizToggle');
 const quizInput = document.getElementById('quizInput');
 
+// Module-scoped growable Int32Array buffers to eliminate garbage collection overhead during fuzzy answer checks
+let levRow0 = new Int32Array(64);
+let levRow1 = new Int32Array(64);
+
+function ensureLevCap(needed) {
+  if (levRow0.length < needed) {
+    let newCap = levRow0.length;
+    while (newCap < needed) newCap *= 2;
+    levRow0 = new Int32Array(newCap);
+    levRow1 = new Int32Array(newCap);
+  }
+}
+
 /**
- * Calculates the Levenshtein distance between two strings.
- * Optimized to use two 1D arrays (O(N) space) instead of a full 2D grid,
- * greatly reducing memory allocation and garbage collection overhead.
+ * Optimized Levenshtein Distance implementation utilizing reused Int32Array buffers and numeric
+ * charCodeAt comparisons instead of string indexing or dynamic array allocations.
  */
 function levenshtein(a, b){
   const m = a.length, n = b.length;
@@ -2641,8 +2653,9 @@ function levenshtein(a, b){
   const len1 = s1.length;
   const len2 = s2.length;
 
-  let prev = new Array(len1 + 1);
-  let curr = new Array(len1 + 1);
+  ensureLevCap(len1 + 1);
+  let prev = levRow0;
+  let curr = levRow1;
 
   for (let i = 0; i <= len1; i++) {
     prev[i] = i;
@@ -2650,14 +2663,13 @@ function levenshtein(a, b){
 
   for (let j = 1; j <= len2; j++) {
     curr[0] = j;
-    const char2 = s2[j - 1];
+    const code2 = s2.charCodeAt(j - 1);
     for (let i = 1; i <= len1; i++) {
-      const cost = s1[i - 1] === char2 ? 0 : 1;
-      curr[i] = Math.min(
-        prev[i] + 1,      // deletion
-        curr[i - 1] + 1,  // insertion
-        prev[i - 1] + cost // substitution
-      );
+      const cost = s1.charCodeAt(i - 1) === code2 ? 0 : 1;
+      const sub = prev[i - 1] + cost;
+      const del = prev[i] + 1;
+      const ins = curr[i - 1] + 1;
+      curr[i] = del < ins ? (del < sub ? del : sub) : (ins < sub ? ins : sub);
     }
     // Swap arrays
     const temp = prev;
