@@ -193,6 +193,20 @@
         assertEqual(healed.lastReviewed, null);
       });
 
+      test("should reject non-finite numeric state properties (e.g. Infinity, NaN)", () => {
+        const nonFiniteState = {
+          interval: Infinity,
+          repetitions: Infinity,
+          lapses: -Infinity,
+          mastery: NaN
+        };
+        const healed = validateAndMigrateState(nonFiniteState);
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 2.5);
+      });
+
       test("should validate and correct boundary values (e.g. mastery minimum)", () => {
         const state = {
           mastery: 0.5,
