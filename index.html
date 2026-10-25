@@ -2949,13 +2949,16 @@ async function submitScoreToLeaderboard(total){
     setLeaderboardSubmissionStatus('Enter a name before submitting a score.', 'error');
     return;
   }
+  const safeTotal = Number.isFinite(total) ? Math.max(1, Math.min(1000, Math.trunc(total))) : 1;
+  const safeCorrect = Number.isFinite(quizCorrectCount) ? Math.max(0, Math.min(safeTotal, Math.trunc(quizCorrectCount))) : 0;
+  const safeStreak = Number.isFinite(quizBestStreak) ? Math.max(0, Math.min(safeTotal, Math.trunc(quizBestStreak))) : 0;
   const payload = {
     session_name: name,
     subject: activeSubject,
     score: Number.isFinite(quizScore) ? Math.max(0, Math.min(100000, Math.trunc(quizScore))) : 0,
-    correct_count: Math.max(0, Math.min(total, Math.trunc(quizCorrectCount))),
-    total_questions: Math.max(1, Math.min(1000, Math.trunc(total))),
-    best_streak: Math.max(0, Math.min(total, Math.trunc(quizBestStreak))),
+    correct_count: safeCorrect,
+    total_questions: safeTotal,
+    best_streak: safeStreak,
   };
   try {
     const storedSubmission = sessionStorage.getItem(LEADERBOARD_SUBMISSION_KEY);
