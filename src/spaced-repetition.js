@@ -46,29 +46,29 @@ export function validateAndMigrateState(state) {
     healed.dueDate = null;
   }
 
-  // Interval in minutes validation (must be non-negative integer)
-  if (typeof state.interval === "number" && !isNaN(state.interval) && state.interval >= 0) {
+  // Interval in minutes validation (must be non-negative finite integer)
+  if (typeof state.interval === "number" && Number.isFinite(state.interval) && state.interval >= 0) {
     healed.interval = Math.round(state.interval);
   } else {
     healed.interval = 0;
   }
 
   // Repetitions validation
-  if (typeof state.repetitions === "number" && !isNaN(state.repetitions) && state.repetitions >= 0) {
+  if (typeof state.repetitions === "number" && Number.isFinite(state.repetitions) && state.repetitions >= 0) {
     healed.repetitions = Math.round(state.repetitions);
   } else {
     healed.repetitions = 0;
   }
 
   // Lapses validation
-  if (typeof state.lapses === "number" && !isNaN(state.lapses) && state.lapses >= 0) {
+  if (typeof state.lapses === "number" && Number.isFinite(state.lapses) && state.lapses >= 0) {
     healed.lapses = Math.round(state.lapses);
   } else {
     healed.lapses = 0;
   }
 
   // Mastery factor (minimum 1.3 as per standard SM-2)
-  if (typeof state.mastery === "number" && !isNaN(state.mastery)) {
+  if (typeof state.mastery === "number" && Number.isFinite(state.mastery)) {
     healed.mastery = Math.max(1.3, state.mastery);
   } else {
     healed.mastery = 2.5;
