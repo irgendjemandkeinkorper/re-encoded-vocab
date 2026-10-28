@@ -193,6 +193,20 @@
         assertEqual(healed.lastReviewed, null);
       });
 
+      test("should reset non-finite numeric values (Infinity, -Infinity, NaN) to safe defaults", () => {
+        const nonFiniteState = {
+          interval: Infinity,
+          repetitions: -Infinity,
+          lapses: NaN,
+          mastery: Infinity
+        };
+        const healed = validateAndMigrateState(nonFiniteState);
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 2.5);
+      });
+
       test("should validate and correct boundary values (e.g. mastery minimum)", () => {
         const state = {
           mastery: 0.5,
