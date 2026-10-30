@@ -202,6 +202,30 @@
         assertEqual(healed.mastery, 1.3); // Minimum SM-2 mastery is 1.3
         assertEqual(healed.interval, 6); // Rounded interval
       });
+
+      test("should safely heal non-finite numbers (Infinity, -Infinity, NaN) to defaults and prevent schedule crashes", () => {
+        const nonFiniteState = {
+          version: Infinity,
+          state: "review",
+          dueDate: "2026-08-10T00:00:00.000Z",
+          interval: Infinity,
+          repetitions: NaN,
+          lapses: -Infinity,
+          mastery: Infinity,
+          lastReviewed: "2026-08-09T00:00:00.000Z"
+        };
+        const healed = validateAndMigrateState(nonFiniteState);
+        assertEqual(healed.version, 1);
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 2.5);
+
+        // Verify schedule does not crash with RangeError when given non-finite state
+        const scheduled = schedule(nonFiniteState, "good", "2026-08-10T00:00:00.000Z");
+        assertEqual(typeof scheduled.dueDate, "string");
+        assert(!isNaN(Date.parse(scheduled.dueDate)), "DueDate should be a valid ISO date");
+      });
     });
 
     suite("3. First Review Transitions (New state)", () => {
