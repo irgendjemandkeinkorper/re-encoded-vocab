@@ -202,6 +202,22 @@
         assertEqual(healed.mastery, 1.3); // Minimum SM-2 mastery is 1.3
         assertEqual(healed.interval, 6); // Rounded interval
       });
+
+      test("should reject non-finite numbers (Infinity, -Infinity) and heal to safe bounds", () => {
+        const state = {
+          version: Infinity,
+          interval: Infinity,
+          repetitions: Infinity,
+          lapses: Infinity,
+          mastery: Infinity
+        };
+        const healed = validateAndMigrateState(state);
+        assertEqual(healed.version, 1);
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 2.5);
+      });
     });
 
     suite("3. First Review Transitions (New state)", () => {
