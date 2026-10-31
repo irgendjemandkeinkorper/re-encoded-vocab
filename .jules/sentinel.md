@@ -1,5 +1,10 @@
 # Sentinel's Security Journal
 
+## 2026-08-16 - [Non-Finite Number Validation and Denial of Service Prevention in Spaced Repetition Engine]
+**Vulnerability:** The spaced repetition engine (`src/spaced-repetition.js`) validated numeric state properties (`interval`, `repetitions`, `lapses`, `mastery`) using `!isNaN(...)` rather than `Number.isFinite(...)`, and lacked upper bounds on calculated intervals. When non-finite values like `Infinity` were supplied in the state (e.g. from untrusted imports or mutated storage), calculations like `Date.parse(dueDate) + result.interval * 60 * 1000` resulted in `NaN` or `Infinity`, causing `new Date(...).toISOString()` to throw an unhandled `RangeError: Invalid time value`, crashing the client-side scheduler and review loops.
+**Learning:** `typeof x === 'number' && !isNaN(x)` evaluates to `true` for `Infinity` and `-Infinity`. When these numbers participate in arithmetic operations that result in date timestamps, native JavaScript Date methods fail with runtime RangeErrors, leading to client denial of service.
+**Prevention:** Always use `Number.isFinite(...)` instead of `!isNaN(...)` when validating numbers that will be used in date math or resource scheduling, and enforce safe upper bounds (e.g. `Math.min(5256000, ...)` for intervals and `Math.min(10.0, ...)` for multipliers).
+
 ## 2026-08-05 - [Leaderboard Accumulator Prototype Pollution and Runtime Crash Risk]
 **Vulnerability:** The leaderboard row renderer used plain JavaScript object literals (`{}`) to accumulate name frequencies and run disambiguator counts (`seenNames` and `nameCounts`) from database/user-controlled strings (`row.session_name`). This exposed a prototype pollution vulnerability and runtime crash risk if a user submitted standard prototype property names (e.g. `__proto__`, `toString`, `constructor`, `valueOf`).
 **Learning:** When using arbitrary, user-controlled strings as dynamic keys in a dictionary map/accumulator, plain objects can look up or overwrite inherited properties on `Object.prototype`, leading to logic bypasses, application crashes, or state corruption.
