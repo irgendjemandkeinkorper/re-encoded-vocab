@@ -36,9 +36,14 @@ const STANDARD_LENSES = new Set([
   'medical', 'sports', 'fandom', 'ttrpg', 'cooking', 'millennial', 'f1', 'gaming'
 ]);
 
+// Fast-path regex to test if escaping is required before executing multi-replace chain
+const HTML_CHAR_RE = /[&<>"'\/]/;
+
 // Helper to escape HTML characters for safety against stored XSS
 export function escHtml(str) {
   if (typeof str !== 'string') return str;
+  // Performance optimization: skip regex replace operations when string contains no special characters
+  if (!HTML_CHAR_RE.test(str)) return str;
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
