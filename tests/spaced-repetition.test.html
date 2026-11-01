@@ -193,7 +193,26 @@
         assertEqual(healed.lastReviewed, null);
       });
 
-      test("should validate and correct boundary values (e.g. mastery minimum)", () => {
+            test("should safely heal non-finite numeric values (Infinity, -Infinity, NaN) to defaults and prevent schedule crashes", () => {
+        const nonFiniteState = {
+          version: Infinity,
+          state: "review",
+          interval: Infinity,
+          repetitions: Infinity,
+          lapses: Infinity,
+          mastery: Infinity
+        };
+        const healed = validateAndMigrateState(nonFiniteState);
+        assertEqual(healed.version, 1);
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 2.5);
+        const scheduled = schedule(healed, "good", "2026-07-31T12:00:00.000Z");
+        assertEqual(typeof scheduled.dueDate, "string");
+      });
+
+test("should validate and correct boundary values (e.g. mastery minimum)", () => {
         const state = {
           mastery: 0.5,
           interval: 5.6

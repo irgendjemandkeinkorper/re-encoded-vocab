@@ -1,5 +1,10 @@
 # Sentinel's Security Journal
 
+## 2026-08-11 - [Defense-in-depth via Number.isFinite in Spaced Repetition Engine]
+**Vulnerability:** In src/spaced-repetition.js, validateAndMigrateState() validated numeric state properties (interval, repetitions, lapses, mastery, version) using !isNaN(...) or loose type checks. In JavaScript, non-finite values like Infinity satisfy !isNaN(), allowing non-finite numbers into application state. Passing this state into schedule() resulted in new Date(Infinity).toISOString(), throwing an unhandled RangeError: Invalid time value that crashed the application.
+**Learning:** !isNaN() is insufficient for numeric validation because isNaN(Infinity) is false. Date projections and interval calculations using non-finite values cause unhandled runtime exceptions when converting to ISO strings.
+**Prevention:** Always use Number.isFinite(...) instead of !isNaN(...) when validating numbers retrieved from external storage or user input, ensuring non-finite values are rejected and healed to safe defaults.
+
 ## 2026-08-05 - [Leaderboard Accumulator Prototype Pollution and Runtime Crash Risk]
 **Vulnerability:** The leaderboard row renderer used plain JavaScript object literals (`{}`) to accumulate name frequencies and run disambiguator counts (`seenNames` and `nameCounts`) from database/user-controlled strings (`row.session_name`). This exposed a prototype pollution vulnerability and runtime crash risk if a user submitted standard prototype property names (e.g. `__proto__`, `toString`, `constructor`, `valueOf`).
 **Learning:** When using arbitrary, user-controlled strings as dynamic keys in a dictionary map/accumulator, plain objects can look up or overwrite inherited properties on `Object.prototype`, leading to logic bypasses, application crashes, or state corruption.
