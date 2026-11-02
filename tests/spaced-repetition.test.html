@@ -202,6 +202,29 @@
         assertEqual(healed.mastery, 1.3); // Minimum SM-2 mastery is 1.3
         assertEqual(healed.interval, 6); // Rounded interval
       });
+
+      test("should safely heal non-finite numeric values (Infinity, -Infinity, NaN)", () => {
+        const malformed = {
+          version: NaN,
+          state: "review",
+          dueDate: "2026-08-01T12:00:00.000Z",
+          interval: Infinity,
+          repetitions: Infinity,
+          lapses: -Infinity,
+          mastery: Infinity
+        };
+        const healed = validateAndMigrateState(malformed);
+        assertEqual(healed.version, 1);
+        assertEqual(healed.state, "review");
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 2.5);
+
+        // Ensure schedule does not throw RangeError: Invalid time value
+        const scheduled = schedule(healed, "good", "2026-08-01T12:00:00.000Z");
+        assert(typeof scheduled.dueDate === "string", "Scheduled dueDate must be a valid ISO string");
+      });
     });
 
     suite("3. First Review Transitions (New state)", () => {
