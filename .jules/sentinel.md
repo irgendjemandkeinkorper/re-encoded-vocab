@@ -1,5 +1,10 @@
 # Sentinel's Security Journal
 
+## 2026-08-16 - [Spaced Repetition State Non-Finite Number Hardening]
+**Vulnerability:** In `src/spaced-repetition.js`, `validateAndMigrateState()` used `!isNaN(state.property)` to validate numeric fields (`interval`, `repetitions`, `lapses`, `mastery`, `version`). In JavaScript, `!isNaN(Infinity)` evaluates to `true`. Passing non-finite numbers (such as `Infinity` or `-Infinity`) bypassed validation, propagated through mathematical scheduling operations, and caused `new Date(...).toISOString()` to throw an uncaught `RangeError: Invalid time value` crash or corrupted state.
+**Learning:** Checking `!isNaN(val)` on numeric inputs is insufficient to ensure numbers are safe for arithmetic and date calculations, as `Infinity` passes the check. Validating untrusted or persisted numeric state requires `Number.isFinite(...)` to guarantee safe bounded numeric operations.
+**Prevention:** Always use `Number.isFinite(...)` instead of `!isNaN(...)` when sanitizing, healing, or validating numeric inputs in state-migration, scheduling, or math calculation routines.
+
 ## 2026-08-05 - [Leaderboard Accumulator Prototype Pollution and Runtime Crash Risk]
 **Vulnerability:** The leaderboard row renderer used plain JavaScript object literals (`{}`) to accumulate name frequencies and run disambiguator counts (`seenNames` and `nameCounts`) from database/user-controlled strings (`row.session_name`). This exposed a prototype pollution vulnerability and runtime crash risk if a user submitted standard prototype property names (e.g. `__proto__`, `toString`, `constructor`, `valueOf`).
 **Learning:** When using arbitrary, user-controlled strings as dynamic keys in a dictionary map/accumulator, plain objects can look up or overwrite inherited properties on `Object.prototype`, leading to logic bypasses, application crashes, or state corruption.

@@ -193,6 +193,26 @@
         assertEqual(healed.lastReviewed, null);
       });
 
+      test("should reject non-finite numeric values (Infinity, -Infinity) and heal to safe defaults", () => {
+        const nonFinite = {
+          version: Infinity,
+          state: "review",
+          dueDate: "2026-07-31T12:00:00.000Z",
+          interval: Infinity,
+          repetitions: Infinity,
+          lapses: -Infinity,
+          mastery: Infinity,
+          lastReviewed: "2026-07-30T12:00:00.000Z"
+        };
+        const healed = validateAndMigrateState(nonFinite);
+        assertEqual(healed.version, 1);
+        assertEqual(healed.state, "review");
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 2.5);
+      });
+
       test("should validate and correct boundary values (e.g. mastery minimum)", () => {
         const state = {
           mastery: 0.5,
