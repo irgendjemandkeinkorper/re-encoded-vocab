@@ -36,16 +36,25 @@ const STANDARD_LENSES = new Set([
   'medical', 'sports', 'fandom', 'ttrpg', 'cooking', 'millennial', 'f1', 'gaming'
 ]);
 
+// Fast-path regex and map to avoid multi-pass string replace allocations
+const HTML_ESCAPE_TEST_RE = /[&<>"'/]/;
+const HTML_ESCAPE_REPLACE_RE = /[&<>"'/]/g;
+const HTML_ESCAPE_MAP = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#x27;',
+  '/': '&#x2F;'
+};
+
 // Helper to escape HTML characters for safety against stored XSS
+// Performance optimization: Uses fast-path regex test to return clean strings untouched,
+// and replaces all special characters in a single pass instead of 6 chained passes.
 export function escHtml(str) {
   if (typeof str !== 'string') return str;
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;');
+  if (!HTML_ESCAPE_TEST_RE.test(str)) return str;
+  return str.replace(HTML_ESCAPE_REPLACE_RE, ch => HTML_ESCAPE_MAP[ch]);
 }
 
 /**
