@@ -3783,14 +3783,25 @@ const codeLabToggle = document.getElementById('codeLabToggle');
 const codeLensChipsEl = document.getElementById('codeLensChips');
 const codeColEl = document.getElementById('codeCol');
 
+// Fast-path regex and map to avoid multi-pass string replace allocations in hot paths
+const HTML_ESCAPE_TEST_RE = /[&<>"'/]/;
+const HTML_ESCAPE_REPLACE_RE = /[&<>"'/]/g;
+const HTML_ESCAPE_MAP = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#x27;',
+  '/': '&#x2F;'
+};
+
+// Helper to escape HTML characters for safety against stored XSS
+// Performance optimization: Uses fast-path regex test to return clean strings untouched,
+// and replaces all special characters in a single pass instead of 6 chained passes.
 function escHtml(s){
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;');
+  const str = String(s);
+  if (!HTML_ESCAPE_TEST_RE.test(str)) return str;
+  return str.replace(HTML_ESCAPE_REPLACE_RE, ch => HTML_ESCAPE_MAP[ch]);
 }
 
 // JIT Caching for Code Lab segment translations to avoid redundant HTML-escaping overhead
