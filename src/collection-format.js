@@ -36,16 +36,25 @@ const STANDARD_LENSES = new Set([
   'medical', 'sports', 'fandom', 'ttrpg', 'cooking', 'millennial', 'f1', 'gaming'
 ]);
 
+// Fast-path lookup table and regex for HTML escaping
+const HTML_ESCAPE_MAP = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#x27;',
+  '/': '&#x2F;'
+};
+const HTML_CHAR_RE = /[&<>"'/]/;
+const HTML_REPLACE_RE = /[&<>"'/]/g;
+
 // Helper to escape HTML characters for safety against stored XSS
+// Performance optimization: Uses regex test fast-path to skip escaping when no special characters
+// are present, and single-pass replacement via lookup table instead of six chained replace calls.
 export function escHtml(str) {
   if (typeof str !== 'string') return str;
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;');
+  if (!HTML_CHAR_RE.test(str)) return str;
+  return str.replace(HTML_REPLACE_RE, ch => HTML_ESCAPE_MAP[ch]);
 }
 
 /**
