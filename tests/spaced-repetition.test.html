@@ -202,6 +202,25 @@
         assertEqual(healed.mastery, 1.3); // Minimum SM-2 mastery is 1.3
         assertEqual(healed.interval, 6); // Rounded interval
       });
+
+      test("should reject non-finite numbers like Infinity to prevent scheduling crash", () => {
+        const malformed = {
+          interval: Infinity,
+          repetitions: Infinity,
+          lapses: Infinity,
+          mastery: Infinity
+        };
+        const healed = validateAndMigrateState(malformed);
+        assertEqual(healed.interval, 0);
+        assertEqual(healed.repetitions, 0);
+        assertEqual(healed.lapses, 0);
+        assertEqual(healed.mastery, 2.5);
+
+        // Verify schedule does not throw RangeError: Invalid time value
+        const res = schedule({ state: "review", repetitions: 5, mastery: Infinity }, "good", "2026-07-31T12:00:00.000Z");
+        assert(Number.isFinite(res.interval), "interval should be finite");
+        assert(Number.isFinite(res.mastery), "mastery should be finite");
+      });
     });
 
     suite("3. First Review Transitions (New state)", () => {
